@@ -7,13 +7,25 @@ class LessonDay
     private $name;
     private $lessonMaxCount;
 
+    /**
+     * Get id by LessonDay.
+     *
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     * @return void
+     */
     public function setId($id)
     {
-        if(is_int($id))
+        if(!is_int($id))
         {
             throw new InvalidArgumentException('parameter "id" can be integer');
         }
@@ -24,10 +36,22 @@ class LessonDay
         $this->id = $id;
     }
 
+    /**
+     * Get Lesson Week.
+     *
+     * @return LessonWeek
+     */
     public function getLessonWeek()
     {
         return $this->lessonWeek;
     }
+
+    /**
+     * Set Lesson Week.
+     *
+     * @param LessonWeek $lessonWeek
+     * @return void
+     */
     public function setLessonWeek($lessonWeek)
     {
         if(is_null($lessonWeek))
@@ -40,22 +64,48 @@ class LessonDay
         }
         $this->lessonWeek = $lessonWeek;
     }
+
+    /**
+     * Get Week Day.
+     *
+     * @return int
+     */
     public function getWeekday()
     {
         return $this->weekDay;
     }
+
+    /**
+     * Set Week Day.
+     *
+     * @param int $weekDay
+     * @return void
+     */
     public function setWeekday($weekDay)
     {
-        if(!is_string($weekDay))
+        if(!is_int($weekDay))
         {
             throw new InvalidArgumentException('invalid type of argument: "weekDay"');
         }
         $this->weekDay = $weekDay;
     }
+
+    /**
+     * Get Name.
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
+
+    /**
+     * Set Name.
+     *
+     * @param string $name
+     * @return void
+     */
     public function setName($name)
     {
         if(!is_string($name))
@@ -64,10 +114,23 @@ class LessonDay
         }
         $this->name = $name;
     }
+
+    /**
+     * Get Lesson max count.
+     *
+     * @return int
+     */
     public function getLessonMaxCount()
     {
         return $this->lessonMaxCount;
     }
+
+    /**
+     * Set Lesson max count.
+     *
+     * @param int $lessonMaxCount
+     * @return void
+     */
     public function setLessonMaxCount($lessonMaxCount)
     {
         if(!is_int($lessonMaxCount))
@@ -77,6 +140,9 @@ class LessonDay
         $this->lessonMaxCount = $lessonMaxCount;
     }
 
+    /**
+     * LessonDay constructor.
+     */
     public function __construct()
     {
 
