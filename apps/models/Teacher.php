@@ -7,10 +7,17 @@ class Teacher
     private $middleName;
     private $lastName;
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
+
+    /**
+     * @param int $id
+     */
     public function setId($id)
     {
         if(!is_int($id))
@@ -23,10 +30,18 @@ class Teacher
         }
         $this->id = $id;
     }
+
+    /**
+     * @return string
+     */
     public function getFirstName()
     {
         return $this->firstName;
     }
+
+    /**
+     * @param string $firstName
+     */
     public function setFirstName($firstName)
     {
         if(!is_string($firstName))
@@ -35,10 +50,18 @@ class Teacher
         }
         $this->firstName = $firstName;
     }
+
+    /**
+     * @return string
+     */
     public function getLastName()
     {
         return $this->lastName;
     }
+
+    /**
+     * @param string $lastName
+     */
     public function setLastName($lastName)
     {
         if(!is_string($lastName))
@@ -47,10 +70,18 @@ class Teacher
         }
         $this->lastName = $lastName;
     }
+
+    /**
+     * @return int
+     */
     public function getMiddleName()
     {
         return $this->middleName;
     }
+
+    /**
+     * @param int $middleName
+     */
     public function setMiddleName($middleName)
     {
         if(!is_string($middleName))

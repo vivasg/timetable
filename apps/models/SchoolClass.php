@@ -4,11 +4,19 @@ class SchoolClass
     private $id;
     private $name;
 
+    /**
+     * get schoolclass id
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * set schoolclass id
+     * @param int $id
+     */
     public function setId($id)
     {
         if(!is_int($id))
@@ -21,10 +29,19 @@ class SchoolClass
         }
         $this->id = $id;
     }
+
+    /**
+     * get week name
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
+
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         if(!is_string($name))

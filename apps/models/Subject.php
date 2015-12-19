@@ -4,10 +4,19 @@ class Subject
     private $id;
     private $name;
 
+    /**
+     * get subject id
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
+
+    /**
+     * set subject id
+     * @param int $id
+     */
     public function setId($id)
     {
         if(!is_int($id))
@@ -20,10 +29,20 @@ class Subject
         }
         $this->id = $id;
     }
+
+    /**
+     * get subject name
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
+
+    /**
+     * set subject name
+     * @param string $name
+     */
     public function setName($name)
     {
         if(!is_string($name))
