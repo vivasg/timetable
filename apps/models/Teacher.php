@@ -1,18 +1,20 @@
 <?php
 
+// TODO: допилить
+
 class Teacher
 {
-    private $id;
-    private $firstName;
-    private $middleName;
-    private $lastName;
+    /**
+     * @var \Dto\Teacher
+     */
+    private $model;
 
     /**
      * @return int
      */
     public function getId()
     {
-        return $this->id;
+        return $this->model->getId();
     }
 
     /**
