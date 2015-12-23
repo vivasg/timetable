@@ -1,8 +1,10 @@
 <?php
 class Subject
 {
-    private $id;
-    private $name;
+    /**
+     * @var \Dto\Subject
+     */
+    private $dto;
 
     /**
      * get subject id
@@ -10,7 +12,7 @@ class Subject
      */
     public function getId()
     {
-        return $this->id;
+        return $this->dto->getId();
     }
 
     /**
@@ -36,7 +38,7 @@ class Subject
      */
     public function getName()
     {
-        return $this->name;
+        return $this->dto->getName();
     }
 
     /**

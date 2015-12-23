@@ -7,14 +7,14 @@ class Teacher
     /**
      * @var \Dto\Teacher
      */
-    private $model;
+    private $dto;
 
     /**
      * @return int
      */
     public function getId()
     {
-        return $this->model->getId();
+        return $this->dto->getId();
     }
 
     /**
@@ -38,19 +38,19 @@ class Teacher
      */
     public function getFirstName()
     {
-        return $this->firstName;
+        return $this->dto->getNameFirst();
     }
 
     /**
-     * @param string $firstName
+     * @param string $name_first
      */
-    public function setFirstName($firstName)
+    public function setFirstName($name_first)
     {
-        if(!is_string($firstName))
+        if(!is_string($name_first))
         {
             throw new InvalidArgumentException('invalid type of argument: "firstName"');
         }
-        $this->firstName = $firstName;
+        $this->firstName = $name_first;
     }
 
     /**
@@ -58,19 +58,19 @@ class Teacher
      */
     public function getLastName()
     {
-        return $this->lastName;
+        return $this->dto->getNameLast();
     }
 
     /**
      * @param string $lastName
      */
-    public function setLastName($lastName)
+    public function setLastName($name_last)
     {
-        if(!is_string($lastName))
+        if(!is_string($name_last))
         {
             throw new InvalidArgumentException('invalid type of argument: "lastName"');
         }
-        $this->lastName = $lastName;
+        $this->lastName = $name_last;
     }
 
     /**
@@ -78,19 +78,19 @@ class Teacher
      */
     public function getMiddleName()
     {
-        return $this->middleName;
+        return $this->dto->getNameMiddle();
     }
 
     /**
-     * @param int $middleName
+     * @param int $name_middle
      */
-    public function setMiddleName($middleName)
+    public function setMiddleName($name_middle)
     {
-        if(!is_string($middleName))
+        if(!is_string($name_middle))
         {
             throw new InvalidArgumentException('invalid type of argument: "middleName"');
         }
-        $this->middleName = $middleName;
+        $this->middleName = $name_middle;
     }
 
     public function __construct()

@@ -1,16 +1,14 @@
 <?php
 class SchoolClass
 {
-    private $id;
-    private $name;
-
     /**
-     * get schoolclass id
-     * @return int
+     * @var \Dto\SchoolClass
      */
+    private $dto;
+
     public function getId()
     {
-        return $this->id;
+        return $this->dto->getId();
     }
 
     /**
@@ -36,7 +34,7 @@ class SchoolClass
      */
     public function getName()
     {
-        return $this->name;
+        return $this->dto->getName();
     }
 
     /**
