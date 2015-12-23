@@ -1,9 +1,10 @@
 <?php
 class LessonWeek
 {
-    private $id;
-    private $number;
-    private $name;
+    /**
+     * @var \Dto\LessonWeek
+     */
+    private $dto;
 
     /**
      * Get Id by LessonWeek.
@@ -12,14 +13,14 @@ class LessonWeek
      */
     public function getId()
     {
-        return $this->id;
+        return $this->dto->getId();
     }
 
     /**
      * Set Id.
      *
      * @param int $id
-     * @return void
+     * @return $this
      */
     public function setId($id)
     {
@@ -31,7 +32,8 @@ class LessonWeek
         {
             throw new OutOfRangeException('parameter "id" can not be less than 0');
         }
-        $this->id = $id;
+        $this->dto->setId($id);
+        return $this;
     }
 
     /**
@@ -41,14 +43,14 @@ class LessonWeek
      */
     public function getName()
     {
-        return $this->name;
+        return $this->dto->getName();
     }
 
     /**
      * Set Week name.
      *
      * @param string $name
-     * @return void
+     * @return $this
      */
     public function setName($name)
     {
@@ -56,7 +58,8 @@ class LessonWeek
         {
             throw new InvalidArgumentException('invalid type of argument: "name"');
         }
-        $this->name = $name;
+        $this->dto->setName($name);
+        return $this;
     }
 
     /**
@@ -66,14 +69,13 @@ class LessonWeek
      */
     public function getNumber()
     {
-        return $this->number;
+        return $this->dto->getNumber();
     }
-
     /**
      * Set number of a Week.
      *
      * @param int $number
-     * @return void
+     * @return this
      */
     public function setNumber($number)
     {
@@ -81,7 +83,8 @@ class LessonWeek
         {
             throw new InvalidArgumentException('invalid type of argument: "number"');
         }
-        $this->number = $number;
+        $this->dto->setNumber($number);
+        return $this;
     }
 
     /**
