@@ -1,6 +1,6 @@
 <?php
 
-defined('BASE_DIR') || define('BASE_DIR', dirname(__FILE__))
+defined('BASE_DIR') || define('BASE_DIR', dirname(__FILE__));
 defined('APPS_DIR') || define('APPS_DIR', dirname(BASE_DIR) . DIRECTORY_SEPARATOR . 'apps' . DIRECTORY_SEPARATOR);
 
 use \Phalcon\Mvc\Application,

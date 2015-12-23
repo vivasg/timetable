@@ -2,7 +2,9 @@
 
 namespace Dto;
 
-use \Phalcon\Mvc\Model;
+use \Phalcon\Mvc\Model,
+    Phalcon\Mvc\Model\Validator\PresenceOf,
+    Phalcon\Mvc\Model\Validator\StringLength;
 
 /**
  * Class Teacher

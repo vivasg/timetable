@@ -1,27 +1,26 @@
 <?php
 class LessonDay
 {
-    private $id;
-    private $lessonWeek;
-    private $weekDay;
-    private $name;
-    private $lessonMaxCount;
+    /**
+     * @var \Dto\LessonDay
+     */
+    private $dto;
 
     /**
      * Get id by LessonDay.
      *
-     * @return int
+     * @return int|null
      */
     public function getId()
     {
-        return $this->id;
+        return $this->dto->getId();
     }
 
     /**
      * Set id.
      *
-     * @param int $id
-     * @return void
+     * @param int|null $id
+     * @return $this
      */
     public function setId($id)
     {
@@ -33,24 +32,25 @@ class LessonDay
         {
             throw new OutOfRangeException('parameter "id" can not be less than 0');
         }
-        $this->id = $id;
+        $this->dto->setId($id);
+        return $this;
     }
 
     /**
      * Get Lesson Week.
      *
-     * @return LessonWeek
+     * @return LessonWeek|null
      */
     public function getLessonWeek()
     {
-        return $this->lessonWeek;
+        return $this->dto->getLessonWeek();
     }
 
     /**
      * Set Lesson Week.
      *
-     * @param LessonWeek $lessonWeek
-     * @return void
+     * @param LessonWeek|null $lessonWeek
+     * @return $this
      */
     public function setLessonWeek($lessonWeek)
     {
@@ -62,24 +62,25 @@ class LessonDay
         {
             throw new InvalidArgumentException('invalid type of argument: "lessonWeek"');
         }
-        $this->lessonWeek = $lessonWeek;
+        $this->dto->setLessonWeek($lessonWeek);
+        return $this;
     }
 
     /**
      * Get Week Day.
      *
-     * @return int
+     * @return int|null
      */
     public function getWeekday()
     {
-        return $this->weekDay;
+        return $this->dto->getWeekDay();
     }
 
     /**
      * Set Week Day.
      *
-     * @param int $weekDay
-     * @return void
+     * @param int|null $weekDay
+     * @return $this
      */
     public function setWeekday($weekDay)
     {
@@ -87,24 +88,25 @@ class LessonDay
         {
             throw new InvalidArgumentException('invalid type of argument: "weekDay"');
         }
-        $this->weekDay = $weekDay;
+        $this->dto->setWeekDay($weekDay);
+        return $this;
     }
 
     /**
      * Get Name.
      *
-     * @return string
+     * @return string|null
      */
     public function getName()
     {
-        return $this->name;
+        return $this->dto->getName();
     }
 
     /**
      * Set Name.
      *
-     * @param string $name
-     * @return void
+     * @param string|null $name
+     * @return $this
      */
     public function setName($name)
     {
@@ -112,24 +114,25 @@ class LessonDay
         {
             throw new InvalidArgumentException('invalid type of argument: "name"');
         }
-        $this->name = $name;
+        $this->dto->setName($name);
+        return $this;
     }
 
     /**
      * Get Lesson max count.
      *
-     * @return int
+     * @return int|null
      */
     public function getLessonMaxCount()
     {
-        return $this->lessonMaxCount;
+        return $this->dto->getLessonMaxCount();
     }
 
     /**
      * Set Lesson max count.
      *
      * @param int $lessonMaxCount
-     * @return void
+     * @return $this
      */
     public function setLessonMaxCount($lessonMaxCount)
     {
@@ -137,7 +140,8 @@ class LessonDay
         {
             throw new InvalidArgumentException('invalid type of argument: "lessonMaxCount"');
         }
-        $this->lessonMaxCount = $lessonMaxCount;
+        $this->dto->setLessonMaxCount($lessonMaxCount);
+        return $this;
     }
 
     /**

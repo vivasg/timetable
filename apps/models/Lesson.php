@@ -1,18 +1,11 @@
 <?php
 class Lesson
 {
-    private $id;
-    private $lessonDay;
-    private $lessonDayId;
-    private $lessonNumber;
-    private $schoolClass;
-    private $schoolClassId;
-    private $subject;
-    private $subjectId;
-    private $schoolRoom;
-    private $schoolRoomId;
-    private $teacher;
-    private $teacherId;
+    /**
+     * @var \Dto\Lesson
+     */
+    private $dto;
+
     const MAX_LESSON_NUMBER = '13';
     const MIN_LESSON_NUMBER = '0';
 
@@ -23,14 +16,14 @@ class Lesson
      */
     public function getTeacherId()
     {
-        return $this->teacherId;
+        return $this->dto->getTeacherId();
     }
 
     /**
      * Set Teacher id
      *
      * @param int $teacherId
-     * @return void
+     * @return $this
      */
     public function setTeacherId($teacherId)
     {
@@ -42,7 +35,8 @@ class Lesson
         {
             throw new OutOfRangeException('parameter "teacherId" can not be less than 0');
         }
-        $this->teacherId = $teacherId;
+        $this->dto->setTeacherId($teacherId);
+        return $this;
     }
 
     /**
@@ -52,14 +46,14 @@ class Lesson
      */
     public function getSchoolRoomId()
     {
-        return $this->schoolRoomId;
+        return $this->dto->getSchoolRoomId();
     }
 
     /**
      * Set School Room id
      *
      * @param int $schoolRoomId
-     * @return void
+     * @return $this
      */
     public function setSchoolRoomId($schoolRoomId)
     {
@@ -71,7 +65,8 @@ class Lesson
         {
             throw new OutOfRangeException('parameter "schoolRoomId" can not be less than 0');
         }
-        $this->schoolRoomId = $schoolRoomId;
+        $this->dto->setSchoolRoomId($schoolRoomId);
+        return $this;
     }
 
     /**
@@ -81,14 +76,14 @@ class Lesson
      */
     public function getSubjectId()
     {
-        return $this->subjectId;
+        return $this->dto->getSubjectId();
     }
 
     /**
      * Set Subject id
      *
      * @param int $subjectId
-     * @return void
+     * @return $this
      */
     public function setSubjectId($subjectId)
     {
@@ -100,7 +95,8 @@ class Lesson
         {
             throw new OutOfRangeException('parameter "subjectId" can not be less than 0');
         }
-        $this->subjectId = $subjectId;
+        $this->dto->setSubject($subjectId);
+        return $this;
     }
 
     /**
@@ -110,14 +106,14 @@ class Lesson
      */
     public function getSchoolClassId()
     {
-        return $this->schoolClassId;
+        return $this->dto->getSchoolClassId();
     }
 
     /**
      * Set School Class id
      *
      * @param int $schoolClassId
-     * @return void
+     * @return $this
      */
     public function setSchoolClassId($schoolClassId)
     {
@@ -129,7 +125,8 @@ class Lesson
         {
             throw new OutOfRangeException('parameter "schoolClassId" can not be less than 0');
         }
-        $this->schoolClassId = $schoolClassId;
+        $this->dto->setSchoolClassId($schoolClassId);
+        return $this;
     }
 
     /**
@@ -139,14 +136,14 @@ class Lesson
      */
     public function getLessonDayId()
     {
-        return $this->lessonDayId;
+        return $this->dto->getLessonDayId();
     }
 
     /**
      * Set Lesson Day id
      *
      * @param int $lessonDayId
-     * @return void
+     * @return $this
      */
     public function setLessonDayId($lessonDayId)
     {
@@ -158,7 +155,8 @@ class Lesson
         {
             throw new OutOfRangeException('parameter "lessonDayId" can not be less than 0');
         }
-        $this->lessonDayId = $lessonDayId;
+        $this->dto->setLessonDayId($lessonDayId);
+        return $this;
     }
 
     /**
@@ -168,14 +166,14 @@ class Lesson
      */
     public function getId()
     {
-        return $this->id;
+        return $this->dto->getId();
     }
 
     /**
      * Set id by Lesson
      *
      * @param int $id
-     * @return void
+     * @return $this
      */
     public function setId($id)
     {
@@ -187,7 +185,8 @@ class Lesson
         {
             throw new OutOfRangeException('parameter "id" can not be less than 0');
         }
-        $this->id = $id;
+        $this->dto->setId($id);
+        return $this;
     }
 
     /**
@@ -197,14 +196,14 @@ class Lesson
      */
     public function getLessonDay()
     {
-        return $this->lessonDay;
+        return $this->dto->getLessonDay();
     }
 
     /**
      * Set Lesson Day
      *
      * @param LessonDay $lessonDay
-     * @return void
+     * @return $this
      */
     public function setLessonDay($lessonDay)
     {
@@ -216,7 +215,8 @@ class Lesson
         {
             throw new InvalidArgumentException('invalid type parameter: "lessonDay"');
         }
-        $this->lessonDay = $lessonDay;
+        $this->dto->setLessonDay($lessonDay);
+        return $this;
     }
 
     /**
@@ -226,14 +226,14 @@ class Lesson
      */
     public function getLessonNumber()
     {
-        return $this->lessonNumber;
+        return $this->dto->getLessonNumber();
     }
 
     /**
      * Set Lesson Number
      *
      * @param int $lessonNumber
-     * @return void
+     * @return $this
      */
     public function setLessonNumber($lessonNumber)
     {
@@ -245,7 +245,8 @@ class Lesson
         {
             throw new OutOfRangeException('parameter "lessonNumber" can not be less than' . self::MIN_LESSON_NUMBER . 'ot greater than' . self::MAX_LESSON_NUMBER);
         }
-        $this->lessonNumber = $lessonNumber;
+        $this->dto->setLessonNumber($lessonNumber);
+        return $this;
     }
 
     /**
@@ -255,14 +256,14 @@ class Lesson
      */
     public function getSchoolClass()
     {
-        return $this->schoolClass;
+        return $this->dto->getSchoolClass();
     }
 
     /**
      * Set School Class
      *
      * @param SchoolClass $schoolClass
-     * @return void
+     * @return $this
      */
     public function setSchoolClass(SchoolClass $schoolClass)
     {
@@ -274,7 +275,8 @@ class Lesson
         {
             throw new InvalidArgumentException('invalid type of argument: "schoolClass"');
         }
-        $this->schoolClass = $schoolClass;
+        $this->dto->setSchoolClass($schoolClass);
+        return $this;
     }
 
     /**
@@ -284,14 +286,14 @@ class Lesson
      */
     public function getSchoolRoom()
     {
-        return $this->schoolRoom;
+        return $this->dto->getSchoolRoom();
     }
 
     /**
      * Set School Room
      *
      * @param SchoolRoom $schoolRoom
-     * @return void
+     * @return $this
      */
     public function setSchoolRoom($schoolRoom)
     {
@@ -299,7 +301,8 @@ class Lesson
         {
             throw new InvalidArgumentException('invalid type of argument: "schoolRoom"');
         }
-        $this->schoolRoom = $schoolRoom;
+        $this->dto->setSchoolRoom($schoolRoom);
+        return $this;
     }
 
     /**
@@ -309,14 +312,14 @@ class Lesson
      */
     public function getSubject()
     {
-        return $this->subject;
+        return $this->dto->getSubject();
     }
 
     /**
      * Set Subject
      *
      * @param Subject $subject
-     * @return void
+     * @return $this
      */
     public function setSubject($subject)
     {
@@ -328,7 +331,8 @@ class Lesson
         {
             throw new InvalidArgumentException('invalid type of argument: "subject"');
         }
-        $this->subject = $subject;
+        $this->dto->setSubject($subject);
+        return $this;
     }
 
     /**
@@ -338,14 +342,14 @@ class Lesson
      */
     public function getTeacher()
     {
-        return $this->teacher;
+        return $this->dto->getTeacher();
     }
 
     /**
      * Set Teacher
      *
      * @param Teacher $teacher
-     * @return void
+     * @return $this;
      */
     public function setTeacher($teacher)
     {
@@ -353,7 +357,8 @@ class Lesson
         {
             throw new InvalidArgumentException('invalid type of argument: "teacher"');
         }
-        $this->teacher = $teacher;
+        $this->dto->setTeacher($teacher);
+        return $this;
     }
 
     /**
