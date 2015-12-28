@@ -204,6 +204,8 @@ class puphpet_mariadb (
       $php_module = 'mysql'
     } elsif $::lsbdistcodename == 'lucid' or $::lsbdistcodename == 'squeeze' {
       $php_module = 'mysql'
+    } elsif $::osfamily == 'debian' and $php['settings']['version'] in ['7.0', '70'] {
+      $php_module = 'mysql'
     } else {
       $php_module = 'mysqlnd'
     }
@@ -235,9 +237,8 @@ class puphpet_mariadb (
     }
 
     class { 'puphpet::adminer':
-      location    => "${$adminer_webroot}/adminer",
-      owner       => 'www-data',
-      php_package => $php_package
+      location => "${$adminer_webroot}/adminer",
+      owner    => 'www-data'
     }
   }
 

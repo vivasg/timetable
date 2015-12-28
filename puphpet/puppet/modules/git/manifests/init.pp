@@ -8,8 +8,10 @@
 # Sample Usage:
 #  class { 'git': }
 #
-class git ($package_name = 'git') {
-  package { $package_name:
-    ensure => installed,
+class git {
+  if ! defined(Package['git']) {
+    package { 'git':
+      ensure => present
+    }
   }
 }

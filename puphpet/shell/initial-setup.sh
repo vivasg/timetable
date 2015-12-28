@@ -20,6 +20,12 @@ fi
 touch '/.puphpet-stuff/vagrant-core-folder.txt'
 echo "${VAGRANT_CORE_FOLDER}" > '/.puphpet-stuff/vagrant-core-folder.txt'
 
+if [[ ! -f '/.puphpet-stuff/init-apt-get-update' ]] && [[ "${OS}" == 'debian' || "${OS}" == 'ubuntu' ]]; then
+    apt-get update
+
+    touch '/.puphpet-stuff/init-apt-get-update'
+fi
+
 # Use Anacron to run `apt-get update` once a week to keep repos fresh
 if [[ ! -f '/.puphpet-stuff/anacron-installed' ]]; then
     if [ "${OS}" == 'debian' ] || [ "${OS}" == 'ubuntu' ]; then
@@ -50,7 +56,7 @@ fi
 
 # Digital Ocean seems to be missing iptables-persistent!
 # See https://github.com/puphpet/puphpet/issues/1575
-if [[ ! -f '/.puphpet-stuff/iptables-persistent-installed' ]] && [ "${OS}" == 'debian' ] || [ "${OS}" == 'ubuntu' ]; then
+if [[ ! -f '/.puphpet-stuff/iptables-persistent-installed' ]] && [[ "${OS}" == 'debian' || "${OS}" == 'ubuntu' ]]; then
     apt-get -y install iptables-persistent
 
     touch '/.puphpet-stuff/iptables-persistent-installed'

@@ -241,7 +241,7 @@ php:
                 security.limit_extensions: .php
                 user: www-user
                 group: www-data
-    composer: 1
+    composer: '1'
     composer_home: ''
 xdebug:
     install: '0'
@@ -283,6 +283,8 @@ python:
     versions: {  }
 nodejs:
     install: '0'
+    settings:
+        version: null
     npm_packages: {  }
 hhvm:
     install: '0'
@@ -300,7 +302,7 @@ hhvm:
         error_reporting: '-1'
         date.timezone: UTC
 mariadb:
-    install: '0'
+    install: '1'
     settings:
         version: '10.1'
         root_password: '1'
@@ -359,6 +361,8 @@ mongodb:
         auth: 1
         bind_ip: 127.0.0.1
         port: '27017'
+    globals:
+        version: 2.6.0
     databases: {  }
 redis:
     install: '0'
