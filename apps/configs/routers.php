@@ -1,6 +1,6 @@
 <?php
 
-$routers = new \Phalcon\Mvc\Router\Route();
+$routers = new \Phalcon\Mvc\Router();
 
 $frontend_routers = new \Phalcon\Mvc\Router\Group(['module' => 'frontend',]);
 

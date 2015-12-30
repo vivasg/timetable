@@ -7,7 +7,7 @@
 /** @var \Phalcon\Assets\Manager $this->assets */
 /** @var \Phalcon\Mvc\Router\Route $route_current */
 ?><!DOCTYPE html>
-<html lang="<?= $this->lang->getCurrent() ?>" xmlns="http://www.w3.org/1999/html">
+<html lang="uk" xmlns="http://www.w3.org/1999/html">
 <head>
 	<meta charset="utf-8" />
 	<base href="<?= $this->url->path($this->url->get()) ?>">
@@ -27,7 +27,7 @@
 		};
 	</script>
 	<?= $this->tag->javascriptInclude('//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js') ?>
-	<?= $this->tag->getTitle(), $this->tag->getDescription(), $this->tag->getKeywords() ?>
+	<?= $this->tag->getTitle() ?>
 </head>
 <body>
 	<?= $this->getContent() ?>
