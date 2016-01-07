@@ -40,7 +40,7 @@ class Teacher extends Model
 	 */
 	public function getNameFull()
 	{
-		// TODO: Реалізувати повне ім'я
+		return $this->name_first+" "+$this->name_middle+" "+$this->name_last;
 	}
 
 	/**
@@ -48,7 +48,7 @@ class Teacher extends Model
 	 */
 	public function getNameShort()
 	{
-		// TODO: Реалізувати призвище з ініалами
+		return $this->name_first+" "+$this->name_middle[0]+" "+$this->name_last[0];
 	}
 
 	/**

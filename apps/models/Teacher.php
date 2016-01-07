@@ -24,11 +24,11 @@ class Teacher
     {
         if(!is_int($id))
         {
-            throw new InvalidArgumentException('invalid type of argument: "id"');
+            throw new \InvalidArgumentException('invalid type of argument: "id"');
         }
         if($id < 0)
         {
-            throw new OutOfRangeException('parameter "id" can not be less than 0');
+            throw new \OutOfRangeException('parameter "id" can not be less than 0');
         }
         $this->id = $id;
     }
@@ -48,7 +48,7 @@ class Teacher
     {
         if(!is_string($name_first))
         {
-            throw new InvalidArgumentException('invalid type of argument: "firstName"');
+            throw new \InvalidArgumentException('invalid type of argument: "firstName"');
         }
         $this->firstName = $name_first;
     }
@@ -68,7 +68,7 @@ class Teacher
     {
         if(!is_string($name_last))
         {
-            throw new InvalidArgumentException('invalid type of argument: "lastName"');
+            throw new \InvalidArgumentException('invalid type of argument: "lastName"');
         }
         $this->lastName = $name_last;
     }
@@ -88,7 +88,7 @@ class Teacher
     {
         if(!is_string($name_middle))
         {
-            throw new InvalidArgumentException('invalid type of argument: "middleName"');
+            throw new \InvalidArgumentException('invalid type of argument: "middleName"');
         }
         $this->middleName = $name_middle;
     }

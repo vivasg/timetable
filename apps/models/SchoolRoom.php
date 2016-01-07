@@ -23,11 +23,11 @@ class SchoolRoom
     {
         if(!is_int($id))
         {
-            throw new InvalidArgumentException('invalid type of argument: "id"');
+            throw new \InvalidArgumentException('invalid type of argument: "id"');
         }
         if($id < 0)
         {
-            throw new OutOfRangeException('parameter "id" can not be less than 0');
+            throw new \OutOfRangeException('parameter "id" can not be less than 0');
         }
         $this->id = $id;
     }
@@ -49,7 +49,7 @@ class SchoolRoom
     {
         if(!is_string($name))
         {
-            throw new InvalidArgumentException('invalid type of argument: "name"');
+            throw new \InvalidArgumentException('invalid type of argument: "name"');
         }
         $this->name = $name;
     }
