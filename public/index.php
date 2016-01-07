@@ -10,9 +10,11 @@ use \Phalcon\Mvc\Application,
 $loader = new Loader();
 
 // Регистрируем папки с PSR-4
-$loader->register([
+$loader->registerDirs([
 	APPS_DIR . 'models',
 ]);
+
+$loader->register();
 
 $di = new Di();
 
@@ -25,7 +27,7 @@ $di->setShared('config', function()
 // Подключка в БД
 $di->setShared('db', function() use ($di)
 {
-	$db = new \Phalcon\Db\Adapter\Pdo\Mysql($di->config->database);
+	$db = new \Phalcon\Db\Adapter\Pdo\Mysql($di->getShared('config')->database->toArray());
 	return $db;
 });
 
@@ -63,6 +65,16 @@ $di->setShared('tag', function ()
 $di->setShared('response', function ()
 {
 	return new \Phalcon\Http\Response();
+});
+
+$di->setShared('modelsManager', function ()
+{
+	return new \Phalcon\Mvc\Model\Manager();
+});
+
+$di->setShared('modelsMetadata', function ()
+{
+	return new \Phalcon\Mvc\Model\MetaData\Memory();
 });
 
 // Для создания линков в т.ч. ЧПУ
