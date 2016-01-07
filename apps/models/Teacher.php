@@ -1,6 +1,8 @@
 <?php
 
 // TODO: допилить
+use \Dto\Teacher as Dto,
+    \Phalcon\Mvc\Model\Resultset\Simple;
 
 class Teacher
 {
@@ -93,8 +95,34 @@ class Teacher
         $this->middleName = $name_middle;
     }
 
-    public function __construct()
+    public function __construct(Dto $dto)
     {
+        $this->dto = $dto;
+    }
 
+    public static function findByName($names)
+    {
+        $parameters = [
+            'conditions' => 'name_first=:name: OR name_last=:name: OR name_middle=:name:',
+            'bind' => [
+                'name' => $names
+            ],
+        ];
+
+        /** @var Simple $tmp_teachers */
+        $tmp_teachers = Dto::find($parameters);
+        if ($tmp_teachers instanceof Simple && $tmp_teachers->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_teacher */
+            foreach ($tmp_teachers as $tmp_teacher)
+            {
+                $return[] = new Teacher($tmp_teacher);
+            }
+
+            return $return;
+        }
+        return null;
     }
 }
