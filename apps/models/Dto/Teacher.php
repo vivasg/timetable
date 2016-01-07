@@ -127,6 +127,11 @@ class Teacher extends Model
 		return $this;
 	}
 
+	public function getSource()
+	{
+		return 'teachers';
+	}
+
 	public function initialize()
 	{
 		$this->hasMany('id', '\Dto\Lesson', 'teacher_id', [
