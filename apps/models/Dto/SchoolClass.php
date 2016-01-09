@@ -10,9 +10,9 @@ use \Phalcon\Mvc\Model,
  * Class SchoolClass
  * @package Dto
  *
- * @variable \Dto\Lesson schoolClass
+ * @variable \Dto\Lesson lesson
  */
-class SchoolClass
+class SchoolClass extends Model
 {
     /**
      * @var int
@@ -69,6 +69,11 @@ class SchoolClass
         ]);
     }
 
+    public function getSource()
+    {
+        return 'school_classses';
+    }
+
     public function validation()
     {
         // Правила для id
@@ -80,15 +85,24 @@ class SchoolClass
         // Правила для name_first
         $this->validate(new PresenceOf([
             'field' => 'name',
-            'message' => 'Not name_first in model',
+            'message' => 'Not name in model',
         ]));
 
         $this->validate(new StringLength([
             'field' => 'name',
             'max' => 255,
             'min' => 1,
-            'messageMaximum' => 'name_first is to long',
-            'messageMinimum' => 'name_first is to short',
+            'messageMaximum' => 'name is to long',
+            'messageMinimum' => 'name is to short',
         ]));
 
     }
+
+    /**
+     * @param array|null $parameters
+     */
+    public function getLessons($parameters = null)
+    {
+        $this->getRelated('lessons', $parameters);
+    }
+}

@@ -1,4 +1,8 @@
 <?php
+
+use \Dto\SchoolClass as Dto,
+    \Phalcon\Mvc\Model\Resultset\Simple;
+
 class SchoolClass
 {
     /**
@@ -49,7 +53,34 @@ class SchoolClass
         $this->name = $name;
     }
 
-    public function __construct()
+    public function __construct(Dto $dto)
     {
+        $this->dto = $dto;
+    }
+
+    public static function findByName($names)
+    {
+        $parameters = [
+            'conditions' => 'name=:name:',
+            'bind' => [
+                'name' => $names
+            ],
+        ];
+
+        /** @var Simple $tmp_schoolclasses */
+        $tmp_schoolclasses = Dto::find($parameters);
+        if ($tmp_schoolclasses instanceof Simple && $tmp_schoolclasses->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_schoolclass */
+            foreach ($tmp_schoolclasses as $tmp_schoolclass)
+            {
+                $return[] = new SchoolClass($tmp_schoolclass);
+            }
+
+            return $return;
+        }
+        return null;
     }
 }

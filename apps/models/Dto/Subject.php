@@ -2,13 +2,15 @@
 
 namespace Dto;
 
-use \Phalcon\Mvc\Model;
+use \Phalcon\Mvc\Model,
+    Phalcon\Mvc\Model\Validator\PresenceOf,
+    Phalcon\Mvc\Model\Validator\StringLength;
 
 /**
  * Class Subject
  * @package Dto
  *
- * @variable \Dto\Lesson subject
+ * @variable \Dto\Lesson lessons
  */
 
 class Subject extends Model
@@ -21,7 +23,7 @@ class Subject extends Model
     /**
      * @var string
      */
-    private $name;
+    private $subject_name;
 
     /**
      * @return int
@@ -61,6 +63,11 @@ class Subject extends Model
         return $this;
     }
 
+    public function getSource()
+    {
+        return 'subjects';
+    }
+
     public function initialize()
     {
         $this->hasMany('id', '\Dto\Lesson', 'subject_id', [
@@ -79,15 +86,24 @@ class Subject extends Model
         // Правила для name_first
         $this->validate(new PresenceOf([
             'field' => 'name',
-            'message' => 'Not name_first in model',
+            'message' => 'Not name in model',
         ]));
 
         $this->validate(new StringLength([
             'field' => 'name',
             'max' => 255,
             'min' => 1,
-            'messageMaximum' => 'name_first is to long',
-            'messageMinimum' => 'name_first is to short',
+            'messageMaximum' => 'name is to long',
+            'messageMinimum' => 'name is to short',
         ]));
 
+    }
+
+    /**
+     * @param array|null $parameters
+     */
+    public function getLessons($parameters = null)
+    {
+        $this->getRelated('lessons', $parameters);
+    }
 }

@@ -10,7 +10,7 @@ use \Phalcon\Mvc\Model,
  * Class SchoolRoom
  * @package Dto
  *
- * @variable \Dto\Lesson schoolroom
+ * @variable \Dto\Lesson lesson
  */
 class SchoolRoom extends Model
 {
@@ -62,6 +62,11 @@ class SchoolRoom extends Model
         return $this;
     }
 
+    public function getSource()
+    {
+        return 'school_rooms';
+    }
+
     public function initialize()
     {
         $this->hasMany('id', '\Dto\Lesson', 'school_room_id', [
@@ -80,15 +85,24 @@ class SchoolRoom extends Model
         // Правила для name_first
         $this->validate(new PresenceOf([
             'field' => 'name',
-            'message' => 'Not name_first in model',
+            'message' => 'Not name in model',
         ]));
 
         $this->validate(new StringLength([
             'field' => 'name',
             'max' => 255,
             'min' => 1,
-            'messageMaximum' => 'name_first is to long',
-            'messageMinimum' => 'name_first is to short',
+            'messageMaximum' => 'name is to long',
+            'messageMinimum' => 'name is to short',
         ]));
 
     }
+
+    /**
+     * @param array|null $parameters
+     */
+    public function getLessons($parameters = null)
+    {
+        $this->getRelated('lessons', $parameters);
+    }
+}
