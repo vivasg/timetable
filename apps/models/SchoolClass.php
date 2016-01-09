@@ -6,7 +6,7 @@ use \Dto\SchoolClass as Dto,
 class SchoolClass
 {
     /**
-     * @var \Dto\SchoolClass
+     * @var Dto
      */
     private $dto;
 
@@ -29,7 +29,7 @@ class SchoolClass
         {
             throw new \OutOfRangeException('parameter "id" can not be less than 0');
         }
-        $this->id = $id;
+        $this->dto->setId($id);
     }
 
     /**
@@ -50,7 +50,7 @@ class SchoolClass
         {
             throw new \InvalidArgumentException('invalid type of argument: "name"');
         }
-        $this->name = $name;
+        $this->dto->setName($name);
     }
 
     public function __construct(Dto $dto)

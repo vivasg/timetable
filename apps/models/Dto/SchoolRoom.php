@@ -10,7 +10,7 @@ use \Phalcon\Mvc\Model,
  * Class SchoolRoom
  * @package Dto
  *
- * @variable \Dto\Lesson lesson
+ * @variable \Dto\Lesson $lessons
  */
 class SchoolRoom extends Model
 {

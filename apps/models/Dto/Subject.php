@@ -10,7 +10,7 @@ use \Phalcon\Mvc\Model,
  * Class Subject
  * @package Dto
  *
- * @variable \Dto\Lesson lessons
+ * @variable \Dto\Lesson $lessons
  */
 
 class Subject extends Model
