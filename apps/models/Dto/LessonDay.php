@@ -64,7 +64,7 @@ class LessonDay extends Model
     }
 
     /**
-     * @param LessonWeek $lessonWeek
+     * @param LessonWeek|null $lessonWeek
      * @return $this
      */
     public function setLessonWeek($lessonWeek)
@@ -96,10 +96,6 @@ class LessonDay extends Model
      */
     public function getWeekDay()
     {
-        if(is_null($this->weekDay))
-        {
-            getWeekDay();
-        }
         return $this->weekDay;
     }
 
@@ -149,9 +145,17 @@ class LessonDay extends Model
         return $this;
     }
 
+    public function getSource()
+    {
+        return 'lesson_days';
+    }
+
     public function initialize()
     {
-
+        $this->setSource('lesson_days');
+        $this->hasMany('id', '/Dto/Lesson', 'lesson_day_id', [
+            'alias' => 'lessons'
+        ]);
     }
 
     public function validation()
@@ -200,4 +204,9 @@ class LessonDay extends Model
             'message' => 'Not lessonMaxCount in model',
         ]));
     }
+
+    /** get name table
+     * @return string
+     */
+
 }

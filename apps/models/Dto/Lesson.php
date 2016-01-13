@@ -270,6 +270,12 @@ class Lesson extends Model
         return $this;
     }
 
+    public function initialize()
+    {
+        $this->setSource('lessons');
+        //$this->belongsTo('lessonDayId', 'LessonDay', 'id');
+    }
+
     public function validation()
     {
         //rules for id
@@ -358,4 +364,9 @@ class Lesson extends Model
         }
         return true; //what should return this method???
     }
+    public function getSource()
+    {
+        return 'lessons';
+    }
+
 }

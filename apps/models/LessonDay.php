@@ -1,4 +1,7 @@
 <?php
+
+use \Dto\LessonDay as Dto,
+    \Phalcon\Mvc\Model\Resultset\Simple;
 class LessonDay
 {
     /**
@@ -26,11 +29,11 @@ class LessonDay
     {
         if(!is_int($id))
         {
-            throw new InvalidArgumentException('parameter "id" can be integer');
+            throw new \InvalidArgumentException('parameter "id" can be integer');
         }
         if($id < 0)
         {
-            throw new OutOfRangeException('parameter "id" can not be less than 0');
+            throw new \OutOfRangeException('parameter "id" can not be less than 0');
         }
         $this->dto->setId($id);
         return $this;
@@ -56,11 +59,11 @@ class LessonDay
     {
         if(is_null($lessonWeek))
         {
-            throw new InvalidArgumentException('parameter "lessonWeek" is null');
+            throw new \InvalidArgumentException('parameter "lessonWeek" is null');
         }
         if(get_class($lessonWeek) != 'LessonWeek')
         {
-            throw new InvalidArgumentException('invalid type of argument: "lessonWeek"');
+            throw new \InvalidArgumentException('invalid type of argument: "lessonWeek"');
         }
         $this->dto->setLessonWeek($lessonWeek);
         return $this;
@@ -86,7 +89,7 @@ class LessonDay
     {
         if(!is_int($weekDay))
         {
-            throw new InvalidArgumentException('invalid type of argument: "weekDay"');
+            throw new \InvalidArgumentException('invalid type of argument: "weekDay"');
         }
         $this->dto->setWeekDay($weekDay);
         return $this;
@@ -112,7 +115,7 @@ class LessonDay
     {
         if(!is_string($name))
         {
-            throw new InvalidArgumentException('invalid type of argument: "name"');
+            throw new \InvalidArgumentException('invalid type of argument: "name"');
         }
         $this->dto->setName($name);
         return $this;
@@ -138,7 +141,7 @@ class LessonDay
     {
         if(!is_int($lessonMaxCount))
         {
-            throw new InvalidArgumentException('invalid type of argument: "lessonMaxCount"');
+            throw new \InvalidArgumentException('invalid type of argument: "lessonMaxCount"');
         }
         $this->dto->setLessonMaxCount($lessonMaxCount);
         return $this;
@@ -147,8 +150,98 @@ class LessonDay
     /**
      * LessonDay constructor.
      */
-    public function __construct()
+    public function __construct($dto)
     {
+        $this->dto = $dto;
+    }
 
+    /**Get Lesson Day by Id
+     * @param $id
+     * @return array|null
+     */
+    public static function findById($id)
+    {
+        $parameters = [
+            'conditions' => 'id=:id:',
+            'bind' => [
+                'id' => $id
+            ],
+        ];
+        return LessonDay::getMany($parameters, 1);
+    }
+
+    /**Select Lesson Day by Name
+     * @param $names
+     * @param int $count
+     * @return array|null
+     */
+    public static function findByName($names, $count = 100)
+    {
+        $parameters = [
+            'conditions' => 'name=:name:',
+            'bind' => [
+                'name' => $names
+            ],
+        ];
+        return LessonDay::getMany($parameters, $count);
+    }
+
+    /**Select Lesson Day by Week Day
+     * @param $weekDays
+     * @param int $count
+     * @return array|null
+     */
+    public static function findByWeekDay ($weekDays, $count = 100)
+    {
+        $parameters = [
+            'conditions' => 'wday=:wday:',
+            'bind' => [
+                'wday' => $weekDays
+            ],
+        ];
+        return LessonDay::getMany($parameters, $count);
+    }
+
+    /**Select Lesson Day by Lesson Max Count(per Day)
+     * @param $lessonMaxCounts
+     * @param int $count
+     * @return array|null
+     */
+    public static function findByLessonMaxCount($lessonMaxCounts, $count = 100)
+    {
+        $parameters = [
+            'conditions' => 'lesson_max_count=:value:',
+            'bind' => [
+                'value' => $lessonMaxCounts
+            ],
+        ];
+        return LessonDay::getMany($parameters, $count);
+    }
+
+    /**Return an array of the selected items
+     * @param $parameters
+     * @param $count
+     * @return array|null
+     */
+    public static function getMany($parameters, $count)
+    {
+        /** @var Simple $tmp_lesson_day */
+        $tmp_lesson_day = Dto::find($parameters);
+        if ($tmp_lesson_day instanceof Simple && $tmp_lesson_day->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_lesson_weeks */
+            foreach ($tmp_lesson_day as $tmp_lesson_day)
+            {
+                $return[] = new LessonDay($tmp_lesson_day);
+
+                $count--;
+                if($count == 0)break;
+            }
+
+            return $return;
+        }
+        return null;
     }
 }
