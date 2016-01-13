@@ -40,7 +40,7 @@ class Teacher extends Model
 	 */
 	public function getNameFull()
 	{
-		return $this->name_first . ' ' . $this->name_middle . ' ' . $this->name_last;
+		return $this->name_last . ' ' . $this->name_first . ' ' . $this->name_middle;
 	}
 
 	/**
@@ -48,7 +48,7 @@ class Teacher extends Model
 	 */
 	public function getNameShort()
 	{
-		return $this->name_first . ' ' . $this->name_middle[0] . ' ' . $this->name_last[0];
+		return $this->name_last . ' ' . substr($this->name_first,0,2) . '.' . substr($this->name_middle,0,2) . '.';
 	}
 
 	/**

@@ -20,6 +20,22 @@ class Teacher
     }
 
     /**
+     * @return string
+     */
+    public function getNameShort()
+    {
+        return $this->dto->getNameShort();
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameFull()
+    {
+        return $this->dto->getNameFull();
+    }
+
+    /**
      * @param int $id
      */
     public function setId($id)
@@ -100,6 +116,12 @@ class Teacher
         $this->dto = $dto;
     }
 
+    /**
+     * Search by argument names in the database
+     *
+     * @param string $names
+     * @return array|null
+     */
     public static function findByName($names)
     {
         $parameters = [

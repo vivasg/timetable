@@ -33,7 +33,7 @@ class SchoolRoom
         {
             throw new \OutOfRangeException('parameter "id" can not be less than 0');
         }
-        $this->id = $id;
+        $this->dto->setId($id);
     }
 
     /**
@@ -55,7 +55,7 @@ class SchoolRoom
         {
             throw new \InvalidArgumentException('invalid type of argument: "name"');
         }
-        $this->name = $name;
+        $this->dto->setName($name);
     }
 
     public function __construct(Dto $dto)
@@ -63,6 +63,12 @@ class SchoolRoom
         $this->dto = $dto;
     }
 
+    /**
+     * Search by argument names in the database
+     *
+     * @param string $names
+     * @return array|null
+     */
     public static function findByName($names)
     {
         $parameters = [

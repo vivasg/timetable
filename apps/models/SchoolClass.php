@@ -58,6 +58,12 @@ class SchoolClass
         $this->dto = $dto;
     }
 
+    /**
+     * Search by argument names in the database
+     *
+     * @param string $names
+     * @return array|null
+     */
     public static function findByName($names)
     {
         $parameters = [

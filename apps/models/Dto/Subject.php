@@ -23,7 +23,7 @@ class Subject extends Model
     /**
      * @var string
      */
-    private $subject_name;
+    private $name;
 
     /**
      * @return int
@@ -50,6 +50,22 @@ class Subject extends Model
     {
         $this->id = $value;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getShortestName()
+    {
+        return substr($this->name,0,8);
+    }
+
+    /**
+     * @return string
+     */
+    public function getShortName()
+    {
+        return substr($this->name,0,12) . '.';
     }
 
     /**

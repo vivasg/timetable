@@ -33,7 +33,7 @@ class Subject
         {
             throw new \OutOfRangeException('parameter "id" can not be less than 0');
         }
-        $this->id = $id;
+        $this->dto->setId($id);
     }
 
     /**
@@ -55,7 +55,7 @@ class Subject
         {
             throw new \InvalidArgumentException('invalid type of argument: "name"');
         }
-        $this->name = $name;
+        $this->dto->setName($name);
     }
 
     public function __construct(Dto $dto)
@@ -63,6 +63,28 @@ class Subject
         $this->dto = $dto;
     }
 
+    /**
+     * @return string
+     */
+    public function getShortestName()
+    {
+        return $this->dto->getShortestName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getShortName()
+    {
+        return $this->dto->getShortName();
+    }
+
+    /**
+     *Search by argument names in the database
+     *
+     * @param string $names
+     * @return array|null
+     */
     public static function findByName($names)
     {
         $parameters = [
