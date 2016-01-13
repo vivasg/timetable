@@ -32,7 +32,7 @@ class Teacher
         {
             throw new \OutOfRangeException('parameter "id" can not be less than 0');
         }
-        $this->id = $id;
+        $this->dto->setId($id);
     }
 
     /**
@@ -52,7 +52,7 @@ class Teacher
         {
             throw new \InvalidArgumentException('invalid type of argument: "firstName"');
         }
-        $this->firstName = $name_first;
+        $this->dto->setNameFirst($name_first);
     }
 
     /**
@@ -64,7 +64,7 @@ class Teacher
     }
 
     /**
-     * @param string $lastName
+     * @param string $name_last
      */
     public function setLastName($name_last)
     {
@@ -72,11 +72,11 @@ class Teacher
         {
             throw new \InvalidArgumentException('invalid type of argument: "lastName"');
         }
-        $this->lastName = $name_last;
+        $this->dto->setNameLast($name_last);
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getMiddleName()
     {
@@ -84,7 +84,7 @@ class Teacher
     }
 
     /**
-     * @param int $name_middle
+     * @param string $name_middle
      */
     public function setMiddleName($name_middle)
     {
@@ -92,7 +92,7 @@ class Teacher
         {
             throw new \InvalidArgumentException('invalid type of argument: "middleName"');
         }
-        $this->middleName = $name_middle;
+        $this->dto->setNameMiddle($name_middle);
     }
 
     public function __construct(Dto $dto)

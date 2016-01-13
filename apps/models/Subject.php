@@ -1,4 +1,8 @@
 <?php
+
+use \Dto\Subject as Dto,
+    \Phalcon\Mvc\Model\Resultset\Simple;
+
 class Subject
 {
     /**
@@ -54,7 +58,34 @@ class Subject
         $this->name = $name;
     }
 
-    public function __construct()
+    public function __construct(Dto $dto)
     {
+        $this->dto = $dto;
+    }
+
+    public static function findByName($names)
+    {
+        $parameters = [
+            'conditions' => 'name=:name:',
+            'bind' => [
+                'name' => $names
+            ],
+        ];
+
+        /** @var Simple $tmp_subjects */
+        $tmp_subjects = Dto::find($parameters);
+        if ($tmp_subjects instanceof Simple && $tmp_subjects->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_subject */
+            foreach ($tmp_subjects as $tmp_subject)
+            {
+                $return[] = new Subject($tmp_subject);
+            }
+
+            return $return;
+        }
+        return null;
     }
 }
