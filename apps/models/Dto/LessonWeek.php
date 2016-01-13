@@ -9,7 +9,7 @@ use Phalcon\Validation\Validator\PresenceOf;
  * Class LessonWeek
  * @package Dto
  *
- * @variable \Dto\LessonDay lessonDays
+ * @variable \Dto\LessonWeek LessonWeeks
  */
 class LessonWeek extends Model
 {
@@ -133,5 +133,13 @@ class LessonWeek extends Model
     public function getLessons($parameters = null)
     {
         $this->getRelated('lessons', $parameters);
+    }
+
+    /** get name table
+     * @return string
+     */
+    public function getSource()
+    {
+        return 'lesson_weeks';
     }
 }
