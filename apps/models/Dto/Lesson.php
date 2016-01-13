@@ -5,16 +5,19 @@ namespace Dto;
 use \Phalcon\Mvc\Model,
     Phalcon\Mvc\Model\Validator\PresenceOf;
 
+/**
+ * Class Lesson
+ * @package Dto
+ * @property \Dto\LessonDay $day
+ * @property \Dto\SchoolClass $class
+ */
 class Lesson extends Model
 {
     /**
      * @var int
      */
     private $id;
-    /**
-     * @var LessonDay
-     */
-    private $lessonDay;
+
     /**
      * @var int
      */
@@ -84,7 +87,7 @@ class Lesson extends Model
      */
     public function getLessonDay()
     {
-        return $this->lessonDay;
+        return $this->day;
     }
 
     /**
@@ -273,7 +276,12 @@ class Lesson extends Model
     public function initialize()
     {
         $this->setSource('lessons');
-        //$this->belongsTo('lessonDayId', 'LessonDay', 'id');
+        $this->belongsTo('lesson_day_id', 'Dto\LessonDay', 'id', [
+            'alias' => 'day',
+        ]);
+        $this->belongsTo('school_class_id', 'Dto\SchoolClass', 'id', [
+            'alias' => 'class',
+        ]);
     }
 
     public function validation()

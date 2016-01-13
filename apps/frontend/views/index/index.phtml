@@ -3,3 +3,10 @@
 $teachers = Teacher::findByName('Микола');
 
 var_dump($teachers[0]->getFirstName());
+
+
+/** @var Lesson $lesson */
+$lesson = Lesson::findById(3);
+var_dump(get_class($lesson));
+var_dump(get_class($lesson->getLessonDay()));
+var_dump($lesson->getLessonDay()->getName());

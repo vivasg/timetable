@@ -200,7 +200,7 @@ class Lesson
      */
     public function getLessonDay()
     {
-        return $this->dto->getLessonDay();
+        return new \LessonDay($this->dto->getLessonDay());
     }
 
     /**
@@ -384,7 +384,7 @@ class Lesson
                 'id' => $id
             ],
         ];
-        return Lesson::getMany($parameters, 1);
+        return Lesson::getOne($parameters);
     }
     public static function findByTeacherId($teacherId, $count = 100)
     {
@@ -420,6 +420,21 @@ class Lesson
             }
 
             return $return;
+        }
+        return null;
+    }
+
+    /** Return an array of the selected items
+     * @param $parameters
+     * @return Lesson
+     */
+    public static function getOne($parameters)
+    {
+        /** @var Dto $tmp_lesson */
+        $tmp_lesson = Dto::findFirst($parameters);
+        if ($tmp_lesson instanceof Dto)
+        {
+            return new Lesson($tmp_lesson);
         }
         return null;
     }
