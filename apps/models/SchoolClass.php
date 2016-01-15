@@ -53,6 +53,10 @@ class SchoolClass
         $this->dto->setName($name);
     }
 
+    /**
+     * SchoolClass constructor.
+     * @param Dto $dto
+     */
     public function __construct(Dto $dto)
     {
         $this->dto = $dto;
@@ -70,6 +74,36 @@ class SchoolClass
             'conditions' => 'name=:name:',
             'bind' => [
                 'name' => $names
+            ],
+        ];
+
+        /** @var Simple $tmp_schoolclasses */
+        $tmp_schoolclasses = Dto::find($parameters);
+        if ($tmp_schoolclasses instanceof Simple && $tmp_schoolclasses->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_schoolclass */
+            foreach ($tmp_schoolclasses as $tmp_schoolclass)
+            {
+                $return[] = new SchoolClass($tmp_schoolclass);
+            }
+
+            return $return;
+        }
+        return null;
+    }
+
+    /**
+     * @param $id
+     * @return array|null
+     */
+    public static function findById($id)
+    {
+        $parameters = [
+            'conditions' => 'id=:id:',
+            'bind' => [
+                'id' => $id
             ],
         ];
 

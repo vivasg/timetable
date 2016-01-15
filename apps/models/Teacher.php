@@ -54,7 +54,7 @@ class Teacher
     /**
      * @return string
      */
-    public function getFirstName()
+    public function getNameFirst()
     {
         return $this->dto->getNameFirst();
     }
@@ -62,7 +62,7 @@ class Teacher
     /**
      * @param string $name_first
      */
-    public function setFirstName($name_first)
+    public function setNameFirst($name_first)
     {
         if(!is_string($name_first))
         {
@@ -74,7 +74,7 @@ class Teacher
     /**
      * @return string
      */
-    public function getLastName()
+    public function getNameLast()
     {
         return $this->dto->getNameLast();
     }
@@ -82,7 +82,7 @@ class Teacher
     /**
      * @param string $name_last
      */
-    public function setLastName($name_last)
+    public function setNameLast($name_last)
     {
         if(!is_string($name_last))
         {
@@ -94,7 +94,7 @@ class Teacher
     /**
      * @return string
      */
-    public function getMiddleName()
+    public function getNameMiddle()
     {
         return $this->dto->getNameMiddle();
     }
@@ -102,7 +102,7 @@ class Teacher
     /**
      * @param string $name_middle
      */
-    public function setMiddleName($name_middle)
+    public function setNameMiddle($name_middle)
     {
         if(!is_string($name_middle))
         {
@@ -114,6 +114,36 @@ class Teacher
     public function __construct(Dto $dto)
     {
         $this->dto = $dto;
+    }
+
+    /**
+     * @param $id
+     * @return array|null
+     */
+    public static function findById($id)
+    {
+        $parameters = [
+            'conditions' => 'id=:id:',
+            'bind' => [
+                'id' => $id
+            ],
+        ];
+
+        /** @var Simple $tmp_teachers */
+        $tmp_teachers = Dto::find($parameters);
+        if ($tmp_teachers instanceof Simple && $tmp_teachers->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_teacher */
+            foreach ($tmp_teachers as $tmp_teacher)
+            {
+                $return[] = new Teacher($tmp_teacher);
+            }
+
+            return $return;
+        }
+        return null;
     }
 
     /**

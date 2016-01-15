@@ -94,4 +94,34 @@ class SchoolRoom
         }
         return null;
     }
+
+    /**
+     * @param $id
+     * @return array|null
+     */
+    public static function findById($id)
+    {
+        $parameters = [
+            'conditions' => 'id=:id:',
+            'bind' => [
+                'id' => $id
+            ],
+        ];
+
+        /** @var Simple $tmp_schoolrooms */
+        $tmp_schoolrooms = Dto::find($parameters);
+        if ($tmp_schoolrooms instanceof Simple && $tmp_schoolrooms->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_schoolroom */
+            foreach ($tmp_schoolrooms as $tmp_schoolroom)
+            {
+                $return[] = new SchoolRoom($tmp_schoolroom);
+            }
+
+            return $return;
+        }
+        return null;
+    }
 }
