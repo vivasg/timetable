@@ -90,6 +90,10 @@ class Teacher extends Model
 	 */
 	public function setId($value)
 	{
+		if(!is_int($value))
+		{
+			throw new \InvalidArgumentException('invalid type of argument: "id"');
+		}
 		$this->id = $value;
 		return $this;
 	}
@@ -101,6 +105,10 @@ class Teacher extends Model
 	 */
 	public function setNameFirst($value)
 	{
+		if(!is_string($value))
+		{
+			throw new \InvalidArgumentException('invalid type of argument: "firstName"');
+		}
 		$this->name_first = $value;
 		return $this;
 	}
@@ -112,6 +120,10 @@ class Teacher extends Model
 	 */
 	public function setNameLast($value)
 	{
+		if(!is_string($value))
+		{
+			throw new \InvalidArgumentException('invalid type of argument: "lastName"');
+		}
 		$this->name_last = $value;
 		return $this;
 	}
@@ -123,6 +135,10 @@ class Teacher extends Model
 	 */
 	public function setNameMiddle($value)
 	{
+		if(!is_string($value))
+		{
+			throw new \InvalidArgumentException('invalid type of argument: "middleName"');
+		}
 		$this->name_middle = $value;
 		return $this;
 	}
@@ -193,6 +209,8 @@ class Teacher extends Model
 		{
 			return false;
 		}
+
+		return true;
 	}
 
 	/**

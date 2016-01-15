@@ -47,6 +47,10 @@ class SchoolRoom extends Model
      */
     public function setId($value)
     {
+        if(!is_int($value))
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "id"');
+        }
         $this->id = $value;
         return $this;
     }
@@ -58,6 +62,10 @@ class SchoolRoom extends Model
      */
     public function setName($value)
     {
+        if(!is_string($value))
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "name"');
+        }
         $this->name = $value;
         return $this;
     }
@@ -82,7 +90,7 @@ class SchoolRoom extends Model
             'message' => 'Not id in model',
         ]));
 
-        // Правила для name_first
+        // Правила для name
         $this->validate(new PresenceOf([
             'field' => 'name',
             'message' => 'Not name in model',
@@ -95,6 +103,13 @@ class SchoolRoom extends Model
             'messageMaximum' => 'name is to long',
             'messageMinimum' => 'name is to short',
         ]));
+
+        if ($this->validationHasFailed() == true)
+        {
+            return false;
+        }
+
+        return true;
 
     }
 

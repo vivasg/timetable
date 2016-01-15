@@ -40,10 +40,6 @@ class Teacher
      */
     public function setId($id)
     {
-        if(!is_int($id))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "id"');
-        }
         if($id < 0)
         {
             throw new \OutOfRangeException('parameter "id" can not be less than 0');
@@ -64,10 +60,6 @@ class Teacher
      */
     public function setNameFirst($name_first)
     {
-        if(!is_string($name_first))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "firstName"');
-        }
         $this->dto->setNameFirst($name_first);
     }
 
@@ -84,10 +76,6 @@ class Teacher
      */
     public function setNameLast($name_last)
     {
-        if(!is_string($name_last))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "lastName"');
-        }
         $this->dto->setNameLast($name_last);
     }
 
@@ -104,10 +92,6 @@ class Teacher
      */
     public function setNameMiddle($name_middle)
     {
-        if(!is_string($name_middle))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "middleName"');
-        }
         $this->dto->setNameMiddle($name_middle);
     }
 

@@ -25,10 +25,6 @@ class SchoolRoom
      */
     public function setId($id)
     {
-        if(!is_int($id))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "id"');
-        }
         if($id < 0)
         {
             throw new \OutOfRangeException('parameter "id" can not be less than 0');
@@ -51,10 +47,6 @@ class SchoolRoom
      */
     public function setName($name)
     {
-        if(!is_string($name))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "name"');
-        }
         $this->dto->setName($name);
     }
 
