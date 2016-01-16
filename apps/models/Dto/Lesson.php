@@ -10,6 +10,9 @@ use \Phalcon\Mvc\Model,
  * @package Dto
  * @property \Dto\LessonDay $day
  * @property \Dto\SchoolClass $class
+ * @property \Dto\Subject $subject
+ * @property \Dto\SchoolRoom $room
+ * @property \Dto\Teacher $teacher
  */
 class Lesson extends Model
 {
@@ -27,33 +30,17 @@ class Lesson extends Model
      */
     private $lessonNumber;
     /**
-     * @var SchoolClass
-     */
-    private $schoolClass;
-    /**
      * @var int
      */
     private $schoolClassId;
-    /**
-     * @var Subject
-     */
-    private $subject;
     /**
      * @var int
      */
     private $subjectId;
     /**
-     * @var SchoolRoom
-     */
-    private $schoolRoom;
-    /**
      * @var int
      */
     private $schoolRoomId;
-    /**
-     * @var Teacher
-     */
-    private $teacher;
     /**
      * @var int
      */
@@ -97,7 +84,7 @@ class Lesson extends Model
      */
     public function setLessonDay($lessonDay)
     {
-        $this->lessonDay = $lessonDay;
+        $this->day = $lessonDay;
         return $this;
     }
 
@@ -142,10 +129,10 @@ class Lesson extends Model
      */
     public function getSchoolClass()
     {
-        if(is_null($this->schoolClass))
+        if(is_null($this->class))
         {
         }
-        return $this->schoolClass;
+        return $this->class;
     }
 
     /**
@@ -154,7 +141,7 @@ class Lesson extends Model
      */
     public function setSchoolClass($schoolClass)
     {
-        $this->schoolClass = $schoolClass;
+        $this->class = $schoolClass;
         return $this;
     }
 
@@ -206,7 +193,7 @@ class Lesson extends Model
      */
     public function getSchoolRoom()
     {
-        return $this->schoolRoom;
+        return $this->room;
     }
 
     /**
@@ -215,7 +202,7 @@ class Lesson extends Model
      */
     public function setSchoolRoom($schoolRoom)
     {
-        $this->schoolRoom = $schoolRoom;
+        $this->room = $schoolRoom;
         return $this;
     }
 
@@ -281,6 +268,15 @@ class Lesson extends Model
         ]);
         $this->belongsTo('school_class_id', 'Dto\SchoolClass', 'id', [
             'alias' => 'class',
+        ]);
+        $this->belongsTo('subject_id', 'Dto\Subject', 'id', [
+            'alias' => 'subject',
+        ]);
+        $this->belongsTo('school_room_id', 'Dto\SchoolRoom', 'id', [
+            'alias' => 'room',
+        ]);
+        $this->belongsTo('teacher_id', 'Dto\Teacher', 'id', [
+            'alias' => 'teacher',
         ]);
     }
 

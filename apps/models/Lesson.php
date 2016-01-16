@@ -260,7 +260,7 @@ class Lesson
      */
     public function getSchoolClass()
     {
-        return $this->dto->getSchoolClass();
+        return new \SchoolClass($this->dto->getSchoolClass());
     }
 
     /**
@@ -290,7 +290,7 @@ class Lesson
      */
     public function getSchoolRoom()
     {
-        return $this->dto->getSchoolRoom();
+        return new \SchoolRoom($this->dto->getSchoolRoom());
     }
 
     /**
@@ -316,7 +316,7 @@ class Lesson
      */
     public function getSubject()
     {
-        return $this->dto->getSubject();
+        return new \Subject($this->dto->getSubject());
     }
 
     /**
@@ -346,7 +346,7 @@ class Lesson
      */
     public function getTeacher()
     {
-        return $this->dto->getTeacher();
+        return new \Teacher($this->dto->getTeacher());
     }
 
     /**
@@ -370,13 +370,19 @@ class Lesson
         $this->dto = $dto;
     }
 
-    /**
-     * @param $id
-     * @param int $count
+    /**find all Lessons
      * @return array|null
      */
+    public static function find()
+    {
+        return  Lesson::getMany(null);
+    }
 
-    public static function findById($id, $count = 100)
+    /** find Lesson by id
+     * @param int $id
+     * @return Lesson|null
+     */
+    public static function findById($id)
     {
         $parameters = [
             'conditions' => 'id=:id:',
@@ -386,7 +392,56 @@ class Lesson
         ];
         return Lesson::getOne($parameters);
     }
-    public static function findByTeacherId($teacherId, $count = 100)
+
+    /**find Lessons by Lesson Day id
+     * @param int $lessonDayId
+     * @return array|null
+     */
+    public static function findByLessonDayId($lessonDayId)
+    {
+            $parameters = [
+                'conditions' => 'lesson_day_id=:id:',
+                'bind' => [
+                    'id' => $lessonDayId
+                ],
+            ];
+            return Lesson::getMany($parameters);
+    }
+
+    /**find Lessons by School Room id
+     * @param int $schoolRoomId
+     * @return array|null
+     */
+    public static function findBySchoolRoomId($schoolRoomId)
+    {
+        $parameters = [
+            'conditions' => 'lesson_day_id=:id:',
+            'bind' => [
+                'id' => $schoolRoomId
+            ],
+        ];
+        return Lesson::getMany($parameters);
+    }
+
+    /**find by Lessons Subject id
+     * @param int $subjectId
+     * @return array|null
+     */
+    public static function findBySubjectId($subjectId)
+    {
+        $parameters = [
+            'conditions' => 'subject_id=:id:',
+            'bind' => [
+                'id' => $subjectId
+            ],
+        ];
+        return Lesson::getMany($parameters);
+    }
+    /**find Lessons by Teacher id
+     * @param int $teacherId
+     * @return Lesson
+     */
+    public static function findByTeacherId($teacherId)
     {
         $parameters = [
             'conditions' => 'teacher_id=:teacher_id:',
@@ -394,15 +449,14 @@ class Lesson
                 'teacher_id' => $teacherId
             ],
         ];
-        return Lesson::getMany($parameters, 1);
+        return Lesson::getMany($parameters);
     }
 
     /** Return an array of the selected items
      * @param $parameters
-     * @param $count
      * @return array|null
      */
-    public static function getMany($parameters, $count)
+    public static function getMany($parameters)
     {
         /** @var Simple $tmp_lesson */
         $tmp_lessons = Dto::find($parameters);
@@ -414,9 +468,6 @@ class Lesson
             foreach ($tmp_lessons as $tmp_lesson)
             {
                 $return[] = new Lesson($tmp_lesson);
-
-                $count--;
-                if($count == 0)break;
             }
 
             return $return;
@@ -424,9 +475,9 @@ class Lesson
         return null;
     }
 
-    /** Return an array of the selected items
+    /** Return an element of the selected item
      * @param $parameters
-     * @return Lesson
+     * @return Lesson|null
      */
     public static function getOne($parameters)
     {

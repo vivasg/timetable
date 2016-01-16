@@ -97,7 +97,7 @@ class LessonDay
 
     /**
      * Get Name.
-     *
+
      * @return string|null
      */
     public function getName()
@@ -167,7 +167,7 @@ class LessonDay
                 'id' => $id
             ],
         ];
-        return LessonDay::getMany($parameters, 1);
+        return LessonDay::getOne($parameters);
     }
 
     /**Select Lesson Day by Name
@@ -175,7 +175,7 @@ class LessonDay
      * @param int $count
      * @return array|null
      */
-    public static function findByName($names, $count = 100)
+    public static function findByName($names)
     {
         $parameters = [
             'conditions' => 'name=:name:',
@@ -183,7 +183,7 @@ class LessonDay
                 'name' => $names
             ],
         ];
-        return LessonDay::getMany($parameters, $count);
+        return LessonDay::getMany($parameters);
     }
 
     /**Select Lesson Day by Week Day
@@ -191,7 +191,7 @@ class LessonDay
      * @param int $count
      * @return array|null
      */
-    public static function findByWeekDay ($weekDays, $count = 100)
+    public static function findByWeekDay ($weekDays)
     {
         $parameters = [
             'conditions' => 'wday=:wday:',
@@ -199,7 +199,7 @@ class LessonDay
                 'wday' => $weekDays
             ],
         ];
-        return LessonDay::getMany($parameters, $count);
+        return LessonDay::getMany($parameters);
     }
 
     /**Select Lesson Day by Lesson Max Count(per Day)
@@ -207,7 +207,7 @@ class LessonDay
      * @param int $count
      * @return array|null
      */
-    public static function findByLessonMaxCount($lessonMaxCounts, $count = 100)
+    public static function findByLessonMaxCount($lessonMaxCounts)
     {
         $parameters = [
             'conditions' => 'lesson_max_count=:value:',
@@ -215,7 +215,7 @@ class LessonDay
                 'value' => $lessonMaxCounts
             ],
         ];
-        return LessonDay::getMany($parameters, $count);
+        return LessonDay::getMany($parameters);
     }
 
     /**Return an array of the selected items
@@ -223,7 +223,7 @@ class LessonDay
      * @param $count
      * @return array|null
      */
-    public static function getMany($parameters, $count)
+    public static function getMany($parameters)
     {
         /** @var Simple $tmp_lesson_day */
         $tmp_lesson_day = Dto::find($parameters);
@@ -235,12 +235,24 @@ class LessonDay
             foreach ($tmp_lesson_day as $tmp_lesson_day)
             {
                 $return[] = new LessonDay($tmp_lesson_day);
-
-                $count--;
-                if($count == 0)break;
             }
 
             return $return;
+        }
+        return null;
+    }
+
+    /** Return an element of the selected item
+     * @param $parameters
+     * @return Lesson|null
+     */
+    public static function getOne($parameters)
+    {
+        /** @var Dto $tmp_lesson */
+        $tmp_lesson_day = Dto::findFirst($parameters);
+        if ($tmp_lesson_day instanceof Dto)
+        {
+            return new Lesson($tmp_lesson);
         }
         return null;
     }
