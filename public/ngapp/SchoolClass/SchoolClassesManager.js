@@ -44,7 +44,7 @@ function SchoolClassesManager($http, $q) {
                     return instance;
                 }
 
-                return response.status; //$q.reject(response.status) ??
+                $q.reject(response.status);
             }); //do we nee new then?
     };
     /**DELETE. Sends ID to server -> Server looks for instance with this ID -> server returns result*/
@@ -55,7 +55,7 @@ function SchoolClassesManager($http, $q) {
                     delete thisClass._cashPool[id];
                 }
 
-                return response.status; //$q.reject(response.status) ??
+                $q.reject(response.status);
             }); //do we nee new then?
     };
     /** copy all instances from server to _cashPool*/
@@ -74,7 +74,7 @@ function SchoolClassesManager($http, $q) {
                     thisClass._fillPool(responce.data);
                 }
 
-                return response.status; //$q.reject(response.status) ??
+                $q.reject(response.status);
             }); //do we nee new then?
     };
     /** GET. Sends ID to server -> Server looks for instance with this ID -> server returns result*/
@@ -87,7 +87,7 @@ function SchoolClassesManager($http, $q) {
                     return instance;
                 }
 
-                return response.status; //$q.reject(response.status) ??
+                $q.reject(response.status);
             }); //do we nee new then?
     };
     /**POST. Sends object to server -> Server looks for instance with this ID -> server changes object in DB -> server sends back the object*/
@@ -98,7 +98,7 @@ function SchoolClassesManager($http, $q) {
                     thisClass._cashPool[responce.data.id] = responce.data;
                 }
 
-                return response.status; //$q.reject(response.status) ??
+                $q.reject(response.status);
             }); //do we nee new then?
     };
 
