@@ -102,7 +102,7 @@ class Teacher
 
     /**
      * @param $id
-     * @return array|null
+     * @return Teacher|null
      */
     public static function findById($id)
     {
@@ -113,19 +113,11 @@ class Teacher
             ],
         ];
 
-        /** @var Simple $tmp_teachers */
-        $tmp_teachers = Dto::find($parameters);
-        if ($tmp_teachers instanceof Simple && $tmp_teachers->count() > 0)
+        /** @var Dto $tmp_teacher */
+        $tmp_teacher = Dto::findFirst($parameters);
+        if ($tmp_teacher instanceof Dto)
         {
-            $return = [];
-
-            /** @var Dto $tmp_teacher */
-            foreach ($tmp_teachers as $tmp_teacher)
-            {
-                $return[] = new Teacher($tmp_teacher);
-            }
-
-            return $return;
+           return new Teacher($tmp_teacher);
         }
         return null;
     }
