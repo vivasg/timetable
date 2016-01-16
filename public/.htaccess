@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^api/((?s).*)$ rest.php?_url=/$1 [L,QSA]
