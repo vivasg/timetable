@@ -1,0 +1,132 @@
+@import "bootstrap/bootstrap.less";
+
+// Vars
+@grid-gutter-width:         30px;
+// Mixins
+.mixForSmallResolution(){
+  label{
+    font-size: small;
+  }
+
+  input[type="text"]::-webkit-input-placeholder {
+    font-size: small;
+  }
+}
+
+.mixColumnStyle(@xs, @sm, @md, @lg, @gutter: 30px){
+  .make-xs-column(@xs, @gutter);
+  .make-sm-column(@sm, @gutter);
+  .make-md-column(@md, @gutter);
+  .make-lg-column(@lg, @gutter);
+}
+
+.mixColumnOffset(@xs, @sm, @md, @lg) {
+  .make-xs-column-offset(@xs);
+  .make-sm-column-offset(@sm);
+  .make-md-column-offset(@md);
+  .make-lg-column-offset(@lg);
+}
+// Common styles
+label:after {
+  content: "*";
+  color: red;
+}
+
+//MEDIA
+
+//Less override
+
+//main form resizing
+.mainFormWrapper{
+  .mixColumnStyle(12, 10, 10, 8);
+  .make-sm-column-offset(1);
+  .make-md-column-offset(1);
+  .make-lg-column-offset(2);
+}
+
+//my style for control-label (override)
+.form-horizontal {
+  .form-group {
+    .make-row(30px);
+  }
+  .control-label {
+    .hidden-xs;
+    .make-sm-column(12, 30px);
+    .make-md-column(12, 30px);
+    .make-lg-column(3, 30px);
+    @media (min-width: @screen-sm-min) and (max-width: @screen-lg-min){
+      .text-left;
+    }
+    &.birthLabel {
+      display: block !important;
+    }
+  }
+}
+
+.control-input-foo {
+  .mixColumnStyle(12, 12, 12, 9);
+  @media (max-width: @screen-sm-min) {
+    .mixForSmallResolution();
+  }
+}
+//Nick names Input style
+.nickInput{
+  .mixColumnStyle(12, 12, 6, 4);
+  @media (max-width: @screen-sm-min) {
+    .mixForSmallResolution();
+  }
+}
+
+.lowerPaddingClass {
+  padding-bottom: 15px;
+  @media (min-width: @screen-md-min) {
+    padding-bottom: 0;
+  }
+}
+
+.birthDateInput{
+  .mixColumnStyle(4, 4, 4, 3);
+}
+
+//Button style
+.btn_submit_style{
+  .text-center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

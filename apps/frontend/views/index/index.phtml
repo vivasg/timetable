@@ -1,12 +1,30 @@
-<?php
-
-$teachers = Teacher::findByName('Микола');
-
-var_dump($teachers[0]->getFirstName());
-
-
-/** @var Lesson $lesson */
-$lesson = Lesson::findById(3);
-var_dump(get_class($lesson));
-var_dump(get_class($lesson->getLessonDay()));
-var_dump($lesson->getLessonDay()->getName());
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MyBootStrapReg</title>
+    <meta charset="utf-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/style.less" rel="stylesheet/less">
+    <script>
+        less = {
+            env: "development",
+            async: false,
+            fileAsync: false,
+            poll: 1000,
+            functions: {},
+            dumpLineNumbers: "comments",
+            relativeUrls: false,
+            rootpath: ":/less/"
+        };
+    </script>
+    <script src="js/less.js" type="text/javascript"></script>
+</head>
+<body>
+<div class="container">
+    
+</div>
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/myScript.js"></script>
+</body>
+</html>
