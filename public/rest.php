@@ -22,6 +22,7 @@ function make_response_data($data)
 			'self' => $app->url->path($app->request->getURI()),
 		],
 		'data' => $data,
+		'meta' => make_response_meta(),
 	];
 
 	return $response;
@@ -56,8 +57,74 @@ function make_response_meta()
 		],
 	];
 }
+function get_responce_data_per_many($teachers)
+{
+	$data = [];
+	/**@var Teacher $teacher*/
+	foreach($teachers as $teacher)
+	{
+		$data[] = [
+			'type' => 'teacher',
+			'id' => $teacher->getId(),
+			'attributes' => [
+				'name_first' => $teacher->getNameFirst(),
+				'name_middle' => $teacher->getNameMiddle(),
+				'name_last' => $teacher->getNameLast(),
+			]];
+	}
+	return $data;
+}
 
-$app->get('/teacher/{teacher_id}', function($teacher_id)
+/**Get all Teachers*/
+$app->get('/teachers', function()
+{
+	$response = new Response();
+	$response->setContentType('application/vnd.api+json');
+
+	$teachers = Teacher::find(); // TODO: метод find() в класе Teacher для возврата всех учителей
+
+	if($teachers)
+	{
+		$data = get_responce_data($teachers);
+
+		$response->setJsonContent(make_response_data($data));
+		$response->setStatusCode(200, 'FINDED');
+	}
+	else
+	{
+		$response->setJsonContent(make_response_error(404, 'Not found', 'Елементів не знайдено', 'Викладачів в базі не знайдено'));
+		$response->setStatusCode(404, 'NOT FOUND');
+	}
+
+	return $response;
+});
+
+/**Search Teachers by Name*/
+$app->get('/teachers/search/{name}', function($name)
+{
+	$response = new Response();
+	$response->setContentType('application/vnd.api+json');
+
+	$teachers = Teacher::findByName($name);
+
+	if ($teachers)
+	{
+		$data = get_responce_data($teachers);
+
+		$response->setJsonContent(make_response_data($data));
+		$response->setStatusCode(200, 'FINDED');
+	}
+	else
+	{
+		$response->setJsonContent(make_response_error(404, 'Not found', 'Елемент не знайдено', 'Викладача з ім\'ям ' . $name . ' не знайдено'));
+		$response->setStatusCode(404, 'NOT FOUND');
+	}
+
+	return $response;
+});
+
+/**Get Teacher by id*/
+$app->get('/teachers/{teacher_id}', function($teacher_id)
 {
 	$response = new Response();
 	$response->setContentType('application/vnd.api+json');
