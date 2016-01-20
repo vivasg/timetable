@@ -68,6 +68,7 @@ class SchoolRoom
             'bind' => [
                 'name' => $names
             ],
+            'order' => 'name',
         ];
 
         /** @var Simple $tmp_schoolrooms */
@@ -100,19 +101,11 @@ class SchoolRoom
             ],
         ];
 
-        /** @var Simple $tmp_schoolrooms */
-        $tmp_schoolrooms = Dto::find($parameters);
-        if ($tmp_schoolrooms instanceof Simple && $tmp_schoolrooms->count() > 0)
+        /** @var Dto $tmp_schoolroom */
+        $tmp_schoolroom = Dto::findFirst($parameters);
+        if ($tmp_schoolroom instanceof Dto)
         {
-            $return = [];
-
-            /** @var Dto $tmp_schoolroom */
-            foreach ($tmp_schoolrooms as $tmp_schoolroom)
-            {
-                $return[] = new SchoolRoom($tmp_schoolroom);
-            }
-
-            return $return;
+            return new Teacher($tmp_schoolroom);
         }
         return null;
     }

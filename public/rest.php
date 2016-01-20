@@ -39,7 +39,7 @@ function make_response_error($http_code, $http_status, $error_title, $error_desc
 		'status' => $http_status,
 		'title' => $error_title,
 		'detail' => $error_description,
-		'source' => 0, // TODO: подумати як зробити автоматично
+		'source' => make_response_source(),
 		'meta' => make_response_meta(),
 	];
 
@@ -56,6 +56,44 @@ function make_response_meta()
 		],
 	];
 }
+
+function make_response_source()
+{
+	return [
+		'pointer' => 'data/attributes',
+	];
+}
+
+$app->get('/teacher/{teacher_name}', function($name)
+{
+    $response = new Response();
+    $response->setContentType('application/vnd.api+json');
+
+    $teacher = Teacher::findByName($name);
+
+    if ($teacher)
+    {
+        $response->setJsonContent(make_response_data([
+            [
+                'type' => 'teacher',
+                'id' => $teacher->getId(),
+                'attributes' => [
+                    'name_first' => $teacher->getNameFirst(),
+                    'name_middle' => $teacher->getNameMiddle(),
+                    'name_last' => $teacher->getNameLast(),
+                ],
+            ]
+        ]));
+        $response->setStatusCode(200);
+    }
+    else
+    {
+        $response->setJsonContent(make_response_error(404, 'Not found', 'Елемент не знайдено', 'Викладача з ім’ям ' . $name . ' не знайдено'));
+        $response->setStatusCode(404);
+    }
+
+    return $response;
+});
 
 $app->get('/teacher/{teacher_id}', function($teacher_id)
 {

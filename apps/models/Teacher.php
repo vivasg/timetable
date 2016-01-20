@@ -135,6 +135,7 @@ class Teacher
             'bind' => [
                 'name' => $names
             ],
+            'order' => 'name',
         ];
 
         /** @var Simple $tmp_teachers */

@@ -67,6 +67,7 @@ class SchoolClass
             'bind' => [
                 'name' => $names
             ],
+            'order' => 'name',
         ];
 
         /** @var Simple $tmp_schoolclasses */
@@ -99,19 +100,11 @@ class SchoolClass
             ],
         ];
 
-        /** @var Simple $tmp_schoolclasses */
-        $tmp_schoolclasses = Dto::find($parameters);
-        if ($tmp_schoolclasses instanceof Simple && $tmp_schoolclasses->count() > 0)
+        /** @var Dto $tmp_schoolclass */
+        $tmp_schoolclass = Dto::findFirst($parameters);
+        if ($tmp_schoolclass instanceof Dto)
         {
-            $return = [];
-
-            /** @var Dto $tmp_schoolclass */
-            foreach ($tmp_schoolclasses as $tmp_schoolclass)
-            {
-                $return[] = new SchoolClass($tmp_schoolclass);
-            }
-
-            return $return;
+            return new Teacher($tmp_schoolclass);
         }
         return null;
     }
