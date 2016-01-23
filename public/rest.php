@@ -64,35 +64,58 @@ function make_response_source()
 	];
 }
 
-$app->get('/teacher/{teacher_name}', function($name)
+$app->get('teacher/', function() use ($app)
 {
-    $response = new Response();
-    $response->setContentType('application/vnd.api+json');
+	$teachers = Teacher::find();
+	{
+		$data = array();
+		foreach ($teachers as $teacher) {
+			$data[] = array(
+					'id' => $teacher->getId(),
+					'attributes' => [
+							'name_firs' => $teacher->getNameFirst(),
+							'name_middle' => $teacher->getNameMiddle(),
+							'name_last' => $teacher->getNameLast()
+					]
+			);
+		}
+	}
 
-    $teacher = Teacher::findByName($name);
+	return json_encode($data);
 
-    if ($teacher)
-    {
-        $response->setJsonContent(make_response_data([
-            [
-                'type' => 'teacher',
-                'id' => $teacher->getId(),
-                'attributes' => [
-                    'name_first' => $teacher->getNameFirst(),
-                    'name_middle' => $teacher->getNameMiddle(),
-                    'name_last' => $teacher->getNameLast(),
-                ],
-            ]
-        ]));
-        $response->setStatusCode(200);
-    }
-    else
-    {
-        $response->setJsonContent(make_response_error(404, 'Not found', 'Елемент не знайдено', 'Викладача з ім’ям ' . $name . ' не знайдено'));
-        $response->setStatusCode(404);
-    }
+});
 
-    return $response;
+$app->get('teacher/find/by/name/{names}', function($names) use ($app)
+{
+	$teachers = Teacher::find_by_name();
+	$response = new Response();
+
+	if($teachers)
+	{
+		$data = array();
+		foreach ($teachers as $teacher)
+		{
+			$data[] = array(
+					'id' => $teacher->getId(),
+					'attributes' => [
+							'name_firs' => $teacher->getNameFirst(),
+							'name_middle' => $teacher->getNameMiddle(),
+							'name_last' => $teacher->getNameLast()
+					]
+			);
+		}
+		$response->setJsonContent(make_response_data($data));
+		$response->setStatusCode(200);
+	}
+
+	else
+	{
+		$response->setJsonContent(make_response_error(404, 'Not found', 'Елемент/Елементи не знайдено', 'Викладачів з іменем' . $names . 'не знайдено'));
+		$response->setStatusCode(404);
+	}
+
+	return $response;
+
 });
 
 $app->get('/teacher/{teacher_id}', function($teacher_id)
@@ -125,5 +148,6 @@ $app->get('/teacher/{teacher_id}', function($teacher_id)
 
 	return $response;
 });
+
 
 $app->handle();

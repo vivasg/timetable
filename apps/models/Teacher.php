@@ -128,7 +128,7 @@ class Teacher
      * @param string $names
      * @return array|null
      */
-    public static function findByName($names)
+    public static function find_by_name($names)
     {
         $parameters = [
             'conditions' => 'name_first=:name: OR name_last=:name: OR name_middle=:name:',
