@@ -241,7 +241,7 @@ php:
                 security.limit_extensions: .php
                 user: www-user
                 group: www-data
-    composer: '1'
+    composer: '0'
     composer_home: ''
 xdebug:
     install: '0'
@@ -302,7 +302,7 @@ hhvm:
         error_reporting: '-1'
         date.timezone: UTC
 mariadb:
-    install: '1'
+    install: '0'
     settings:
         version: '10.1'
         root_password: '1'
@@ -323,23 +323,23 @@ mariadb:
             privileges:
                 - ALL
 mysql:
-    install: '0'
+    install: '1'
     settings:
         version: '5.5'
-        root_password: '123'
+        root_password: '1'
         override_options: {  }
     adminer: 0
     users:
         mysqlnu_rm7qjduj7ymf:
-            name: dbuser
-            password: '123'
+            name: dev
+            password: '1'
     databases:
         mysqlnd_7ch8s6e6ui6y:
-            name: dbname
+            name: timetable
             sql: ''
     grants:
         mysqlng_zab3rm7gzfoa:
-            user: dbuser
+            user: dev
             table: '*.*'
             privileges:
                 - ALL
