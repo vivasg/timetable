@@ -20,6 +20,7 @@ $di->setShared('config', function()
 	return require_once APPS_DIR . 'configs' . DIRECTORY_SEPARATOR . 'config.php';
 });
 
+// спросить можно ли подключиться сюдой напрямую в БД
 // Подключка в БД
 $di->setShared('db', function() use ($di)
 {
