@@ -14,10 +14,8 @@ require_once APPS_DIR . 'configs' . DIRECTORY_SEPARATOR . 'services.php';
 
 $app = new Application();
 
+//--------------------------------API Teacher--------------------------------
 
-
-//TODO: спросить как забить данные в БД, доделать!
-// пример с мануала не работает, ибо не такая модель...
 $app->post('/teachers', function () use ($app)
 {
     /** @var stdClass $foo */
@@ -27,16 +25,21 @@ $app->post('/teachers', function () use ($app)
     $teacher = new Teacher(new \Dto\Teacher());
     $teacher->setNameFirst($foo->name_first);
     $teacher->setNameLast($foo->name_last);
-    $teacher->setNameMiddle('good name');
+    $teacher->setNameMiddle($foo->name_middle);
     $status = $teacher->save();
-    /*$app->db->insert('teachers',
-        'name_first = :name_first:, name_last = :name_last:, name_middle = :name_middle:', [
-            'name_first' => $teacher->getNameFirst(),
-            'name_last' => $teacher->getNameLast(),
-            'name_middle' => $teacher->getNameMiddle()
-        ]);
-*/
-    $response = new Response();
+
+    $binder = new ResponseBinder();
+
+    if($status)
+    {
+        $binder->SetStatusCode('201 CREATED');
+        $binder->SetResponseData($teacher);
+
+    }
+    else
+    {
+
+    }
 });
 
 // аналогично app->post()
@@ -50,16 +53,8 @@ $app->delete('/teacher/{id}', function($id) use($app)
 
 });
 
-$app->get('/teachers', function()
+$app->get('/teachers', function() use ($app)
 {
-
-    $teacher = new \Dto\Teacher();
-    $teacher->setNameMiddle('good name11');
-    $teacher->save();
-
-
-    global $app;
-    //var_dump($app);
     /** @var Request $request */
     $request = new Request();
     if($request->has('name')) {
@@ -152,6 +147,12 @@ class ResponseBinder
         {
             $this->response->setJsonContent($this->responseError);
         }
+        elseif($statusCode = '201 CREATED')
+        {
+            $this->response =[
+
+            ];
+        }
         return $this->response;
     }
 
@@ -210,12 +211,11 @@ class ResponseBinder
     public function SetRelationships()
     {
         /** @var \Phalcon\Mvc\Micro $app */
-        global $app;
         $relationships = [
             'author' => [
                 'links' => [
                     'self' => '',
-                    'related' => $app->request->getURI(),
+                    'related' => '',
                 ],
                 'data'=> [
 
