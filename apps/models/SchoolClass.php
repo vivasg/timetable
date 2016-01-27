@@ -115,4 +115,38 @@ class SchoolClass
         }
         return null;
     }
+
+    public static function find()
+    {
+        /** @var Simple $tmp_schoolclasses */
+        $tmp_schoolclasses = Dto::find([
+            'order' => 'name'
+        ]);
+        if ($tmp_schoolclasses instanceof Simple && $tmp_schoolclasses->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_schoolclass */
+            foreach ($tmp_schoolclasses as $tmp_schoolclass)
+            {
+                $return[] = new SchoolClass($tmp_schoolclass);
+            }
+
+            return $return;
+        }
+        return null;
+    }
+
+    public function save()
+    {
+        $this->dto->save();
+    }
+    public function update()
+    {
+        $this->dto->update();
+    }
+    public function delete()
+    {
+        $this->dto->delete();
+    }
 }

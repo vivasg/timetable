@@ -132,4 +132,38 @@ class Subject
         }
         return null;
     }
+
+    public static function find()
+    {
+        /** @var Simple $tmp_subjects */
+        $tmp_subjects = Dto::find([
+            'order' => 'name'
+        ]);
+        if ($tmp_subjects instanceof Simple && $tmp_subjects->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_subject */
+            foreach ($tmp_subjects as $tmp_subject)
+            {
+                $return[] = new Subject($tmp_subject);
+            }
+
+            return $return;
+        }
+        return null;
+    }
+
+    public function save()
+    {
+        $this->dto->save();
+    }
+    public function update()
+    {
+        $this->dto->update();
+    }
+    public function delete()
+    {
+        $this->dto->delete();
+    }
 }
