@@ -7,6 +7,7 @@ vagrantfile:
         memory: '1024'
         cpus: '2'
         chosen_provider: virtualbox
+        box_version: ''
         network:
             private_network: 192.168.56.101
             forwarded_port: {  }
@@ -14,12 +15,14 @@ vagrantfile:
         provider:
             virtualbox:
                 modifyvm:
-                    natdnshostresolver1: 'on'
+                    natdnshostresolver1: false
                 showgui: '0'
             vmware:
                 numvcpus: 1
             parallels:
-                cpus: 1
+                use_linked_clone: '0'
+                check_guest_tools: '0'
+                update_guest_tools: '0'
         provision:
             puppet:
                 manifests_path: puphpet/puppet/manifests
@@ -28,7 +31,7 @@ vagrantfile:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
         synced_folder:
-            vflsf_lo2zu06yb9pp:
+            vflsf_fxb7mzqs02vp:
                 source: ./
                 target: /var/www
                 sync_type: default
@@ -36,6 +39,9 @@ vagrantfile:
                     smb_host: ''
                     smb_username: ''
                     smb_password: ''
+                    mount_options:
+                        dir_mode: '0775'
+                        file_mode: '0664'
                 rsync:
                     args:
                         - '--verbose'
@@ -63,6 +69,12 @@ vagrantfile:
         insert_key: false
     vagrant:
         host: detect
+    proxy:
+        http: ''
+        https: ''
+        ftp: ''
+        no_proxy: ''
+        enabled: ''
 server:
     install: '1'
     packages:
@@ -80,8 +92,9 @@ locale:
         locales:
             - en_GB.UTF-8
             - en_US.UTF-8
-            - uk_UA.UTF-8
             - ru_RU.UTF-8
+            - uk_UA.UTF-8
+        timezone: UTC
 firewall:
     install: '1'
     rules: {  }
@@ -100,7 +113,7 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_va3f2820pmh7:
+        nxv_yollhtdohc2y:
             server_name: awesome.dev
             server_aliases:
                 - www.awesome.dev
@@ -120,7 +133,7 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_vhjv9kqxn0da:
+                nxvl_0pob5c8c81l6:
                     location: /
                     autoindex: 'off'
                     internal: 'false'
@@ -133,7 +146,7 @@ nginx:
                     fastcgi_split_path: ''
                     proxy: ''
                     proxy_redirect: ''
-                nxvl_ribdkr3cadiz:
+                nxvl_l0ewxpiou5de:
                     location: '~ \.php$'
                     autoindex: 'off'
                     internal: 'false'
@@ -155,6 +168,7 @@ nginx:
 apache:
     install: '1'
     settings:
+        version: 2.4
         user: www-data
         group: www-data
         default_vhost: true
@@ -162,13 +176,13 @@ apache:
         manage_group: false
         sendfile: 0
     modules:
-        - proxy_fcgi
-        - rewrite
         - cache
         - expires
         - headers
+        - proxy_fcgi
+        - rewrite
     vhosts:
-        av_fglk3ydzucly:
+        av_rfiu2kzfthav:
             servername: timetable
             serveraliases:
                 - www.timetable
@@ -189,7 +203,7 @@ apache:
             ssl_protocol: ''
             ssl_cipher: ''
             directories:
-                avd_y6xrubyq0u2i:
+                avd_npd7v20ebvv6:
                     path: /var/www/public
                     options:
                         - Indexes
@@ -201,7 +215,7 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_qwiuscssatjk:
+                        avdfm_pl9q4i3mfldr:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
@@ -234,14 +248,14 @@ php:
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_mp23grgsgydw:
+        phpfp_jnt49h18wayh:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
                 security.limit_extensions: .php
                 user: www-user
                 group: www-data
-    composer: '0'
+    composer: 0
     composer_home: ''
 xdebug:
     install: '0'
@@ -302,44 +316,44 @@ hhvm:
         error_reporting: '-1'
         date.timezone: UTC
 mariadb:
-    install: '0'
+    install: '1'
     settings:
         version: '10.1'
         root_password: '1'
         override_options: {  }
     adminer: '1'
     users:
-        mariadbnu_dag5ysnu04ia:
+        mariadbnu_laujn8ymwiai:
             name: dev
             password: '1'
     databases:
-        mariadbnd_48kbyibjg48o:
+        mariadbnd_lxbq5mx6trnq:
             name: timetable
             sql: ''
     grants:
-        mariadbng_ykgevuush8dm:
+        mariadbng_lj2qjz2el5pg:
             user: dev
             table: '*.*'
             privileges:
                 - ALL
 mysql:
-    install: '1'
+    install: '0'
     settings:
         version: '5.5'
-        root_password: '1'
+        root_password: '123'
         override_options: {  }
     adminer: 0
     users:
-        mysqlnu_rm7qjduj7ymf:
-            name: dev
-            password: '1'
+        mysqlnu_alennwvtmawe:
+            name: dbuser
+            password: '123'
     databases:
-        mysqlnd_7ch8s6e6ui6y:
-            name: timetable
+        mysqlnd_9yb9735edgun:
+            name: dbname
             sql: ''
     grants:
-        mysqlng_zab3rm7gzfoa:
-            user: dev
+        mysqlng_96zc4tgzzh86:
+            user: dbuser
             table: '*.*'
             privileges:
                 - ALL
@@ -367,7 +381,7 @@ mongodb:
 redis:
     install: '0'
     settings:
-        conf_port: '6379'
+        port: '6379'
 sqlite:
     install: '0'
     adminer: 0
@@ -403,6 +417,7 @@ elastic_search:
     settings:
         version: 2.1.0
         java_install: true
+    instances: {  }
 solr:
     install: '0'
     settings:
