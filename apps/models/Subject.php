@@ -132,4 +132,18 @@ class Subject
         }
         return null;
     }
+    public function GetResponseData()
+    {
+        /** @var Subject $object */
+        $data[] = [
+            'type' => 'Subject', // спросить про заглавную букву(Subject или subject) касаеться всех запросов
+            'id' => $this->getId(),
+            'attributes' => [
+                'name' => $this->getName(),
+                'name_shortest' => $this->getShortestName(),
+                'name_short' => $this->getShortName()
+            ],
+        ];
+        return $data;
+    }
 }

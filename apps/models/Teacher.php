@@ -168,4 +168,21 @@ class Teacher
     {
         $this->dto->delete();
     }
+    public function GetResponseData()
+    {
+        /** @var Teacher $object */
+        $data[] = [
+            'type' => 'Teacher',
+            'id' => $this->getId(),
+            'attributes' => [
+                'title' => 'teacher',
+                'name_first' => $this->getNameFirst(),
+                'name_middle' => $this->getNameMiddle(),
+                'name_last' => $this->getNameLast(),
+                'name_full' => $this->getNameFull(),
+                'name_short' => $this->getNameShort()
+            ],
+        ];
+        return $data;
+    }
 }

@@ -115,4 +115,17 @@ class SchoolClass
         }
         return null;
     }
+
+    public function GetResponseData()
+    {
+        /** @var SchoolClass $object */
+        $data[] = [
+            'type' => 'SchoolClass',
+            'id' => $this->getId(),
+            'attributes' => [
+                'name' => $this->getName()
+            ],
+        ];
+        return $data;
+    }
 }

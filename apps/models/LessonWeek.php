@@ -189,4 +189,17 @@ class LessonWeek
         }
         return null;
     }
+    public function GetResponseData()
+    {
+        /** @var LessonWeek $object */
+        $data[] = [
+            'type' => 'LessonWeek',
+            'id'    => $this->getId(),
+            'attributes' => [
+                'number' => $this->getNumber(),
+                'name' => $this->getName(),
+            ],
+        ];
+        return $data;
+    }
 }

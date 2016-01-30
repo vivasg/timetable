@@ -255,4 +255,20 @@ class LessonDay
         }
         return null;
     }
+    
+    public function GetseponseData()
+    {
+        /** @var LessonDay $object */
+        $data[] = [
+            'type' => 'LessonDay',
+            'id' => $this->getId(),
+            'attributes' => [
+                'lesson_week' => $this->getLessonWeek()->GetResponseData(),
+                'week_day' => $this->getWeekday(),
+                'name' => $this->getName(),
+                'lesson_max_count' => $this->getLessonMaxCount(),
+            ],
+        ];
+        return $data;
+    }
 }

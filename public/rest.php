@@ -234,7 +234,7 @@ $app->delete('/LessonWeeks', function() use ($app){
 
 });
 
-class ResponseBinder extends Getters
+class ResponseBinder
 {
     /** @var Response $response */
     private $response;
@@ -308,16 +308,16 @@ class ResponseBinder extends Getters
 
         if(is_array($dataObject))
         {
-            /** @var Teacher $teacher */
+            /** @var Teacher $item */
             foreach($dataObject as $item)
             {
-                $data[] = $this->GetDataByObject($item);
+                $data[] = $item->GetResponseData();
             }
         }
         else
         {
             /** @var Teacher $teachers */
-            $data = $this->GetDataByObject($dataObject);
+            $data = $dataObject->GetResponseData();
         }
 
         $this->data = $data;
@@ -327,30 +327,6 @@ class ResponseBinder extends Getters
      *@var Teacher $teacher
      *@return array
      */
-    public function GetDataByObject($object)
-    {
-        global $app;
-        switch(get_class($object))
-        {
-            case 'Lesson':
-                //return $this->GetShortLessonDataByObject($object);
-                return $this->GetFullLessonDataByObject($object);
-            case 'LessonDay':
-                return $this->GetLessonDayDataByObject($object);
-            case 'LessonWeek':
-                return $this->GetLessonWeekDataByObject($object);
-            case 'SchoolClass':
-                return $this->GetSchoolClassDataByObject($object);
-            case 'SchoolRoom':
-                return $this->GetSchoolRoomDataByObject($object);
-            case 'Subject':
-                return $this->GetSubjectDataByObject($object);
-            case 'Teacher':
-                return $this->GetTeacherDataByObject($object);
-            default:
-                throw new InvalidArgumentException('unknown type: ' . get_class($object));
-        }
-    }
 
     public function SetRelationships()
     {
@@ -410,129 +386,6 @@ class ResponseBinder extends Getters
         ];
         $this->responseError = $response;
         return $response;
-    }
-}
-class Getters
-{
-    protected function GetSchoolClassDataByObject($object)
-    {
-        /** @var SchoolClass $object */
-        $data[] = [
-            'type' => 'SchoolClass',
-            'id' => $object->getId(),
-            'attributes' => [
-                'name' => $object->getName()
-            ],
-        ];
-        return $data;
-    }
-
-    protected function GetTeacherDataByObject($object)
-    {
-        /** @var Teacher $object */
-        $data[] = [
-            'type' => 'Teacher',
-            'id' => $object->getId(),
-            'attributes' => [
-                'title' => 'teacher',
-                'name_first' => $object->getNameFirst(),
-                'name_middle' => $object->getNameMiddle(),
-                'name_last' => $object->getNameLast(),
-                'name_full' => $object->getNameFull(),
-                'name_short' => $object->getNameShort()
-            ],
-        ];
-        return $data;
-    }
-
-    protected function GetSubjectDataByObject($object)
-    {
-        /** @var Subject $object */
-        $data[] = [
-            'type' => 'Subject', // спросить про заглавную букву(Subject или subject) касаеться всех запросов
-            'id' => $object->getId(),
-            'attributes' => [
-                'name' => $object->getName(),
-                'name_shortest' => $object->getShortestName(),
-                'name_short' => $object->getShortName()
-            ],
-        ];
-        return $data;
-    }
-    protected function GetShortLessonDataByObject($object)
-    {
-        /** @var Lesson $object */
-        $data[] = [
-            'type' => 'Lesson',
-            'id' => $object->getId(),
-            'attributes' => [
-                'lesson_day_id' => $object->getLessonDayId(),
-                'lesson_number' => $object->getLessonNumber(),
-                'school_class_id' => $object->getSchoolClassId(),
-                'subject_id' => $object->getSubjectId(),
-                'school_room_id' => $object->getSchoolRoomId(),
-                'teacher_id' => $object->getTeacherId()
-            ],
-        ];
-        return $data;
-    }
-    protected function GetSchoolRoomDataByObject($object)
-    {
-        /** @var SchoolRoom $object */
-        $data[] = [
-            'type' => 'SchoolClass',
-            'id' => $object->getId(),
-            'attributes' => [
-                'name' => $object->getName(),
-            ],
-        ];
-        return $data;
-    }
-    protected function GetLessonDayDataByObject($object)
-    {
-        /** @var LessonDay $object */
-        $data[] = [
-            'type' => 'LessonDay',
-            'id' => $object->getId(),
-            'attributes' => [
-                'lesson_week' => $this->GetLessonWeekDataByObject($object->getLessonWeek()),
-                'week_day' => $object->getWeekday(),
-                'name' => $object->getName(),
-                'lesson_max_count' => $object->getLessonMaxCount(),
-            ],
-        ];
-        return $data;
-    }
-    protected function GetLessonWeekDataByObject($object)
-    {
-        /** @var LessonWeek $object */
-        $data[] = [
-            'type' => 'LessonWeek',
-            'id'    => $object->getId(),
-            'attributes' => [
-                'number' => $object->getNumber(),
-                'name' => $object->getName(),
-            ],
-        ];
-        return $data;
-    }
-
-    protected function GetFullLessonDataByObject($object)
-    {
-        /** @var Lesson $object */
-        $data[] = [
-            'type' => 'Lesson',
-            'id' => $object->getId(),
-            'attributes' => [
-                //'lesson_day' => $this->GetLessonWeekDataByObject($object->getLessonDay()), // failed! in database set null.
-                'lesson_number' => $object->getLessonNumber(),
-                'school_class' => $this->GetSchoolClassDataByObject($object->getSchoolClass()),
-                'subject' => $this->GetSubjectDataByObject($object->getSubject()),
-                'school_room' => $this->GetSchoolRoomDataByObject($object->getSchoolRoom()),
-                'teacher' => $this->GetTeacherDataByObject($object->getTeacher()),
-            ],
-        ];
-        return $data;
     }
 }
 

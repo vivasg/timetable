@@ -489,4 +489,39 @@ class Lesson
         }
         return null;
     }
+
+    public function GetFullResponseData()
+    {
+        /** @var Lesson $object */
+        $data[] = [
+            'type' => 'Lesson',
+            'id' => $this->getId(),
+            'attributes' => [
+                //'lesson_day' => $this->GetLessonWeekDataByObject($object->getLessonDay()), // failed! in database set null.
+                'lesson_number' => $this->getLessonNumber(),
+                'school_class' => $this->getSchoolClass()->GetResponseData(),
+                'subject' => $this->getSubject()->GetResponseData(),
+                'school_room' => $this->getSchoolRoom()->GetResponseData(),
+                'teacher' => $this->GetTeacher()->GetResponseData(),
+            ],
+        ];
+        return $data;
+    }
+    protected function GetShortResponseData()
+    {
+        /** @var Lesson $object */
+        $data[] = [
+            'type' => 'Lesson',
+            'id' => $this->getId(),
+            'attributes' => [
+                'lesson_day_id' => $this->getLessonDayId(),
+                'lesson_number' => $this->getLessonNumber(),
+                'school_class_id' => $this->getSchoolClassId(),
+                'subject_id' => $this->getSubjectId(),
+                'school_room_id' => $this->getSchoolRoomId(),
+                'teacher_id' => $this->getTeacherId()
+            ],
+        ];
+        return $data;
+    }
 }
