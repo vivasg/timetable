@@ -168,7 +168,7 @@ class Teacher
     {
         $this->dto->delete();
     }
-    public function GetResponseData()
+    public function getResponseData()
     {
         /** @var Teacher $object */
         $data[] = [

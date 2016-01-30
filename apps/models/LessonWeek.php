@@ -189,7 +189,7 @@ class LessonWeek
         }
         return null;
     }
-    public function GetResponseData()
+    public function getResponseData()
     {
         /** @var LessonWeek $object */
         $data[] = [

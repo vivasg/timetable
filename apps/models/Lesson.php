@@ -490,7 +490,7 @@ class Lesson
         return null;
     }
 
-    public function GetFullResponseData()
+    public function getFullResponseData()
     {
         /** @var Lesson $object */
         $data[] = [
@@ -507,7 +507,7 @@ class Lesson
         ];
         return $data;
     }
-    public function GetShortResponseData()
+    public function getShortResponseData()
     {
         /** @var Lesson $object */
         $data[] = [

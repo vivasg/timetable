@@ -132,7 +132,7 @@ class Subject
         }
         return null;
     }
-    public function GetResponseData()
+    public function getResponseData()
     {
         /** @var Subject $object */
         $data[] = [

@@ -255,8 +255,8 @@ class LessonDay
         }
         return null;
     }
-    
-    public function GetseponseData()
+
+    public function getseponseData()
     {
         /** @var LessonDay $object */
         $data[] = [

@@ -117,7 +117,7 @@ class SchoolRoom
         return null;
     }
 
-    public function GetResponseData()
+    public function getResponseData()
     {
         /** @var SchoolRoom $object */
         $data[] = [
