@@ -154,16 +154,15 @@ class Teacher extends Model
 			'alias' => 'lessons'
 		]);
 	}
-
-	public function beforeValidation()
+	/*public function beforeValidation()
 	{
 		// Правила для id
 		$this->validate(new PresenceOf([
 			'field' => 'id',
 			'message' => 'Not id in model',
 		]));
-	}
 
+	}*/
 	public function validation()
 	{
 		// Правила для name_first

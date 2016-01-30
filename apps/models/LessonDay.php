@@ -11,7 +11,6 @@ class LessonDay
 
     /**
      * Get id by LessonDay.
-     *
      * @return int|null
      */
     public function getId()
@@ -225,14 +224,14 @@ class LessonDay
      */
     public static function getMany($parameters)
     {
-        /** @var Simple $tmp_lesson_day */
-        $tmp_lesson_day = Dto::find($parameters);
-        if ($tmp_lesson_day instanceof Simple && $tmp_lesson_day->count() > 0)
+        /** @var Simple $tmp_lesson_days */
+        $tmp_lesson_days = Dto::find($parameters);
+        if ($tmp_lesson_days instanceof Simple && $tmp_lesson_days->count() > 0)
         {
             $return = [];
 
-            /** @var Dto $tmp_lesson_weeks */
-            foreach ($tmp_lesson_day as $tmp_lesson_day)
+            /** @var Dto $tmp_lesson_day */
+            foreach ($tmp_lesson_day as $tmp_lesson_days)
             {
                 $return[] = new LessonDay($tmp_lesson_day);
             }
@@ -252,7 +251,7 @@ class LessonDay
         $tmp_lesson_day = Dto::findFirst($parameters);
         if ($tmp_lesson_day instanceof Dto)
         {
-            return new Lesson($tmp_lesson);
+            return new LessonDay($tmp_lesson_day);
         }
         return null;
     }
