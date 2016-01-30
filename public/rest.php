@@ -6,7 +6,8 @@ defined('APPS_DIR') || define('APPS_DIR', dirname(BASE_DIR) . DIRECTORY_SEPARATO
 use \Phalcon\Mvc\Micro as Application,
 	\Phalcon\Http\Response,
     \Phalcon\Di,
-    \Phalcon\Http\Request;
+    \Phalcon\Http\Request,
+    Phalcon\Exception as Exception;
 
 $di = new Di();
 
@@ -16,7 +17,50 @@ $app = new Application();
 
 //--------------------------------API Teacher--------------------------------
 
-$app->post('/teachers', function () use ($app)
+$app->post('/teachers{teacher_id}', function ($teacher_id) use ($app)
+{
+    /** @var stdClass $foo */
+    $foo = $app->request->getJsonRawBody();
+
+    $binder = new ResponseBinder();
+
+    try
+    {
+        $teacher = Teacher::findById($teacher_id);
+        if ($teacher == false)
+        {
+            throw new Exception();
+        }
+        $teacher->setNameFirst($foo->name_first);
+        $teacher->setNameLast($foo->name_last);
+        $teacher->setNameMiddle($foo->name_middle);
+        $status = $teacher->update();
+        if($status)
+        {
+            $binder->SetStatusCode(201);
+            $binder->GetDataByObject($teacher);
+
+        }
+        else
+        {
+            $binder->SetStatusCode(501);
+            $binder->SetResponseError(501,
+                'Conflict',
+                'Teacher can`t be saved .',
+                'Teacher cannot be saved'
+            );
+        }
+    }
+    catch (Exception $e)
+    {
+        echo 'unknown error', $e->getMessage();
+
+    }
+
+});
+
+// аналогично app->post()
+$app->put('/teachers', function () use ($app)
 {
     /** @var stdClass $foo */
     $foo = $app->request->getJsonRawBody();
@@ -33,40 +77,7 @@ $app->post('/teachers', function () use ($app)
     if($status)
     {
         $binder->SetStatusCode(201);
-        $binder->SetResponseDataForTeacher($teacher);
-
-    }
-    else
-    {
-        $binder->SetStatusCode(409);
-        $binder->SetResponseError(409,
-            'Conflict',
-            'Teacher can`t be saved .',
-            'Teacher cannot be saved'
-        );
-    }
-});
-
-// аналогично app->post()
-$app->put('teachers/{teacher_id}', function ($teacher_id) use ($app)
-{
-    /** @var stdClass $foo */
-    $foo = $app->request->getJsonRawBody();
-
-    /** @var Teacher $teacher*/
-    $teacher = new Teacher(new \Dto\Teacher());
-    $teacher->setId($teacher_id);
-    $teacher->setNameFirst($foo->name_first);
-    $teacher->setNameLast($foo->name_last);
-    $teacher->setNameMiddle($foo->name_middle);
-    $status = $teacher->update();
-
-    $binder = new ResponseBinder();
-
-    if($status)
-    {
-        $binder->SetStatusCode(201);
-        $binder->SetResponseDataForTeacher($teacher);
+        $binder->GetDataByObject($teacher);
 
     }
     else
@@ -82,24 +93,39 @@ $app->put('teachers/{teacher_id}', function ($teacher_id) use ($app)
 
 $app->delete('/teacher/{teacher_id}', function($teacher_id) use($app)
 {
-    $teacher = new Teacher(new \Dto\Teacher());
-    $status = $teacher->delete();
-
     $binder = new ResponseBinder();
-    if($status)
+
+    try
     {
-        $binder->SetStatusCode(200);
-        $binder->SetResponseDataForTeacher($teacher);
+        $teacher = Teacher::findById($teacher_id);
+        if ($teacher == false)
+        {
+            throw new Exception();
+        }
+        $status = $teacher->delete();
+        if($status)
+        {
+            $binder->SetStatusCode(200);
+            $binder->GetDataByObject($teacher);
+        }
+        else
+        {
+            $binder->SetStatusCode(409);
+            $binder->SetResponseError(409,
+                'Conflict',
+                'Teacher cannot be deleted',
+                'Teacher cannot be deleted'
+            );
+        }
+
     }
-    else
+    catch (Exception $e)
     {
-        $binder->SetStatusCode(409);
-        $binder->SetResponseError(409,
-            'Conflict',
-            'Teacher cannot be deleted',
-            'Teacher cannot be deleted'
-        );
+        echo 'unknown error', $e->getMessage();
     }
+
+
+
 });
 
 $app->get('/teachers', function() use ($app)
@@ -119,7 +145,7 @@ $app->get('/teachers', function() use ($app)
 	if($teachers)
 	{
 
-		$binder->SetResponseDataForTeacher($teachers);
+		$binder->GetDataByObject($teachers);
         $response = $binder->Bind();
 	}
 	else
@@ -143,7 +169,7 @@ $app->get('/teachers/{teacher_id}', function($teacher_id)
 
 	if ($teacher)
 	{
-        $binder->SetResponseDataForTeacher($teacher);
+        $binder->GetDataByObject($teacher);
         $response = $binder->Bind();
 	}
 	else
@@ -160,7 +186,48 @@ $app->get('/teachers/{teacher_id}', function($teacher_id)
 
 //----------------------------API Subject------------------------------------------------
 
-$app->post('/subjects', function () use ($app)
+$app->post('/subjects/{subject_id}', function ($subject_id) use ($app)
+{
+    /** @var stdClass $foo */
+    $foo = $app->request->getJsonRawBody();
+    $binder = new ResponseBinder();
+    try
+    {
+        /** @var Subject $subject*/
+        $subject = Subject::findById($subject_id);
+        if ($subject == false)
+        {
+            throw new Exception;
+        }
+
+        $subject->setName($foo->name);
+        $status = $subject->update();
+
+
+        if($status)
+        {
+            $binder->SetStatusCode(201);
+            $binder->GetDataByObject($subject);
+
+        }
+        else
+        {
+            $binder->SetStatusCode(501);
+            $binder->SetResponseError(501,
+                'Conflict',
+                'Subject can`t be updated .',
+                'Subject with name cannot be updated'
+            );
+        }
+    }
+    catch (Exception $e)
+    {
+        echo 'Error', $e->getMessage();
+    }
+
+});
+
+$app->put('/subjects', function () use ($app)
 {
     /** @var stdClass $foo */
     $foo = $app->request->getJsonRawBody();
@@ -175,7 +242,7 @@ $app->post('/subjects', function () use ($app)
     if($status)
     {
         $binder->SetStatusCode(201);
-        $binder->SetResponseDataForSubject($subject);
+        $binder->GetDataByObject($subject);
 
     }
     else
@@ -187,59 +254,45 @@ $app->post('/subjects', function () use ($app)
             'Subject with name cannot be saved'
         );
     }
-});
 
-$app->put('subjects/{subject_id}', function ($subject_id) use ($app)
-{
-    /** @var stdClass $foo */
-    $foo = $app->request->getJsonRawBody();
 
-    /** @var Subject $subject*/
-    $subject = new Subject(new \Dto\Subject());
-    $subject->setId($subject_id);
-    $subject->setName($foo->name);
-    $status = $subject->update();
 
-    $binder = new ResponseBinder();
-
-    if($status)
-    {
-        $binder->SetStatusCode(201);
-        $binder->SetResponseDataForSubject($subject);
-
-    }
-    else
-    {
-        $binder->SetStatusCode(501);
-        $binder->SetResponseError(501,
-            'Conflict',
-            'Subject can`t be updated .',
-            'Subject with name cannot be updated'
-        );
-    }
 });
 
 $app->delete('/subjects/{id}', function($id) use($app)
 {
-    $subject = new Subject(new \Dto\Subject());
-    $subject= Teacher::findById($id);
-    $status = $subject->delete();
-
     $binder = new ResponseBinder();
-    if($status)
+
+    try
     {
-        $binder->SetStatusCode(200);
-        $binder->SetResponseDataForTeacher($subject);
+        /** @var Subject $subject */
+        $subject= Subject::findById($id);
+        if ($subject==false)
+        {
+            throw new Exception();
+        }
+        $status= $subject->delete();
+        if($status)
+        {
+            $binder->SetStatusCode(200);
+            $binder->GetDataByObject($subject);
+        }
+        else
+        {
+            $binder->SetStatusCode(409);
+            $binder->SetResponseError(409,
+                'Conflict',
+                'Subject cannot be deleted',
+                'Subject cannot be deleted'
+            );
+        }
     }
-    else
+    catch(Exception $e)
     {
-        $binder->SetStatusCode(409);
-        $binder->SetResponseError(409,
-            'Conflict',
-            'Subject cannot be deleted',
-            'Subject cannot be deleted'
-        );
+        echo 'unknown error', $e->getMessage();
     }
+
+
 });
 
 $app->get('/subjects', function() use ($app)
@@ -259,7 +312,7 @@ $app->get('/subjects', function() use ($app)
     if($subjects)
     {
 
-        $binder->SetResponseDataForSubject($subjects);
+        $binder->GetDataByObject($subjects);
         $response = $binder->Bind();
     }
     else
@@ -283,7 +336,7 @@ $app->get('/subjects/{subject_id}', function($subject_id)
 
     if ($subject)
     {
-        $binder->SetResponseDataForSubject($subject);
+        $binder->GetDataByObject($subject);
         $response = $binder->Bind();
     }
     else
@@ -300,36 +353,49 @@ $app->get('/subjects/{subject_id}', function($subject_id)
 
 //----------------------------API SchoolRoom------------------------------------------------
 
-$app->post('/school_rooms', function () use ($app)
+$app->post('/school_rooms/{school_room_id}', function ($school_room_id) use ($app)
 {
     /** @var stdClass $foo */
     $foo = $app->request->getJsonRawBody();
-
-    /** @var SchoolRoom $school_room*/
-    $school_room = new SchoolRoom(new \Dto\SchoolRoom());
-    $school_room->setName($foo->name);
-    $status = $school_room->save();
-
     $binder = new ResponseBinder();
 
-    if($status)
+    try
     {
-        $binder->SetStatusCode(201);
-        $binder->SetResponseDataForSchoolRoom($school_room);
+        /** @var SchoolRoom $school_room*/
+        $school_room = SchoolRoom::findById($school_room_id);
+        if($school_room == false)
+        {
+            throw new Exception;
+        }
+        $school_room->setName($foo->name);
+        $status = $school_room->save();
 
+
+        if($status)
+        {
+            $binder->SetStatusCode(201);
+            $binder->GetDataByObject($school_room);
+
+        }
+        else
+        {
+            $binder->SetStatusCode(409);
+            $binder->SetResponseError(409,
+                'Conflict',
+                'Can`t be saved .',
+                'SchoolRoom with name cannot be saved'
+            );
+        }
     }
-    else
+    catch (Exception $e)
     {
-        $binder->SetStatusCode(409);
-        $binder->SetResponseError(409,
-            'Conflict',
-            'Can`t be saved .',
-            'SchoolRoom with name cannot be saved'
-        );
+        echo 'Error', $e->getMessage();
     }
+
+
 });
 
-$app->put('school_rooms/{school_room_id}', function ($school_room_id) use ($app)
+$app->put('school_rooms/', function () use ($app)
 {
     /** @var stdClass $foo */
     $foo = $app->request->getJsonRawBody();
@@ -337,7 +403,6 @@ $app->put('school_rooms/{school_room_id}', function ($school_room_id) use ($app)
     /** @var SchoolRoom $school_room*/
     $school_room = new SchoolRoom(new \Dto\SchoolRoom());
     $school_room->setName($foo->name);
-    $school_room->setId($school_room_id);
     $status = $school_room->save();
 
     $binder = new ResponseBinder();
@@ -345,7 +410,7 @@ $app->put('school_rooms/{school_room_id}', function ($school_room_id) use ($app)
     if($status)
     {
         $binder->SetStatusCode(201);
-        $binder->SetResponseDataForSchoolRoom($school_room);
+        $binder->GetDataByObject($school_room);
 
     }
     else
@@ -357,28 +422,43 @@ $app->put('school_rooms/{school_room_id}', function ($school_room_id) use ($app)
             'SchoolRoom with name cannot be saved'
         );
     }
+
 });
 
 $app->delete('/school_rooms/{school_room_id}', function($school_room_id) use($app)
 {
-    $school_room = new SchoolRoom(new \Dto\SchoolRoom());
-    $status = $school_room->delete();
-
     $binder = new ResponseBinder();
-    if($status)
+
+    try
     {
-        $binder->SetStatusCode(200);
-        $binder->SetResponseDataForSchoolRoom($school_room);
+        $school_room = SchoolRoom::findById($school_room_id);
+        if ($school_room == false)
+        {
+            throw new Exception();
+        }
+        $status = $school_room->delete();
+        if($status)
+        {
+            $binder->SetStatusCode(200);
+            $binder->GetDataByObject($school_room);
+        }
+        else
+        {
+            $binder->SetStatusCode(409);
+            $binder->SetResponseError(409,
+                'Conflict',
+                'school_room cannot be deleted',
+                'school_room cannot be deleted'
+            );
+        }
     }
-    else
+    catch (Exception $e)
     {
-        $binder->SetStatusCode(409);
-        $binder->SetResponseError(409,
-            'Conflict',
-            'school_room cannot be deleted',
-            'school_room cannot be deleted'
-        );
+        echo 'unknown error', $e->getMessage();
     }
+
+
+
 });
 
 $app->get('/school_rooms', function() use ($app)
@@ -398,7 +478,7 @@ $app->get('/school_rooms', function() use ($app)
     if($school_rooms)
     {
 
-        $binder->SetResponseDataForSchoolRoom($school_rooms);
+        $binder->GetDataByObject($school_rooms);
         $response = $binder->Bind();
     }
     else
@@ -439,7 +519,48 @@ $app->get('/school_rooms/{school_room_id}', function($school_room_id)
 
 //----------------------------API SchoolClass------------------------------------------------
 
-$app->post('/school_classes', function () use ($app)
+$app->post('/school_classes/{school_classes_id}', function ($school_classes_id) use ($app)
+{
+    /** @var stdClass $foo */
+    $foo = $app->request->getJsonRawBody();
+    $binder = new ResponseBinder();
+
+    try
+    {
+        /** @var SchoolClass $school_class*/
+        $school_class = SchoolClass::findById();
+        if ($school_class == false)
+        {
+            throw new Exception;
+        }
+        $school_class->setName($foo->name);
+        $status = $school_class->save();
+
+
+        if($status)
+        {
+            $binder->SetStatusCode(201);
+            $binder->GetDataByObject($school_class);
+
+        }
+        else
+        {
+            $binder->SetStatusCode(409);
+            $binder->SetResponseError(409,
+                'Conflict',
+                'Can`t be saved .',
+                'SchoolClass with name cannot be saved'
+            );
+        }
+    }
+    catch (Exception $e)
+    {
+        echo 'error', $e->getMessage();
+    }
+
+});
+
+$app->put('school_classes/', function () use ($app)
 {
     /** @var stdClass $foo */
     $foo = $app->request->getJsonRawBody();
@@ -454,7 +575,7 @@ $app->post('/school_classes', function () use ($app)
     if($status)
     {
         $binder->SetStatusCode(201);
-        $binder->SetResponseDataForSchoolClass($school_class);
+        $binder->GetDataByObject($school_class);
 
     }
     else
@@ -466,58 +587,44 @@ $app->post('/school_classes', function () use ($app)
             'SchoolClass with name cannot be saved'
         );
     }
-});
 
-$app->put('school_classes/{school_classes_id}', function ($school_classes_id) use ($app)
-{
-    /** @var stdClass $foo */
-    $foo = $app->request->getJsonRawBody();
 
-    /** @var SchoolClass $school_class*/
-    $school_class = new SchoolClass(new \Dto\SchoolClass());
-    $school_class->setId($school_classes_id);
-    $school_class->setName($foo->name);
-    $status = $school_class->save();
 
-    $binder = new ResponseBinder();
-
-    if($status)
-    {
-        $binder->SetStatusCode(201);
-        $binder->SetResponseDataForSchoolClass($school_class);
-
-    }
-    else
-    {
-        $binder->SetStatusCode(409);
-        $binder->SetResponseError(409,
-            'Conflict',
-            'Can`t be saved .',
-            'SchoolClass with name cannot be saved'
-        );
-    }
 });
 
 $app->delete('/school_classes/{id}', function($id) use($app)
 {
-    $school_class = new SchoolRoom(new \Dto\SchoolRoom());
-    $status = $school_class->delete();
-
     $binder = new ResponseBinder();
-    if($status)
+
+    try
     {
-        $binder->SetStatusCode(200);
-        $binder->SetResponseDataForSchoolClass($school_class);
+        $school_class = SchoolClass::findById($id);
+        if ($school_class == false)
+        {
+            throw new Exception();
+        }
+        $status = $school_class->delete();
+        if($status)
+        {
+            $binder->SetStatusCode(200);
+            $binder->GetDataByObject($school_class);
+        }
+        else
+        {
+            $binder->SetStatusCode(409);
+            $binder->SetResponseError(409,
+                'Conflict',
+                'school_class cannot be deleted',
+                'school_class cannot be deleted'
+            );
+        }
     }
-    else
+    catch (Exception $e)
     {
-        $binder->SetStatusCode(409);
-        $binder->SetResponseError(409,
-            'Conflict',
-            'school_class cannot be deleted',
-            'school_class cannot be deleted'
-        );
+        echo 'Error', $e->getMessage();
     }
+
+
 });
 
 $app->get('/school_classes', function() use ($app)
@@ -537,7 +644,7 @@ $app->get('/school_classes', function() use ($app)
     if($school_classes)
     {
 
-        $binder->SetResponseDataForSchoolClass($school_classes);
+        $binder->GetDataByObject($school_classes);
         $response = $binder->Bind();
     }
     else
@@ -556,8 +663,8 @@ $app->get('/school_classes', function() use ($app)
 /**Get SchoolClass by id*/
 $app->get('/school_classes/{school_class_id}', function($school_class_id)
 {
-    $school_class = SchoolClass::findById($school_class_id);
     $binder = new ResponseBinder();
+    $school_class = SchoolClass::findById($school_class_id);
 
     if ($school_class)
     {
@@ -576,7 +683,7 @@ $app->get('/school_classes/{school_class_id}', function($school_class_id)
     return $response;
 });
 
-class ResponseBinder
+class ResponseBinder extends Getters
 {
     /** @var Response $response */
     private $response;
@@ -584,7 +691,6 @@ class ResponseBinder
     private $data;
     private $relationships;
     private $responseError;
-
     /**
      * Binder constructor.
      * @param string|null $contentType default response content type = 'application/vnd.api+json'
@@ -599,7 +705,7 @@ class ResponseBinder
         $this->SetRelationships();
         global $app;
         $statusCode = $this->response->getStatusCode();
-        //  var_dump($statusCode);
+        //var_dump($statusCode);
         if($statusCode == '200 OK') {
             $this->response->setJsonContent([
                 'links' => [
@@ -617,207 +723,62 @@ class ResponseBinder
         elseif($statusCode = '201 CREATED')
         {
             $this->response =[
-
             ];
         }
         return $this->response;
     }
-
     public function SetStatusCode($statusCode)
     {
         $this->response->setStatusCode($statusCode);
     }
-
-    public function SetResponseDataForTeacher($teachers)
+    public function SetResponseData($dataObject)
     {
-        /** @var Application $app*/
-        global $app;
-        $this->SetStatusCode(200);
         $data = [];
-
-        if(is_array($teachers))
+        if(is_array($dataObject))
         {
             /** @var Teacher $teacher */
-            foreach($teachers as $teacher)
+            foreach($dataObject as $item)
             {
-                $data[] = $this->GetDataByTeacher($teacher);
+                $data[] = $this->GetDataByObject($item);
             }
         }
         else
         {
             /** @var Teacher $teachers */
-            $data = $this->GetDataByTeacher($teachers);
+            $data = $this->GetDataByObject($dataObject);
         }
-        //$data[] = $this->GetRelationships();
-
-        $this->data = $data;
-        return $data;
-    }
-
-    public function SetResponseDataForSubject($subjects)
-    {
-        /** @var Application $app*/
-        global $app;
-        $this->SetStatusCode(200);
-        $data = [];
-
-        if(is_array($subjects))
-        {
-            /** @var Subject $subject */
-            foreach($subjects as $subject)
-            {
-                $data[] = $this->GetDataBySubject($subject);
-            }
-        }
-        else
-        {
-            /** @var Subject $subjects */
-            $data = $this->GetDataBySubject($subjects);
-        }
-        //$data[] = $this->GetRelationships();
-
-        $this->data = $data;
-        return $data;
-    }
-
-    public function SetResponseDataForSchoolRoom($school_rooms)
-    {
-        /** @var Application $app*/
-        global $app;
-        $this->SetStatusCode(200);
-        $data = [];
-
-        if(is_array($school_rooms))
-        {
-            /** @var SchoolRoom $school_room */
-            foreach($school_rooms as $school_room)
-            {
-                $data[] = $this->GetDataBySchoolRoom($school_room);
-            }
-        }
-        else
-        {
-            /** @var SchoolRoom $school_rooms */
-            $data = $this->GetDataBySchoolRoom($school_rooms);
-        }
-        //$data[] = $this->GetRelationships();
-
-        $this->data = $data;
-        return $data;
-    }
-
-    public function SetResponseDataForSchoolClass($school_classes)
-    {
-        /** @var Application $app*/
-        global $app;
-        $this->SetStatusCode(200);
-        $data = [];
-
-        if(is_array($school_classes))
-        {
-            /** @var SchoolClass $school_class */
-            foreach($school_classes as $school_class)
-            {
-                $data[] = $this->GetDataBySchoolClass($school_class);
-            }
-        }
-        else
-        {
-            /** @var SchoolClass $school_classes */
-            $data = $this->GetDataBySchoolClass($school_classes);
-        }
-        //$data[] = $this->GetRelationships();
-
         $this->data = $data;
         return $data;
     }
 
     /**
-     *@var Teacher $teacher
-     *@return array
+     * @param $object
+     * @return array
      */
-    public function GetDataByTeacher($teacher)
+    public function GetDataByObject($object)
     {
         global $app;
-        $data[] = [
-            'type' => 'teacher',
-            'id' => $teacher->getId(),
-            'attributes' => [
-                'title' => 'teacher',
-                'name_first' => $teacher->getNameFirst(),
-                'name_middle' => $teacher->getNameMiddle(),
-                'name_last' => $teacher->getNameLast(),
-            ],
-            'links' =>[
-                'self' => $app->request->getURI() . '/' . $teacher->getId()
-            ]
-        ];
-        return $data;
+        switch(get_class($object))
+        {
+            case 'Lesson':
+                //return $this->GetShortLessonDataByObject($object);
+                return $this->GetFullLessonDataByObject($object);
+            case 'LessonDay':
+                return $this->GetLessonDayDataByObject($object);
+            case 'LessonWeek':
+                return $this->GetLessonWeekDataByObject($object);
+            case 'SchoolClass':
+                return $this->GetSchoolClassDataByObject($object);
+            case 'SchoolRoom':
+                return $this->GetSchoolRoomDataByObject($object);
+            case 'Subject':
+                return $this->GetSubjectDataByObject($object);
+            case 'Teacher':
+                return $this->GetTeacherDataByObject($object);
+            default:
+                throw new InvalidArgumentException('unknown type: ' . get_class($object));
+        }
     }
-
-    /**
-     *@var Subject $subject
-     *@return array
-     */
-    public function GetDataBySubject($subject)
-    {
-        global $app;
-        $data[] = [
-            'type' => 'subject',
-            'id' => $subject->getId(),
-            'attributes' => [
-                'title' => 'subject',
-                'name' => $subject->getName(),
-            ],
-            'links' =>[
-                'self' => $app->request->getURI() . '/' . $subject->getId()
-            ]
-        ];
-        return $data;
-    }
-
-    /**
-     *@var SchoolRoom $school_room
-     *@return array
-     */
-    public function GetDataBySchoolRoom($school_room)
-    {
-        global $app;
-        $data[] = [
-            'type' => 'school_room',
-            'id' => $school_room->getId(),
-            'attributes' => [
-                'title' => 'shool room',
-                'name' => $school_room->getName(),
-            ],
-            'links' =>[
-                'self' => $app->request->getURI() . '/' . $school_room->getId()
-            ]
-        ];
-        return $data;
-    }
-
-    /**
-     *@var SchoolClass $school_class
-     *@return array
-     */
-    public function GetDataBySchoolClass($school_class)
-    {
-        global $app;
-        $data[] = [
-            'type' => 'school_class',
-            'id' => $school_class->getId(),
-            'attributes' => [
-                'title' => 'school class',
-                'name' => $school_class->getName(),
-            ],
-            'links' =>[
-                'self' => $app->request->getURI() . '/' . $school_class->getId()
-            ]
-        ];
-        return $data;
-    }
-
     public function SetRelationships()
     {
         /** @var \Phalcon\Mvc\Micro $app */
@@ -828,14 +789,12 @@ class ResponseBinder
                     'related' => '',
                 ],
                 'data'=> [
-
                 ]
             ]
         ];
         $this->relationships = $relationships;
         return $relationships;
     }
-
     public function GetMeta()
     {
         $meta = [
@@ -849,7 +808,6 @@ class ResponseBinder
         ];
         return $meta;
     }
-
     /**
      * @param int $http_code
      * @param string $http_status
@@ -861,7 +819,6 @@ class ResponseBinder
     {
         $this->SetStatusCode(404);
         global $app;
-
         $response = [
             'id' => $http_code,
             'links' => [
@@ -876,6 +833,126 @@ class ResponseBinder
         ];
         $this->responseError = $response;
         return $response;
+    }
+}
+class Getters
+{
+    protected function GetSchoolClassDataByObject($object)
+    {
+        /** @var SchoolClass $object */
+        $data[] = [
+            'type' => 'SchoolClass',
+            'id' => $object->getId(),
+            'attributes' => [
+                'name' => $object->getName()
+            ],
+        ];
+        return $data;
+    }
+    protected function GetTeacherDataByObject($object)
+    {
+        /** @var Teacher $object */
+        $data[] = [
+            'type' => 'Teacher',
+            'id' => $object->getId(),
+            'attributes' => [
+                'title' => 'teacher',
+                'name_first' => $object->getNameFirst(),
+                'name_middle' => $object->getNameMiddle(),
+                'name_last' => $object->getNameLast(),
+                'name_full' => $object->getNameFull(),
+                'name_short' => $object->getNameShort()
+            ],
+        ];
+        return $data;
+    }
+    protected function GetSubjectDataByObject($object)
+    {
+        /** @var Subject $object */
+        $data[] = [
+            'type' => 'Subject', // спросить про заглавную букву(Subject или subject) касаеться всех запросов
+            'id' => $object->getId(),
+            'attributes' => [
+                'name' => $object->getName(),
+                'name_shortest' => $object->getShortestName(),
+                'name_short' => $object->getShortName()
+            ],
+        ];
+        return $data;
+    }
+    protected function GetShortLessonDataByObject($object)
+    {
+        /** @var Lesson $object */
+        $data[] = [
+            'type' => 'Lesson',
+            'id' => $object->getId(),
+            'attributes' => [
+                'lesson_day_id' => $object->getLessonDayId(),
+                'lesson_number' => $object->getLessonNumber(),
+                'school_class_id' => $object->getSchoolClassId(),
+                'subject_id' => $object->getSubjectId(),
+                'school_room_id' => $object->getSchoolRoomId(),
+                'teacher_id' => $object->getTeacherId()
+            ],
+        ];
+        return $data;
+    }
+    protected function GetSchoolRoomDataByObject($object)
+    {
+        /** @var SchoolRoom $object */
+        $data[] = [
+            'type' => 'SchoolClass',
+            'id' => $object->getId(),
+            'attributes' => [
+                'name' => $object->getName(),
+            ],
+        ];
+        return $data;
+    }
+    protected function GetLessonDayDataByObject($object)
+    {
+        /** @var LessonDay $object */
+        $data[] = [
+            'type' => 'LessonDay',
+            'id' => $object->getId(),
+            'attributes' => [
+                'lesson_week' => $this->GetLessonWeekDataByObject($object->getLessonWeek()),
+                'week_day' => $object->getWeekday(),
+                'name' => $object->getName(),
+                'lesson_max_count' => $object->getLessonMaxCount(),
+            ],
+        ];
+        return $data;
+    }
+    protected function GetLessonWeekDataByObject($object)
+    {
+        /** @var LessonWeek $object */
+        $data[] = [
+            'type' => 'LessonWeek',
+            'id' => $object->getId(),
+            'attributes' => [
+                'number' => $object->getNumber(),
+                'name' => $object->getName(),
+            ],
+        ];
+        return $data;
+    }
+    protected function GetFullLessonDataByObject($object)
+    {
+        /** @var Lesson $object */
+        $data[] = [
+            'type' => 'Lesson',
+            'id' => $object->getId(),
+            'attributes' => [
+                //'lesson_day' => $this->GetLessonWeekDataByObject($object->getLessonDay()), // failed! in database set null.
+                'lesson_number' => $object->getLessonNumber(),
+                'school_class' => $this->GetSchoolClassDataByObject($object->getSchoolClass()),
+                'subject' => $this->GetSubjectDataByObject($object->getSubject()),
+                'school_room' => $this->GetSchoolRoomDataByObject($object->getSchoolRoom()),
+                'teacher' => $this->GetTeacherDataByObject($object->getTeacher()),
+            ],
+        ];
+        return $data;
     }
 }
 
