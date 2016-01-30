@@ -1,7 +1,7 @@
 <?php
 
 defined('BASE_DIR') || define('BASE_DIR', dirname(__FILE__));
-defined('APPS_DIR') || define('APPS_DIR', dirname(BASE_DIR) . DIRECTORY_SEPARATOR . 'apps' . DIRECTORY_SEPARATOR);
+defined('APPS_DIR') || define('APPS_DIR', BASE_DIR . DIRECTORY_SEPARATOR . 'apps' . DIRECTORY_SEPARATOR);
 
 use \Phalcon\Mvc\Micro as Application,
 	\Phalcon\Http\Response,
@@ -10,7 +10,8 @@ use \Phalcon\Mvc\Micro as Application,
 
 $di = new Di();
 
-require_once APPS_DIR . 'configs' . DIRECTORY_SEPARATOR . 'services.php';
+require_once '../apps/configs/services.php';
+//require_once APPS_DIR . 'configs' . DIRECTORY_SEPARATOR . '/services.php';
 
 $app = new Application();
 
@@ -20,58 +21,115 @@ $app = new Application();
 $app->post('/teachers', function () use ($app)
 {
     /** @var stdClass $foo */
-    $foo = $app->request->getJsonRawBody();
-    /** @var Teacher $teacher*/
-    $teacher = new Teacher(new \Dto\Teacher());
-    $teacher->setNameFirst($foo->name_first);
-    $teacher->setNameLast($foo->name_last);
-    $teacher->setNameMiddle($foo->name_middle);
-    $status = $teacher->save();
+    $request = $app->request->getJsonRawBody();
+
     $binder = new ResponseBinder();
+    try
+    {
+        /** @var Teacher $teacher*/
+        $teacher = new Teacher(new \Dto\Teacher());
+
+        if ($request->name_first)
+        {
+            $teacher->setNameFirst($foo->name_first);
+        }
+        if ($request->name_last)
+        {
+            $teacher->setNameLast($foo->name_last);
+        }
+        if ($request->name_middle)
+        {
+            $teacher->setNameMiddle($foo->name_middle);
+        }
+    }
+    catch (Exception $ex)
+    {
+        $binder->SetStatusCode(400);
+        var_dump($ex);
+        // TODO: отправить стек клиенту
+        return $binder->Bind();
+    }
+
+    $status = $teacher->save();
 
     if($status === true)
     {
         $binder->SetStatusCode(201);
         $binder->SetResponseData($teacher);
-        $response = $binder->Bind();
+        return $binder->Bind();
     }
     else
     {
         $binder->SetStatusCode(400);
-        $response = $binder->Bind();
+        return $binder->Bind();
     }
-    return $response;
 });
 
-// curl -i -X PUT -d '{"name_first":"dio","name_last":"thor","name_middle":"ns"}' http://timetable/api/teachers/16
+// curl -i -X PUT -d '{"name_first":"dio","name_last":"or","name_middle":"ns"}' http://timetable/api/teachers/16
+
 $app->put('/teachers/{teacher_id:[0-9]+}', function ($teacher_id) use ($app)
 {
-    $teacher = Teacher::findById($teacher_id);
-    /** @var stdClass $foo */
-    $foo = $app->request->getJsonRawBody();
-    $teacher->setNameFirst($foo->name_first);
-    $teacher->setNameLast($foo->name_last);
-    $teacher->setNameMiddle($foo->name_middle);
-    $status = $teacher->save();
     $binder = new ResponseBinder();
+    $teacher = Teacher::findById($teacher_id);
+    if(!$teacher)
+    {
+        $binder->SetStatusCode(404);
+        $binder->SetResponseError(404,
+            'NOT FOUND',
+            'teacher not found',
+            'teacher with id \''. $teacher_id . '\' missing in database');
+        return $binder->Bind();
+    }
+
+    /** @var stdClass $foo */
+    $request = $app->request->getJsonRawBody();
+
+    try
+    {
+        // выбрасывает сообщение Undefinded property "..." если не передаем его в запрос
+        // но иногда нам нужно изменить только одно поле класса и передаем в запрос 1 поле!
+        // if не дает записать налл но выбрасываеться сообщение.. решить как игнорировать сообщения в данном блоке
+        if ($request->name_first)
+        {
+            $teacher->setNameFirst($foo->name_first);
+        }
+        if ($request->name_last)
+        {
+            $teacher->setNameLast($foo->name_last);
+        }
+        if ($request->name_middle)
+        {
+            $teacher->setNameMiddle($foo->name_middle);
+        }
+    }
+    catch(Exception $ex)
+    {
+        $binder->SetStatusCode(400);
+        var_dump($ex);
+        // TODO: отправить стек клиенту
+        return $binder->Bind();
+    }
+    $status = $teacher->save();
 
     if($status === true)
     {
         $binder->SetStatusCode(202);
         $binder->SetResponseData($teacher);
-        $response = $binder->Bind();
+        return $binder->Bind();
     }
     else
     {
-
+        $binder->SetStatusCode(500);
+        return $binder->Bind();
     }
-    return $response;
 });
+
 // curl -i -X DELETE http://timetable/api/teachers/16
 $app->delete('/teachers/{teacher_id:[0-9]+}', function($teacher_id) use($app)
 {
     $teacher = Teacher::findById($teacher_id);
     $binder = new ResponseBinder();
+
     if($teacher)
     {
         $binder->SetResponseData($teacher);
@@ -302,6 +360,10 @@ class ResponseBinder
         $this->response->setStatusCode($statusCode);
     }
 
+    /**
+     * @param array|object $dataObject
+     * @return array
+     */
     public function SetResponseData($dataObject)
     {
         $data = [];
@@ -316,18 +378,16 @@ class ResponseBinder
         }
         else
         {
-            /** @var Teacher $teachers */
             $data = $dataObject->GetResponseData();
         }
 
         $this->data = $data;
         return $data;
     }
+
     /**
-     *@var Teacher $teacher
      *@return array
      */
-
     public function SetRelationships()
     {
         /** @var \Phalcon\Mvc\Micro $app */
