@@ -507,7 +507,7 @@ class Lesson
         ];
         return $data;
     }
-    protected function GetShortResponseData()
+    public function GetShortResponseData()
     {
         /** @var Lesson $object */
         $data[] = [
