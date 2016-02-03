@@ -176,7 +176,7 @@ class Teacher
     public function save()
     {
         $this->dto->save();
-	}
+    }
     public function update()
     {
         $this->dto->update();
@@ -184,5 +184,24 @@ class Teacher
     public function delete()
     {
         $this->dto->delete();
+    }
+
+
+    public function getResponseData()
+    {
+        /** @var Teacher $object */
+        $data[] = [
+            'type' => 'Teacher',
+            'id' => $this->getId(),
+            'attributes' => [
+                'title' => 'teacher',
+                'name_first' => $this->getNameFirst(),
+                'name_middle' => $this->getNameMiddle(),
+                'name_last' => $this->getNameLast(),
+                'name_full' => $this->getNameFull(),
+                'name_short' => $this->getNameShort()
+            ],
+        ];
+        return $data;
     }
 }

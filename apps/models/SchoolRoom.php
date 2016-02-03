@@ -100,19 +100,11 @@ class SchoolRoom
             ],
         ];
 
-        /** @var Simple $tmp_schoolrooms */
-        $tmp_schoolrooms = Dto::find($parameters);
-        if ($tmp_schoolrooms instanceof Simple && $tmp_schoolrooms->count() > 0)
+        /** @var Dto $tmp_schoolrooms */
+        $tmp_schoolrooms = Dto::findFirst($parameters);
+        if ($tmp_schoolrooms instanceof Dto)
         {
-            $return = [];
-
-            /** @var Dto $tmp_schoolroom */
-            foreach ($tmp_schoolrooms as $tmp_schoolroom)
-            {
-                $return[] = new SchoolRoom($tmp_schoolroom);
-            }
-
-            return $return;
+            return new SchoolRoom($tmp_schoolrooms);
         }
         return null;
     }
@@ -149,5 +141,18 @@ class SchoolRoom
     public function delete()
     {
         $this->dto->delete();
+    }
+
+    public function getResponseData()
+    {
+        /** @var SchoolRoom $object */
+        $data[] = [
+            'type' => 'SchoolClass',
+            'id' => $this->getId(),
+            'attributes' => [
+                'name' => $this->getName(),
+            ],
+        ];
+        return $data;
     }
 }

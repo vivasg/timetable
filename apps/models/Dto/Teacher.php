@@ -154,7 +154,8 @@ class Teacher extends Model
 			'alias' => 'lessons'
 		]);
 	}
-
+/**Метод Save не працює якщо є валідація Id
+ * Запитати як правильно ?
 	public function beforeValidation()
 	{
 		// Правила для id
@@ -162,7 +163,7 @@ class Teacher extends Model
 			'field' => 'id',
 			'message' => 'Not id in model',
 		]));
-	}
+	}**/
 
 	public function validation()
 	{
