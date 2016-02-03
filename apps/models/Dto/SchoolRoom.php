@@ -84,7 +84,7 @@ class SchoolRoom extends Model
 
     public function validation()
     {
-        // Правила для id
+        // Правила для id/*
         $this->validate(new PresenceOf([
             'field' => 'id',
             'message' => 'Not id in model',

@@ -156,6 +156,9 @@ class LessonDay extends Model
         $this->hasMany('id', '/Dto/Lesson', 'lesson_day_id', [
             'alias' => 'lessons'
         ]);
+        $this->belongsTo('lesson_week_id', 'Dto\LessonWeek', 'id', [
+            'alias' => 'week',
+        ]);
     }
 
     public function validation()

@@ -215,7 +215,7 @@ class Lesson
         {
             throw new \InvalidArgumentException('parameter "lessonDay" is null');
         }
-        if(gettype($lessonDay) != 'LessonDay')
+        if(!$lessonDay instanceof LessonDay)
         {
             throw new \InvalidArgumentException('invalid type parameter: "lessonDay"');
         }
@@ -269,13 +269,13 @@ class Lesson
      * @param SchoolClass $schoolClass
      * @return $this
      */
-    public function setSchoolClass(SchoolClass $schoolClass)
+    public function setSchoolClass($schoolClass)
     {
         if(is_null($schoolClass))
         {
             throw new \InvalidArgumentException('parameter "schoolClass" is null');
         }
-        if(get_class($schoolClass) != 'SchoolClass')
+        if(!$schoolClass instanceof SchoolClass)
         {
             throw new \InvalidArgumentException('invalid type of argument: "schoolClass"');
         }
@@ -301,7 +301,7 @@ class Lesson
      */
     public function setSchoolRoom($schoolRoom)
     {
-        if(get_class($schoolRoom) != 'SchoolRoom')
+        if(!$schoolRoom instanceof SchoolRoom)
         {
             throw new \InvalidArgumentException('invalid type of argument: "schoolRoom"');
         }
@@ -331,7 +331,7 @@ class Lesson
         {
             throw new \InvalidArgumentException('parameter "subject" is null');
         }
-        if(get_class($subject) != 'Subject')
+        if(!$subject instanceof Subject)
         {
             throw new \InvalidArgumentException('invalid type of argument: "subject"');
         }
@@ -490,6 +490,51 @@ class Lesson
         return null;
     }
 
+    public function save()
+    {
+        $status = $this->dto->save();
+        if(!$status)
+        {
+            return $this->$this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function create($data = null)
+    {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        $status = $this->dto->delete();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function GetResponseData()
+    {
+        return $this->getFullResponseData();
+        //return $this->getShortResponseData();
+    }
     public function getFullResponseData()
     {
         /** @var Lesson $object */
@@ -497,11 +542,11 @@ class Lesson
             'type' => 'Lesson',
             'id' => $this->getId(),
             'attributes' => [
-                //'lesson_day' => $this->GetLessonWeekDataByObject($object->getLessonDay()), // failed! in database set null.
+                'lesson_day' => $this->getLessonDay() == null? '' : $this->getLessonDay()->GetResponseData(), // failed! in database set null.
                 'lesson_number' => $this->getLessonNumber(),
                 'school_class' => $this->getSchoolClass()->GetResponseData(),
                 'subject' => $this->getSubject()->GetResponseData(),
-                'school_room' => $this->getSchoolRoom()->GetResponseData(),
+                //'school_room' => $this->getSchoolRoom()->getResponseData(),
                 'teacher' => $this->GetTeacher()->GetResponseData(),
             ],
         ];

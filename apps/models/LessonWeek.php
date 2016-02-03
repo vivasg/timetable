@@ -129,7 +129,7 @@ class LessonWeek
                 'id' => $id
             ],
         ];
-        return LessonWeek::getMany($parameters, 1);
+        return LessonWeek::getOne($parameters);
     }
 
     /**Select Lesson Week by Number
@@ -154,21 +154,20 @@ class LessonWeek
      */
     public static function getOne($parameters)
     {
-        /** @var Simple $tmp_lesson_week */
+        /** @var Dto $tmp_lesson_week */
         $tmp_lesson_week = Dto::findFirst($parameters);
-        if ($tmp_lesson_week instanceof Simple && $tmp_lesson_week->count() > 0)
+        if ($tmp_lesson_week instanceof Dto)
         {
-            return new LessonWeek($tmp_lesson_week->getFirst());//**???
+            return new LessonWeek($tmp_lesson_week);
         }
         return null;
     }
 
     /** Return an array of the selected items
      * @param $parameters
-     * @param $count
-     * @return array|null
+     * @return array|null return array of class LessonWeek if elements not found return null
      */
-    public static function getMany($parameters, $count)
+    public static function getMany($parameters)
     {
         /** @var Simple $tmp_lesson_weeks */
         $tmp_lesson_weeks = Dto::find($parameters);
@@ -180,15 +179,53 @@ class LessonWeek
             foreach ($tmp_lesson_weeks as $tmp_lesson_week)
             {
                 $return[] = new LessonWeek($tmp_lesson_week);
-
-                $count--;
-                if($count == 0)break;
             }
 
             return $return;
         }
         return null;
     }
+
+    public function save()
+    {
+        $status = $this->dto->save();
+        if(!$status)
+        {
+            return $this->$this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function create($data = null)
+        {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        $status = $this->dto->delete();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
     public function getResponseData()
     {
         /** @var LessonWeek $object */

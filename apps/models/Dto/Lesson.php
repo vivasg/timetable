@@ -281,7 +281,7 @@ class Lesson extends Model
     }
 
     public function validation()
-    {
+    {/*
         //rules for id
         $this->validate(new PresenceOf([
             'field' => 'id',
@@ -359,7 +359,7 @@ class Lesson extends Model
             'field' => 'teacherId',
             'message' => 'Not teacherId in model',
         ]));
-
+*/
 
 
         if ($this->validationHasFailed() == true)

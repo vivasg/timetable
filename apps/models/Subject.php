@@ -105,7 +105,7 @@ class Subject
 
     /**
      * @param $id
-     * @return array|null
+     * @return Subject|null
      */
     public static function findById($id)
     {
@@ -116,19 +116,11 @@ class Subject
             ],
         ];
 
-        /** @var Simple $tmp_subjects */
-        $tmp_subjects = Dto::find($parameters);
-        if ($tmp_subjects instanceof Simple && $tmp_subjects->count() > 0)
+        /** @var Dto $tmp_subjects */
+        $tmp_subject = Dto::findFirst($parameters);
+        if ($tmp_subject instanceof Dto)
         {
-            $return = [];
-
-            /** @var Dto $tmp_subject */
-            foreach ($tmp_subjects as $tmp_subject)
-            {
-                $return[] = new Subject($tmp_subject);
-            }
-
-            return $return;
+            return new Subject($tmp_subject);
         }
         return null;
     }

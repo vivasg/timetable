@@ -1,7 +1,7 @@
 <?php
 
 defined('BASE_DIR') || define('BASE_DIR', dirname(__FILE__));
-defined('APPS_DIR') || define('APPS_DIR', BASE_DIR . DIRECTORY_SEPARATOR . 'apps' . DIRECTORY_SEPARATOR);
+defined('APPS_DIR') || define('APPS_DIR', dirname(BASE_DIR) . DIRECTORY_SEPARATOR . 'apps' . DIRECTORY_SEPARATOR);
 
 use \Phalcon\Mvc\Micro as Application,
 	\Phalcon\Http\Response,
@@ -10,8 +10,8 @@ use \Phalcon\Mvc\Micro as Application,
 
 $di = new Di();
 
-require_once '../apps/configs/services.php';
-//require_once APPS_DIR . 'configs' . DIRECTORY_SEPARATOR . '/services.php';
+//require_once '../apps/configs/services.php';
+require_once APPS_DIR . 'configs' . DIRECTORY_SEPARATOR . 'services.php';
 
 $app = new Application();
 
@@ -146,8 +146,6 @@ $app->delete('/teachers/{teacher_id:[0-9]+}', function($teacher_id) use($app)
     }
     $response = $binder->Bind();
     return $response;
-
-    
 });
 
 $app->get('/teachers', function() use ($app)
@@ -184,7 +182,7 @@ $app->get('/teachers', function() use ($app)
 });
 
 
-$app->get('/teachers/{teacher_id}', function($teacher_id)
+$app->get('/teachers/{teacher_id:[0-9]+}', function($teacher_id)
 {
 	$teacher = Teacher::findById($teacher_id);
     $binder = new ResponseBinder();
@@ -209,7 +207,7 @@ $app->get('/teachers/{teacher_id}', function($teacher_id)
 
 //--------------------------------API Lesson--------------------------------
 
-$app->get('/lessons/{id}', function($lessonId)
+$app->get('/lessons/{id:[0-9]+}', function($lessonId)
 {
     $lesson = Lesson::findById($lessonId);
     $binder = new ResponseBinder();
@@ -218,79 +216,482 @@ $app->get('/lessons/{id}', function($lessonId)
     {
         $binder->SetStatusCode(200);
         $binder->SetResponseData($lesson);
-        $response = $binder->Bind();
+    }
+    else
+    {
+        $binder->SetResponseError(400,
+            'NOT EXIST',
+            'element not exist',
+            'lesson with id:'. $lessonId . ' does not exist');
+    }
+    return $binder->Bind();
+});
+
+// http://timetable/api/lessons/?subject=%D0%A4%D1%96%D0%B7%D0%B8%D0%BA%D0%B0
+$app->get('/lessons', function() use ($app){
+    //SubjectName
+    //TeacherName
+    $request = new Request();
+    if($request->has('subject'))
+    {
+        $subjectName = $request->get('subject');
+        /** @var Subject|array $subjects */
+        $subjects = Subject::findByName($subjectName);
+        if ($subjects)
+        {
+            //$lessons;
+            if(is_array($subjects))
+            {
+                /** @var Subject $subject */
+                foreach ($subjects as $subject)
+                {
+                    $lessons = Lesson::findBySubjectId($subject->getId());
+                }
+            }
+            else
+            {
+                $lessons = Lesson::findBySubjectId($subjects->getId());
+            }
+        }
+    }
+    elseif($request->has('teacher'))
+    {
+        $teacherName = $request->get('teacher');
+        /** @var Teacher|array $teachers */
+        $teachers = Teacher::findByName($teacherName);
+        if(is_array($teachers))
+        {
+            /** @var Teacher $teacher */
+            foreach ($teachers as $teacher)
+            {
+                $lessons = Lesson::findByTeacherId($teacher->getId());
+            }
+        }
+        else
+        {
+            $lessons = Lesson::findByTeacherId($teachers->getId());
+        }
+    }
+    else
+    {
+        $lessons = Lesson::find();
+    }
+
+    $binder = new ResponseBinder();
+
+    if($lessons)
+    {
+
+        $binder->SetStatusCode(200);
+        $binder->SetResponseData($lessons);
     }
     else
     {
         $binder->SetResponseError(404,
             'NOT FOUND',
-            'element not found',
-            'lesson with id \''. $lessonId . '\' missing in database');
-        $response = $binder->Bind();
+            'lessons not found',
+            'lessons not found in database');
     }
+    $response =  $binder->Bind();
     return $response;
 });
 
-$app->get('/lessons', function() use ($app){
-
-});
-
+// не работает решить!
+// curl -i -X POST -d '{"lesson_day_id":"1", "lesson_number":"1", "school_class_id":"1", "subject_id":"1", "school_room_id":"1", "teacher_id":"1"}' http://timetable/api/lessons
 $app->post('/lessons', function() use ($app){
+    /** @var stdClass $foo */
+    $request = $app->request->getJsonRawBody();
+    //var_dump($request);
+    $lesson = new Lesson(new \Dto\Lesson());
+    /** @var LessonDay $lessonDay */
+    $lessonDay = LessonDay::findById($request->lesson_day_id);
+    /** @var int $lessonNumber */
+    $lessonNumber = $request->lesson_number;
+    /** @var SchoolClass $schoolClass */
+    $schoolClass = SchoolClass::findById($request->school_class_id);
+    /** @var Subject $subject */
+    $subject = Subject::findById($request->subject_id);
+    /** @var SchoolRoom $schoolRoom */
+    $schoolRoom = SchoolRoom::findById($request->school_room_id);
+    /** @var Teacher $teacher */
+    $teacher = Teacher::findById($request->teacher_id);
+
+/*
+    $lesson->setLessonDayId($lessonDay->getId() * 1);
+    $lesson->setSchoolClassId($schoolClass->getId() * 1);
+    $lesson->setSubjectId($subject->getId() * 1);
+    $lesson->setSchoolRoomId($schoolRoom->getId() * 1);
+    $lesson->setTeacherId($teacher->getId() * 1);
+
+    $lesson->setLessonDay($lessonDay);
+    $lesson->setSchoolClass($schoolClass);
+    $lesson->setLessonNumber($lessonNumber * 1);
+    $lesson->setSubject($subject);
+    $lesson->setSchoolRoom($schoolRoom);
+    $lesson->setTeacher($teacher);
+*/
+
+/*
+    $status = $lesson->create(
+        [
+            'lessonDayId' => $lessonDay->getId() * 1,
+            'lessonNumber' => $lessonNumber * 1,
+            'schoolClassId' => $schoolClass->getId() * 1,
+            'subjectId' => $subject->getId() * 1,
+            'schoolRoomId' => $schoolRoom->getId() * 1,
+            'teacherId' =>$teacher->getId() * 1,
+            'lessonDay' => $lessonDay->getId() * 1,
+            'schoolClass' => $schoolClass,
+            'subject' => $subject,
+            'schoolRoom' => $schoolRoom,
+            'teacher' =>$teacher,
+        ]
+    );
+
+    var_dump($status);
+    var_dump($subject->getId());*/
+});
+
+//
+// curl -i -X POST -d '{"lesson_day_id":"1", "lesson_number":"1", "school_class_id":"1", "subject_id":"1", "school_room_id":"1", "teacher_id":"1"}' http://timetable/api/lessons
+$app->put('/lessons/{lesson_id:[0-9]+}', function($lesson_id) use ($app){
+    $lesson = Lesson::findById($lesson_id);
+    $request = $app->request->getJsonRawBody();
+
+    if($request->lesson_day_id)
+    {
+        $lessonDay = LessonDay::findById($request->lesson_day_id);
+        $lesson->setLessonDay($lessonDay);
+        $lesson->setLessonDayId($lessonDay->getId() * 1);
+    }
+    if($request->lesson_number)
+    {
+        $lessomNumber = $request->lesson_number;
+        $lesson->setLessonNumber($lessomNumber*1);
+    }
+    if($request->school_class_id)
+    {
+        /** @var SchoolClass $schoolClass */
+        $schoolClass = SchoolClass::findById($request->school_class_id);
+        $lesson->setSchoolClass($schoolClass);
+        $lesson->setSchoolClassId($schoolClass->getId()*1);
+    }
+    if($request->subject_id)
+    {
+        $subject = Subject::findById($request->subject_id);
+        $lesson->setSubject($subject);
+        $lesson->setSubjectId($subject->getId()*1);
+    }
+    if($request->school_room_id)
+    {
+        $schoolRoom = SchoolRoom::findById($request->school_room_id);
+        echo $schoolRoom->getName();
+        $lesson->setSchoolRoom($schoolRoom);
+        $lesson->setSchoolRoomId($schoolRoom->getId()*1);
+    }
+    if($request->teacher_id)
+    {
+        $teacher = Teacher::findById($request->teacher_id);
+        $lesson->setTeacher($teacher);
+        $lesson->setTeacherId($teacher->getId()*1);
+    }
+    $status = $lesson->save();
+    var_dump($status);
+
+    /*if()*/
+    //echo $lesson->getLessonDay();
+    var_dump($lesson->getLessonDayId());
+    var_dump($lesson->getLessonDay()->getId());
+    //var_dump($lessonDay instanceof LessonDay);
+    //var_dump($request);
 
 });
 
-$app->put('/lessons', function() use ($app){
-
-});
-
-$app->delete('/lesson', function() use ($app){
-
+// curl -i -X DELETE http://timetable/api/lessons/1
+$app->delete('/lessons/{lesson_id:[0-9]+}', function($lesson_id) use ($app){
+    /** @var Lesson $lesson */
+    $binder = new ResponseBinder();
+    $lesson = Lesson::findById($lesson_id);
+    if($lesson)
+    {
+        try
+        {
+            $lesson->delete();
+            $binder->SetStatusCode(200);
+        }
+        catch(Exception $ex)
+        {
+            $binder->SetStatusCode(500);
+        }
+    }
+    else
+    {
+        $binder->SetResponseError(404, 'NOT EXIST', 'Lesson not exist', 'Lesson with id:' . $lesson_id . ' not exist');
+    }
+    return $binder->Bind();
 });
 
 //--------------------------------API LessonDay--------------------------------
 
 $app->get('/lessonDays', function() use ($app){
+    // name
+    $binder = new ResponseBinder();
 
+    $request = new Request();
+    $name = null;
+    if($request->has('name'))
+    {
+        $name = $request->get('name');
+        $lessonDays = LessonDay::findByName($name);
+    }
+    else
+    {
+        $lessonDays = null;
+    }
+    if($lessonDays)
+    {
+        $binder->SetStatusCode(200);
+        $binder->SetResponseData($lessonDays);
+    }
+    else
+    {
+        $binder->SetResponseError(404, 'NOT FOUND', 'Lesson Days not found', 'Lesson Days with name:' . $name . ' not found');
+    }
+    return $binder->Bind();
 });
 
-$app->get('/lessonDays/{id}', function($lessonDayId){
+$app->get('/lessonDays/{lesson_day_id:[0-9]+}', function($lesson_day_id){
 
+    $binder = new ResponseBinder();
+    $lessonDay = LessonDay::findById($lesson_day_id);
+
+    if($lessonDay)
+    {
+        $binder->SetStatusCode(200);
+        $binder->SetResponseData($lessonDay);
+    }
+    else
+    {
+        $binder->SetResponseError(404, 'NOT EXIST', 'Lesson Day not exist', 'Lesson Day with id:' . $lesson_day_id . ' not exist');
+    }
+    return $binder->Bind();
 });
 
+// дописать...
+// curl -i -X POST -d '{"lesson_week_id":"1", "wday":"1", "name":"Monday", "lesson_max_count":"8"}' http://timetable/api/lessonDays
 $app->post('/lessonDays', function() use ($app){
+    $binder = new ResponseBinder();
+    $request = $app->request->getJsonRawBody();
+    var_dump($request);
+});
+
+// дописать...
+$app->put('/lessonDays/{lesson_day_id:[0-9]+}', function($lesson_day_id) use ($app){
+    $binder = new ResponseBinder();
+    /** @var LessonDay $lessonDay */
+    $lessonDay= LessonDay::findById($lesson_day_id);
+
+
 
 });
 
-$app->put('/lessonDays', function() use ($app){
+$app->delete('/lessonDays/{lesson_day_id:[0-9]+', function($lesson_day_id) use ($app){
+    $binder = new ResponseBinder();
+    $lessonDay = LessonDay::findById($lesson_day_id);
 
-});
-
-$app->delete('/lessonDays', function() use ($app){
-
+    if($lessonDay)
+    {
+        $binder->SetStatusCode(200);
+        try
+        {
+            $lessonDay->delete();
+        }
+        catch(Exception $ex)
+        {
+            $binder->SetStatusCode(500);
+        }
+    }
+    else
+    {
+        $binder->SetResponseError(404, 'NOT EXIST', 'Lesson Day not exist', 'Lesson Day with id:' . $lesson_day_id . ' not exist');
+    }
+    return $binder->Bind();
 });
 
 
 //--------------------------------API LessonWeek--------------------------------
 
-$app->get('/LessonWeeks', function() use ($app){
+$app->get('/lessonWeeks', function() use ($app){
+    /** @var stdClass $foo */
+    $request = new Request();
+    //var_dump($request->get('number'));
+    $binder = new ResponseBinder();
+    if($request->has('name') && $request->has('number'))
+    {
+        $parameters = [
+            'conditions' => 'number=:number: AND name=:name:',
+            'bind' => [
+                'number' => $request->get('number'),
+                'name' => $request->get('name')
+            ],
+        ];
+    }
+    elseif($request->has('number'))
+    {
+        $parameters = [
+            'conditions' => 'number=:number:',
+            'bind' => [
+                'number' => $request->get('number')
+            ],
+        ];
+    }
+    elseif($request->has('name'))
+    {
+        $parameters = [
+            'conditions' => 'name=:name:',
+            'bind' => [
+                'name' => $request->get('name')
+            ],
+        ];
+    }
+    else
+    {
+        return;
+    }
+    $lessonWeeks = LessonWeek::getMany($parameters);
+    //var_dump($lessonWeeks);
+    if($lessonWeeks)
+    {
+        $binder->SetStatusCode(200);
+        $binder->SetResponseData($lessonWeeks);
+    }
+    else
+    {
 
+    }
+    return $binder->Bind();
 });
 
-$app->get('/LessonWeeks/{id}', function($lessonId){
+$app->get('/lessonWeeks/{lesson_week_id:[0-9]+}', function($lesson_week_id){
+    $binder = new ResponseBinder();
+    $lessonWeek = LessonWeek::findById($lesson_week_id);
 
+    if ($lessonWeek instanceof LessonWeek) {
+        $binder->SetStatusCode(200);
+        $binder->SetResponseData($lessonWeek);
+    } else {
+        $binder->SetStatusCode(404);
+        $binder->SetResponseError(404, 'NOT EXIST', 'lesson week not exist', 'lesson week with id:' . $lesson_week_id . ' does not exist');
+    }
+    $response = $binder->Bind();
+    return $response;
 });
 
-$app->post('/LessonWeeks', function() use ($app){
-
+// curl -i -X POST -d '{"number":"2", "name":"second week"}' http://timetable/api/lessonWeeks
+$app->post('/lessonWeeks', function() use ($app){
+    $binder = new ResponseBinder();
+    $request = $app->request->getJsonRawBody();
+    //var_dump($request);
+    $lessonWeek = new LessonWeek(new \Dto\LessonWeek());
+    try
+    {
+        if ($request->name) {
+            $lessonWeek->setName($request->name);
+        }
+        if ($request->number) {
+            $lessonWeek->setNumber($request->number * 1);
+        }
+    }
+    catch (Exception $ex)
+    {
+        echo 'err';
+        $binder->SetStatusCode(500);
+        return $binder->Bind();
+    }
+    try
+    {
+        $status = $lessonWeek->save();
+    }
+    catch(PDOException $ex)
+    {
+        $status = null;
+        $binder->SetResponseError(400, 'BAD REQUEST', 'problem with data', $ex->errorInfo);
+        return  $binder->Bind();
+    }
+    catch(Exception $ex)
+    {
+        $status = null;
+        $binder->SetStatusCode(500);
+    }
+    if($status)
+    {
+        $binder->SetStatusCode(500);
+    }
+    else
+    {
+        $binder->SetStatusCode(200);
+    }
+    return $binder->Bind();
 });
 
-$app->put('/LessonWeeks', function() use ($app){
+// curl -i -X PUT -d '{"number":"1", "name":"first week"}' http://timetable/api/lessonWeeks/1
+$app->put('/lessonWeeks/{lesson_week_id:[0-9]+}', function($lesson_week_id) use ($app){
+    $binder = new ResponseBinder();
+    /** @var LessonWeek $lessonWeek */
+    $lessonWeek = LessonWeek::findById($lesson_week_id);
 
+    $request = $app->request->getJsonRawBody();
+    try
+    {
+        if ($lessonWeek) {
+            if ($request->name) {
+                $lessonWeek->setName($request->name);
+            }
+            if ($request->number) {
+                $lessonWeek->setNumber($request->number * 1);
+            }
+            $status = $lessonWeek->save();
+            if ($status) {
+                $binder->SetResponseError(400, 'NOT VALID', 'request have invalid data', $status);
+            }
+            $binder->SetStatusCode(200);
+        } else {
+            $binder->SetResponseError(404, 'NOT EXIST', 'Lesson Week not exist', 'Lesson Week with id:' . $lesson_week_id . ' not exist');
+
+        }
+    }
+    catch(Exception $ex)
+    {
+        $binder->SetStatusCode(500);
+    }
+    return $binder->Bind();
 });
 
-$app->delete('/LessonWeeks', function() use ($app){
+// curl -i -X DELETE http://timetable/api/LessonWeeks/1
+$app->delete('/lessonWeeks/{lesson_week_id:[0-9]+}', function($lesson_week_id) use ($app){
+    $binder = new ResponseBinder();
+    /** @var LessonWeek $lessonWeek */
+    $lessonWeek = LessonWeek::findById($lesson_week_id);
 
+    if($lessonWeek)
+    {
+        try
+        {
+            $lessonWeek->delete();
+            $binder->SetStatusCode(200);
+        }
+        catch(Exception $ex)
+        {
+            $binder->SetStatusCode(500);
+        }
+    }
+    else
+    {
+        $binder->SetResponseError(404, 'NOT EXIST', 'Lesson Week not exist', 'Lesson Week with id:' . $lesson_week_id . ' not exist ');
+    }
+    return $binder->Bind();
 });
+
 
 class ResponseBinder
 {
@@ -300,7 +701,7 @@ class ResponseBinder
     private $data;
     private $relationships;
     private $responseError;
-
+    private $serverErrors;
     /**
      * Binder constructor.
      * @param string|null $contentType default response content type = 'application/vnd.api+json'
@@ -327,7 +728,7 @@ class ResponseBinder
                 'meta' => $this->GetMeta(),
             ]);
         }
-        elseif($statusCode == '404 NOT FOUND')
+        elseif($statusCode == '404 Not Found' || $statusCode == '400 Bad Request')
         {
             $this->response->setJsonContent($this->responseError);
         }
@@ -351,7 +752,12 @@ class ResponseBinder
                 'meta' => $this->GetMeta(),
             ]);
         }
+        else
+        {
+            $this->SetStatusCode(500);
+            $this->response->setJsonContent('Server error');
 
+        }
         return $this->response;
     }
 
@@ -370,10 +776,11 @@ class ResponseBinder
 
         if(is_array($dataObject))
         {
-            /** @var Teacher $item */
+            /** @var Lesson|Teacher|Subject|LessonWeek|LessonDay|SchoolRoom|SchoolClass $item */
             foreach($dataObject as $item)
             {
                 $data[] = $item->GetResponseData();
+
             }
         }
         else
@@ -382,9 +789,14 @@ class ResponseBinder
         }
 
         $this->data = $data;
+        //var_dump($this->data);
         return $data;
     }
 
+    public function SetServerErrors()
+    {
+
+    }
     /**
      *@return array
      */

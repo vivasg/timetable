@@ -91,13 +91,13 @@ class LessonWeek extends Model
     public function validation()
     {
         //rules with id
-        $this->validate(new PresenceOf([
+        /*$this->validate(new PresenceOf([
             'field' => 'id',
             'message' => 'Not id in model',
-        ]));
+        ]));*/
 
         //rules with number
-        $this->validate(new PresenceOf([
+        /*$this->validate(new PresenceOf([
             'field' => 'number',
             'message' => 'Not name in model',
         ]));
@@ -119,7 +119,7 @@ class LessonWeek extends Model
         $this->validate(new PresenceOf([
             'field' => 'name',
             'message' => 'Not name in model',
-        ]));
+        ]));*/
 
         if ($this->validationHasFailed() == true)
         {

@@ -85,10 +85,10 @@ class SchoolClass extends Model
     public function validation()
     {
         // Правила для id
-        $this->validate(new PresenceOf([
+        /*$this->validate(new PresenceOf([
             'field' => 'id',
             'message' => 'Not id in model',
-        ]));
+        ]));*/
 
         // Правила для name
         $this->validate(new PresenceOf([

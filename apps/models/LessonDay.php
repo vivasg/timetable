@@ -15,6 +15,7 @@ class LessonDay
      */
     public function getId()
     {
+        if($this->dto)
         return $this->dto->getId();
     }
 
@@ -147,6 +148,7 @@ class LessonDay
     }
 
     /**
+     * @param DTO $dto
      * LessonDay constructor.
      */
     public function __construct($dto)
@@ -156,7 +158,7 @@ class LessonDay
 
     /**Get Lesson Day by Id
      * @param $id
-     * @return array|null
+     * @return LessonDay|null
      */
     public static function findById($id)
     {
@@ -219,7 +221,6 @@ class LessonDay
 
     /**Return an array of the selected items
      * @param $parameters
-     * @param $count
      * @return array|null
      */
     public static function getMany($parameters)
@@ -231,7 +232,7 @@ class LessonDay
             $return = [];
 
             /** @var Dto $tmp_lesson_day */
-            foreach ($tmp_lesson_day as $tmp_lesson_days)
+            foreach ($tmp_lesson_days as $tmp_lesson_day)
             {
                 $return[] = new LessonDay($tmp_lesson_day);
             }
@@ -239,6 +240,46 @@ class LessonDay
             return $return;
         }
         return null;
+    }
+
+    public function save()
+    {
+        $status = $this->dto->save();
+        if(!$status)
+        {
+            return $this->$this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function create($data = null)
+    {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        $status = $this->dto->delete();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
     }
 
     /** Return an element of the selected item
@@ -256,14 +297,15 @@ class LessonDay
         return null;
     }
 
-    public function getseponseData()
+    public function GetResponseData()
     {
+        //var_dump($this->getLessonWeek());
         /** @var LessonDay $object */
         $data[] = [
             'type' => 'LessonDay',
             'id' => $this->getId(),
             'attributes' => [
-                'lesson_week' => $this->getLessonWeek()->GetResponseData(),
+                'lesson_week' => $this->getLessonWeek() == null? '' : $this->getLessonWeek()->GetResponseData(),
                 'week_day' => $this->getWeekday(),
                 'name' => $this->getName(),
                 'lesson_max_count' => $this->getLessonMaxCount(),
