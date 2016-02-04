@@ -154,15 +154,19 @@ class Teacher extends Model
 			'alias' => 'lessons'
 		]);
 	}
-
-	public function validation()
+/**Метод Save не працює якщо є валідація Id
+ * Запитати як правильно ?
+	public function beforeValidation()
 	{
 		// Правила для id
 		$this->validate(new PresenceOf([
 			'field' => 'id',
 			'message' => 'Not id in model',
 		]));
+	}**/
 
+	public function validation()
+	{
 		// Правила для name_first
 		$this->validate(new PresenceOf([
 			'field' => 'name_first',

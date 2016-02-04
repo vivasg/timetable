@@ -84,7 +84,6 @@ class Subject
             'bind' => [
                 'name' => $names
             ],
-            'order' => 'name',
         ];
 
         /** @var Simple $tmp_subjects */
@@ -117,12 +116,68 @@ class Subject
             ],
         ];
 
-        /** @var Dto $tmp_subject */
-        $tmp_subject = Dto::findFirst($parameters);
-        if ($tmp_subject instanceof Dto)
+        /** @var Dto $tmp_subjects */
+        $tmp_subjects = Dto::findFirst($parameters);
+        if ($tmp_subjects instanceof Dto)
         {
-            return new Teacher($tmp_subject);
+            return new Subject($tmp_subjects);
         }
         return null;
+    }
+
+    public static function find()
+    {
+        /** @var Simple $tmp_subjects */
+        $tmp_subjects = Dto::find([
+            'order' => 'name'
+        ]);
+        if ($tmp_subjects instanceof Simple && $tmp_subjects->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_subject */
+            foreach ($tmp_subjects as $tmp_subject)
+            {
+                $return[] = new Subject($tmp_subject);
+            }
+
+            return $return;
+        }
+        return null;
+    }
+
+    public function save()
+    {
+        $this->dto->save();
+        $msg = $this->dto->getMessages();
+        if ($msg)
+        {
+            return $msg;
+        }
+        return true;
+    }
+    public function update()
+    {
+        $this->dto->update();
+    }
+    public function delete()
+    {
+        $this->dto->delete();
+    }
+
+
+    public function getResponseData()
+    {
+        /** @var Subject $object */
+        $data[] = [
+            'type' => 'Subject', // спросить про заглавную букву(Subject или subject) касаеться всех запросов
+            'id' => $this->getId(),
+            'attributes' => [
+                'name' => $this->getName(),
+                'name_shortest' => $this->getShortestName(),
+                'name_short' => $this->getShortName()
+            ],
+        ];
+        return $data;
     }
 }

@@ -99,15 +99,18 @@ class Subject extends Model
             'alias' => 'lessons'
         ]);
     }
-
-    public function validation()
+    /**
+    public function beforeValidation()
     {
         // Правила для id
         $this->validate(new PresenceOf([
             'field' => 'id',
             'message' => 'Not id in model',
         ]));
+    }*/
 
+    public function validation()
+    {
         // Правила для name
         $this->validate(new PresenceOf([
             'field' => 'name',
@@ -130,6 +133,7 @@ class Subject extends Model
         return true;
 
     }
+
 
     /**
      * @param array|null $parameters
