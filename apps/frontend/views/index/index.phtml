@@ -1,30 +1,273 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>MyBootStrapReg</title>
-    <meta charset="utf-8" >
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/style.less" rel="stylesheet/less">
-    <script>
-        less = {
-            env: "development",
-            async: false,
-            fileAsync: false,
-            poll: 1000,
-            functions: {},
-            dumpLineNumbers: "comments",
-            relativeUrls: false,
-            rootpath: ":/less/"
-        };
-    </script>
-    <script src="js/less.js" type="text/javascript"></script>
-</head>
-<body>
-<div class="container">
-    
-</div>
-<script src="js/jquery-1.11.3.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/myScript.js"></script>
-</body>
-</html>
+<?php
+
+$teacher = Teacher::findById(time());
+
+if ($teacher != null)
+{
+    throw new Exception('Test failed!');
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$teacher = new Teacher();
+
+if ($teacher == null)
+{
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+try
+{
+    $teacher->setNameFirst([]);
+}
+catch (InvalidArgumentException $e)
+{
+    if ($e->getMessage() != 'invalid type of argument: "firstName"')
+    {
+        var_dump($e->getMessage());
+        throw new Exception('Test failed!');
+    }
+}
+catch (Exception $e)
+{
+    var_dump($e->getMessage());
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+try
+{
+    $teacher->setNameFirst(65465546);
+}
+catch (InvalidArgumentException $e)
+{
+    if ($e->getMessage() != 'invalid type of argument: "firstName"')
+    {
+        var_dump($e->getMessage());
+        throw new Exception('Test failed!');
+    }
+}
+catch (Exception $e)
+{
+    var_dump($e->getMessage());
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+$teacher->setNameFirst('NameFirst');
+$teacher->setNameLast('NameLast');
+$teacher->setNameMiddle('NameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddleNameMiddle');
+
+$result = $teacher->save();
+if ($result === false)
+{
+    throw new Exception('Test failed!');
+}
+
+$teacher->setNameMiddle('NameMiddle');
+
+$result = $teacher->save();
+if ($result !== false)
+{
+    throw new Exception('Test failed!');
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$teacher = Teacher::findById('2');
+
+if ($teacher == null)
+{
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+if ($teacher->getNameLast() != 'Евклід')
+{
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+try
+{
+    $teacher->setNameFirst(654654654);
+}
+catch (InvalidArgumentException $e)
+{
+    if ($e->getMessage() != 'invalid type of argument: "firstName"')
+    {
+        var_dump($e->getMessage());
+        throw new Exception('Test failed!');
+    }
+}
+catch (Exception $e)
+{
+    var_dump($e->getMessage());
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+try
+{
+    $teacher->setNameFirst('Евклідушка');
+    $teacher->save();
+}
+catch (Exception $e)
+{
+    var_dump($e->getMessage());
+    throw new Exception('Test failed!');
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Lesson
+$lesson = Lesson::findById(time());
+
+if ($lesson != null)
+{
+    throw new Exception('Test failed!');
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$lesson = new Lesson();
+
+if ($lesson == null)
+{
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+try
+{
+    $lesson->setLessonDayId([]);
+}
+catch (InvalidArgumentException $e)
+{
+    if ($e->getMessage() != 'parameter "lesson_day_id" must be integer or null')
+    {
+        var_dump($e->getMessage());
+        throw new Exception('Test failed!');
+    }
+}
+catch (Exception $e)
+{
+    var_dump($e->getMessage());
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+try
+{
+    $lesson->setLessonDayId(null);
+}
+catch (Exception $e)
+{
+    var_dump($e->getMessage());
+    throw new Exception('Test failed!');
+}
+
+try
+{
+    $lesson->setLessonDayId(1);
+}
+catch (Exception $e)
+{
+    var_dump($e->getMessage());
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+try
+{
+    $lesson->setSchoolClassId('asdasdsad');
+}
+catch (InvalidArgumentException $e)
+{
+    if ($e->getMessage() != 'parameter "schoolClassId" can be integer')
+    {
+        var_dump($e->getMessage());
+        throw new Exception('Test failed!');
+    }
+}
+catch (Exception $e)
+{
+    var_dump($e->getMessage());
+    throw new Exception('Test failed!');
+}
+
+try
+{
+    $lesson->setSchoolClassId(null);
+}
+catch (InvalidArgumentException $e)
+{
+    if ($e->getMessage() != 'parameter "schoolClassId" can be integer')
+    {
+        var_dump($e->getMessage());
+        throw new Exception('Test failed!');
+    }
+}
+catch (Exception $e)
+{
+    var_dump($e->getMessage());
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+$lesson->setSchoolClassId(1);
+$lesson->setTeacherId(2);
+//$lesson->setSubjectId(0);
+//незя писать в базу айди ноль
+
+$result = $lesson->save();
+if ($result === false)
+{
+    throw new Exception('Test failed!');
+}
+
+$lesson->setSubjectId(1);
+
+$result = $lesson->save();
+if ($result !== false)
+{
+    throw new Exception('Test failed!');
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$lesson = Lesson::findById(1);
+
+if ($lesson == null)
+{
+    throw new Exception('Test failed!');
+}
+
+//////////////////////////////
+
+try
+{
+    $lesson->setLessonNumber(12);
+    $lesson->save();
+}
+catch (Exception $e)
+{
+    var_dump($e->getMessage());
+    throw new Exception('Test failed!');
+}
+
+
+$lesson = Lesson::findById(1);
+if ($lesson->getLessonNumber() != 12)
+{
+    throw new Exception('Test failed!');
+}

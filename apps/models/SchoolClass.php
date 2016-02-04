@@ -21,10 +21,6 @@ class SchoolClass
      */
     public function setId($id)
     {
-        if($id < 0)
-        {
-            throw new \OutOfRangeException('parameter "id" can not be less than 0');
-        }
         $this->dto->setId($id);
     }
 
@@ -119,5 +115,48 @@ class SchoolClass
             ],
         ];
         return $data;
+    }
+
+    /**
+     * @return bool
+     */
+    public function save()
+    {
+        $status = $this->dto->save();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function create($data = null)
+    {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        $status = $this->dto->delete();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
     }
 }

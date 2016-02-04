@@ -40,10 +40,6 @@ class Teacher
      */
     public function setId($id)
     {
-        if($id < 0)
-        {
-            throw new \OutOfRangeException('parameter "id" can not be less than 0');
-        }
         $this->dto->setId($id);
     }
 
@@ -95,8 +91,12 @@ class Teacher
         $this->dto->setNameMiddle($name_middle);
     }
 
-    public function __construct(Dto $dto)
+    public function __construct(Dto $dto = null)
     {
+        if(is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 
@@ -140,7 +140,7 @@ class Teacher
         /** @var Simple $tmp_teachers */
         $tmp_teachers = Dto::find($parameters);
         if ($tmp_teachers instanceof Simple && $tmp_teachers->count() > 0)
-        {
+            {
             $return = [];
 
             /** @var Dto $tmp_teacher */
@@ -174,18 +174,42 @@ class Teacher
 
     public function save()
     {
-        $this->dto->save();
-        $msg = $this->dto->getMessages();
-        if ($msg)
+        $status = $this->dto->save();
+        if(!$status)
         {
-            return $msg;
+            return $this->dto->getMessages();
         }
-        return true;
+        return false;
+    }
+
+    public function create($data = null)
+    {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
     }
 
     public function delete()
     {
-        $this->dto->delete();
+        $status = $this->dto->delete();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
     }
     public function getResponseData()
     {

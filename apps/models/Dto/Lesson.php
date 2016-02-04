@@ -3,7 +3,8 @@
 namespace Dto;
 
 use \Phalcon\Mvc\Model,
-    Phalcon\Mvc\Model\Validator\PresenceOf;
+    Phalcon\Mvc\Model\Validator\PresenceOf,
+    Phalcon\Mvc\Model\Validator\Numericality;
 
 /**
  * Class Lesson
@@ -24,37 +25,33 @@ class Lesson extends Model
     /**
      * @var int
      */
-    private $lessonDayId;
+    private $lesson_day_id;
     /**
      * @var int
      */
-    private $lessonNumber;
+    private $lesson_number;
     /**
      * @var int
      */
-    private $schoolClassId;
+    private $school_class_id;
     /**
      * @var int
      */
-    private $subjectId;
+    private $subject_id;
     /**
      * @var int
      */
-    private $schoolRoomId;
+    private $school_room_id;
     /**
      * @var int
      */
-    private $teacherId;
+    private $teacher_id;
 
     /**
      * @return int
      */
     public function getId()
     {
-        if(is_null($this->id))
-        {
-
-        }
         return $this->id;
     }
 
@@ -65,6 +62,14 @@ class Lesson extends Model
      */
     public function setId($id)
     {
+        if(!is_int($id) )
+        {
+            throw new \InvalidArgumentException('parameter "id" can be integer');
+        }
+        if($id < 0)
+        {
+            throw new \OutOfRangeException('parameter "id" can not be less than 0');
+        }
         $this->id = $id;
         return $this;
     }
@@ -84,6 +89,10 @@ class Lesson extends Model
      */
     public function setLessonDay($lessonDay)
     {
+        if(!$lessonDay instanceof LessonDay)
+        {
+            throw new \InvalidArgumentException('invalid type parameter: "lessonDay"');
+        }
         $this->day = $lessonDay;
         return $this;
     }
@@ -91,18 +100,26 @@ class Lesson extends Model
     /**
      * @return int|null
      */
-    public function getLessonDayId()
+    public function getlessonDayId()
     {
-        return $this->lessonDayId;
+        return $this->lesson_day_id;
     }
 
     /**
-     * @param $lessonDayId|null
+     * @param $lesson_day_id|null
      * @return $this
      */
-    public function setLessonDayId($lessonDayId)
+    public function setlessonDayId($lesson_day_id)
     {
-        $this->lessonDayId = $lessonDayId;
+        if(!(is_int($lesson_day_id) || is_null($lesson_day_id)))
+        {
+            throw new \InvalidArgumentException('parameter "lesson_day_id" must be integer or null');
+        }
+        if($lesson_day_id < 0)
+        {
+            throw new \OutOfRangeException('parameter "lesson_day_id" can not be less than 0');
+        }
+        $this->lesson_day_id = $lesson_day_id;
         return $this;
     }
 
@@ -111,16 +128,20 @@ class Lesson extends Model
      */
     public function getLessonNumber()
     {
-        return $this->lessonNumber;
+        return $this->lesson_number;
     }
 
     /**
-     * @param $lessonNumber
+     * @param $lesson_number
      * @return $this
      */
-    public function setLessonNumber($lessonNumber)
+    public function setLessonNumber($lesson_number)
     {
-        $this->lessonNumber = $lessonNumber;
+        if(!(is_int($lesson_number) || is_null($lesson_number)))
+        {
+            throw new \InvalidArgumentException('parameter "lessonNumber" must be integer or null');
+        }
+        $this->lesson_number = $lesson_number;
         return $this;
     }
 
@@ -129,9 +150,6 @@ class Lesson extends Model
      */
     public function getSchoolClass()
     {
-        if(is_null($this->class))
-        {
-        }
         return $this->class;
     }
 
@@ -141,6 +159,14 @@ class Lesson extends Model
      */
     public function setSchoolClass($schoolClass)
     {
+        if(is_null($schoolClass))
+        {
+            throw new \InvalidArgumentException('school class is null');
+        }
+        if(!$schoolClass instanceof SchoolClass)
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "schoolClass"');
+        }
         $this->class = $schoolClass;
         return $this;
     }
@@ -150,16 +176,24 @@ class Lesson extends Model
      */
     public function getSchoolClassId()
     {
-        return $this->schoolClassId;
+        return $this->school_class_id;
     }
 
     /**
-     * @param $schoolClassId
+     * @param $school_class_id
      * @return $this
      */
-    public function setSchoolClassId($schoolClassId)
+    public function setSchoolClassId($school_class_id)
     {
-        $this->schoolClassId = $schoolClassId;
+        if(!is_int($school_class_id))
+        {
+            throw new \InvalidArgumentException('parameter "schoolClassId" can be integer');
+        }
+        if($school_class_id < 0)
+        {
+            throw new \OutOfRangeException('parameter "schoolClassId" can not be less than 0');
+        }
+        $this->school_class_id = $school_class_id;
         return $this;
     }
 
@@ -168,7 +202,21 @@ class Lesson extends Model
      */
     public function getSubjectId()
     {
-        return $this->subjectId;
+        return $this->subject_id;
+    }
+
+    public function setSubjectId($subject_id)
+    {
+        if(!is_int($subject_id))
+        {
+            throw new \InvalidArgumentException('parameter "subjectId" can be integer');
+        }
+        if($subject_id < 0)
+        {
+            throw new \OutOfRangeException('parameter "subjectId" can not be less than 0');
+        }
+        $this->subject_id = $subject_id;
+        return $this;
     }
 
     /**
@@ -184,6 +232,14 @@ class Lesson extends Model
      */
     public function setSubject($subject)
     {
+        if(is_null($subject))
+        {
+            throw new \InvalidArgumentException('parameter "subject" is null');
+        }
+        if(!$subject instanceof Subject)
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "subject"');
+        }
         $this->subject = $subject;
         return $this;
     }
@@ -202,6 +258,10 @@ class Lesson extends Model
      */
     public function setSchoolRoom($schoolRoom)
     {
+        if(!$schoolRoom instanceof SchoolRoom)
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "schoolRoom"');
+        }
         $this->room = $schoolRoom;
         return $this;
     }
@@ -211,16 +271,24 @@ class Lesson extends Model
      */
     public function getSchoolRoomId()
     {
-        return $this->schoolRoomId;
+        return $this->school_room_id;
     }
 
     /**
-     * @param $schoolRoomId|
+     * @param $school_room_id|
      * @return $this
      */
-    public function setSchoolRoomId($schoolRoomId)
+    public function setSchoolRoomId($school_room_id)
     {
-        $this->schoolRoomId = $schoolRoomId;
+        if(!(is_int($school_room_id) || is_null($school_room_id)))
+        {
+            throw new \InvalidArgumentException('parameter "schoolRoomId" must be integer or null');
+        }
+        if($school_room_id < 0)
+        {
+            throw new \OutOfRangeException('parameter "schoolRoomId" can not be less than 0');
+        }
+        $this->school_room_id = $school_room_id;
         return $this;
     }
 
@@ -238,6 +306,11 @@ class Lesson extends Model
      */
     public function setTeacher($teacher)
     {
+
+        if($teacher instanceof \Teacher)
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "teacher"');
+        }
         $this->teacher = $teacher;
         return $this;
     }
@@ -247,16 +320,24 @@ class Lesson extends Model
      */
     public function getTeacherId()
     {
-        return $this->teacherId;
+        return $this->teacher_id;
     }
 
     /**
-     * @param $teacherId|null
+     * @param $teacher_id|null
      * @return $this
      */
-    public function setTeacherId($teacherId)
+    public function setTeacherId($teacher_id)
     {
-        $this->teacherId = $teacherId;
+        if(!(is_int($teacher_id) || is_null($teacher_id)))
+        {
+            throw new \InvalidArgumentException('parameter "teacherId" can be integer or null');
+        }
+        if($teacher_id < 0)
+        {
+            throw new \OutOfRangeException('parameter "teacherId" can not be less than 0');
+        }
+        $this->teacher_id = $teacher_id;
         return $this;
     }
 
@@ -280,23 +361,20 @@ class Lesson extends Model
         ]);
     }
 
-    public function validation()
-    {/*
-        //rules for id
-        $this->validate(new PresenceOf([
-            'field' => 'id',
-            'message' => 'Not id in model',
-        ]));
 
+
+    public function validation()
+    {
         //rules for lessonDay
+        /*
         $this->validate(new PresenceOf([
             'field' => 'lessonDay',
             'message' => 'Not lessonDay in model',
         ]));
 
-        //rules for lessonDayId
+        //rules for lesson_day_id
         $this->validate(new PresenceOf([
-            'field' => 'lessonDayId',
+            'field' => 'lesson_day_id',
             'message' => 'Not id in model',
         ]));
 
@@ -304,44 +382,31 @@ class Lesson extends Model
         $this->validate(new PresenceOf([
             'field' => 'lessonNumber',
             'message' => 'Not lessonNumber in model',
-        ]));
+        ]));*/
 
-        //rules for lessonNumberId
-        $this->validate(new PresenceOf([
-            'field' => 'lessonNumberId',
-            'message' => 'Not lessonNumberId in model',
-        ]));
-
-        //rules for schoolClass
-        $this->validate(new PresenceOf([
-            'field' => 'schoolClass',
-            'message' => 'Not schoolClass in model',
-        ]));
 
         //rules for schoolClassId
         $this->validate(new PresenceOf([
-            'field' => 'schoolClassId',
-            'message' => 'Not schoolClassId in model',
+            'field' => 'school_class_id',
+            'message' => 'Not school_class_id in model',
         ]));
-
-        //rules for subject
-        $this->validate(new PresenceOf([
-            'field' => 'subject',
-            'message' => 'Not subject in model',
+        $this->validate(new Numericality([
+            'field' => 'school_class_id',
+            'message' => 'school class id must be id'
         ]));
 
         //rules for subjectId
         $this->validate(new PresenceOf([
-            'field' => 'subjectId',
+            'field' => 'subject_id',
             'message' => 'Not subjectId in model',
         ]));
-
-        //rules for schoolRoom
-        $this->validate(new PresenceOf([
-            'field' => 'schoolRoom',
-            'message' => 'Not schoolRoom in model',
+        $this->validate(new Numericality([
+            'field' => 'subject_id',
+            'message' => 'subject id must be id'
         ]));
 
+
+        /*
         //rules for schoolRoomId
         $this->validate(new PresenceOf([
             'field' => 'schoolRoomId',

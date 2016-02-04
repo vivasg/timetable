@@ -3,7 +3,9 @@
 namespace Dto;
 
 use \Phalcon\Mvc\Model;
-use Phalcon\Validation\Validator\PresenceOf;
+use Phalcon\Validation\Validator\PresenceOf,
+    Phalcon\Validation\Validator\StringLength,
+    Phalcon\Validation\Validator\Numericality;
 
 /**
  * Class LessonWeek
@@ -43,6 +45,14 @@ class LessonWeek extends Model
      */
     public function setId($id)
     {
+        if(!is_int($id))
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "id"');
+        }
+        if($id < 0)
+        {
+            throw new \OutOfRangeException('parameter "id" can not be less than 0');
+        }
         $this->id = $id;
         return $this;
     }
@@ -62,6 +72,11 @@ class LessonWeek extends Model
      */
     public function setName($name)
     {
+        if(!is_string($name))
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "name"');
+        }
+
         $this->name = $name;
         return $this;
     }
@@ -81,6 +96,14 @@ class LessonWeek extends Model
      */
     public function setNumber($number)
     {
+        if(!is_int($number))
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "number"');
+        }
+        if($number < 0)
+        {
+            throw new \InvalidArgumentException('number must be biger than 0');
+        }
         $this->number = $number;
         return $this;
     }
@@ -90,24 +113,18 @@ class LessonWeek extends Model
      */
     public function validation()
     {
-        //rules with id
-        /*$this->validate(new PresenceOf([
-            'field' => 'id',
-            'message' => 'Not id in model',
-        ]));*/
-
         //rules with number
-        /*$this->validate(new PresenceOf([
+        $this->validate(new PresenceOf([
             'field' => 'number',
             'message' => 'Not name in model',
         ]));
 
-        $this->validate(new InvalidValue([
+        $this->validate(new Numericality([
             'field' => 'number',
-            'message' => 'invalid value',
+            'message' => 'number can be Numeric',
         ]));
-        //rules with name
 
+        //rules with name
         $this->validate(new StringLength([
             'field' => 'name',
             'max' => 255,
@@ -119,7 +136,7 @@ class LessonWeek extends Model
         $this->validate(new PresenceOf([
             'field' => 'name',
             'message' => 'Not name in model',
-        ]));*/
+        ]));
 
         if ($this->validationHasFailed() == true)
         {

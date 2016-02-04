@@ -27,14 +27,6 @@ class LessonDay
      */
     public function setId($id)
     {
-        if(!is_int($id))
-        {
-            throw new \InvalidArgumentException('parameter "id" can be integer');
-        }
-        if($id < 0)
-        {
-            throw new \OutOfRangeException('parameter "id" can not be less than 0');
-        }
         $this->dto->setId($id);
         return $this;
     }
@@ -46,7 +38,7 @@ class LessonDay
      */
     public function getLessonWeek()
     {
-        return $this->dto->getLessonWeek();
+        return new \LessonWeek($this->dto->getLessonWeek());
     }
 
     /**
@@ -57,14 +49,6 @@ class LessonDay
      */
     public function setLessonWeek($lessonWeek)
     {
-        if(is_null($lessonWeek))
-        {
-            throw new \InvalidArgumentException('parameter "lessonWeek" is null');
-        }
-        if(get_class($lessonWeek) != 'LessonWeek')
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "lessonWeek"');
-        }
         $this->dto->setLessonWeek($lessonWeek);
         return $this;
     }
@@ -87,11 +71,22 @@ class LessonDay
      */
     public function setWeekday($weekDay)
     {
-        if(!is_int($weekDay))
+        if($weekDay>6 && $weekDay<0)
         {
-            throw new \InvalidArgumentException('invalid type of argument: "weekDay"');
+            throw new InvalidArgumentException('weekDay must be biger than 0 and less than 7');
         }
         $this->dto->setWeekDay($weekDay);
+        return $this;
+    }
+
+    public function getLessonWeekId()
+    {
+        return $this->dto->getLessonWeekId();
+    }
+
+    public function setLessonWeekId($lessonWeekId)
+    {
+        $this->dto->setLessonWeekId($lessonWeekId);
         return $this;
     }
 
@@ -113,10 +108,7 @@ class LessonDay
      */
     public function setName($name)
     {
-        if(!is_string($name))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "name"');
-        }
+
         $this->dto->setName($name);
         return $this;
     }
@@ -139,10 +131,6 @@ class LessonDay
      */
     public function setLessonMaxCount($lessonMaxCount)
     {
-        if(!is_int($lessonMaxCount))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "lessonMaxCount"');
-        }
         $this->dto->setLessonMaxCount($lessonMaxCount);
         return $this;
     }
@@ -247,7 +235,7 @@ class LessonDay
         $status = $this->dto->save();
         if(!$status)
         {
-            return $this->$this->dto->getMessages();
+            return $this->dto->getMessages();
         }
         return false;
     }
@@ -299,7 +287,6 @@ class LessonDay
 
     public function GetResponseData()
     {
-        //var_dump($this->getLessonWeek());
         /** @var LessonDay $object */
         $data[] = [
             'type' => 'LessonDay',

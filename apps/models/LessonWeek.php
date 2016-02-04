@@ -28,14 +28,6 @@ class LessonWeek
      */
     public function setId($id)
     {
-        if(!is_int($id))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "id"');
-        }
-        if($id < 0)
-        {
-            throw new \OutOfRangeException('parameter "id" can not be less than 0');
-        }
         $this->dto->setId($id);
         return $this;
     }
@@ -58,10 +50,6 @@ class LessonWeek
      */
     public function setName($name)
     {
-        if(!is_string($name))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "name"');
-        }
         $this->dto->setName($name);
         return $this;
     }
@@ -83,10 +71,6 @@ class LessonWeek
      */
     public function setNumber($number)
     {
-        if(!is_int($number))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "number"');
-        }
         $this->dto->setNumber($number);
         return $this;
     }
@@ -162,6 +146,10 @@ class LessonWeek
         }
         return null;
     }
+    public static function find()
+    {
+        return self::getMany();
+    }
 
     /** Return an array of the selected items
      * @param $parameters
@@ -191,7 +179,7 @@ class LessonWeek
         $status = $this->dto->save();
         if(!$status)
         {
-            return $this->$this->dto->getMessages();
+            return $this->dto->getMessages();
         }
         return false;
     }

@@ -48,7 +48,19 @@ class Teacher extends Model
 	 */
 	public function getNameShort()
 	{
-		return $this->name_last . ' ' . substr($this->name_first,0,2) . '.' . substr($this->name_middle,0,2) . '.';
+		$return = '';
+		$return = $return . $this->name_last;
+		if($this->name_first)
+		{
+			$return = $return . ' ' . mb_substr($this->name_first,0,2) . '.';
+		}
+		if($this->name_middle)
+		{
+			$return = $return . mb_substr($this->name_middle,0,2) . '.';
+		}
+
+		return $return;
+		//return $this->name_last . ' ' . substr($this->name_first,0,2) . '.' . substr($this->name_middle,0,2) . '.';
 	}
 
 	/**
@@ -94,6 +106,11 @@ class Teacher extends Model
 		{
 			throw new \InvalidArgumentException('invalid type of argument: "id"');
 		}
+		if($value < 0)
+		{
+			throw new \OutOfRangeException('parameter "id" can not be less than 0');
+		}
+
 		$this->id = $value;
 		return $this;
 	}
@@ -154,15 +171,7 @@ class Teacher extends Model
 			'alias' => 'lessons'
 		]);
 	}
-	/*public function beforeValidation()
-	{
-		// Правила для id
-		$this->validate(new PresenceOf([
-			'field' => 'id',
-			'message' => 'Not id in model',
-		]));
 
-	}*/
 	public function validation()
 	{
 		// Правила для name_first
