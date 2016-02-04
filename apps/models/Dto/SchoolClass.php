@@ -82,7 +82,6 @@ class SchoolClass extends Model
         return 'school_classses';
     }
 
-    /**
     public function beforeValidation()
     {
         // Правила для id
@@ -91,7 +90,6 @@ class SchoolClass extends Model
             'message' => 'Not id in model',
         ]));
     }
-     */
 
     public function validation()
     {

@@ -81,7 +81,7 @@ class SchoolRoom extends Model
             'alias' => 'lessons'
         ]);
     }
-    /**
+
     public function beforeValidation()
     {
         // Правила для id
@@ -89,7 +89,7 @@ class SchoolRoom extends Model
             'field' => 'id',
             'message' => 'Not id in model',
         ]));
-    }*/
+    }
 
     public function validation()
     {
