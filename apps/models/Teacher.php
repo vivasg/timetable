@@ -153,36 +153,4 @@ class Teacher
         }
         return null;
     }
-    public static function find()
-    {
-        /** @var Simple $tmp_teachers */
-        $tmp_teachers = Dto::find([
-            'order' => 'name_first'
-        ]);
-        if ($tmp_teachers instanceof Simple && $tmp_teachers->count() > 0)
-        {
-            $return = [];
-
-            /** @var Dto $tmp_teacher */
-            foreach ($tmp_teachers as $tmp_teacher)
-            {
-                $return[] = new Teacher($tmp_teacher);
-            }
-
-            return $return;
-        }
-        return null;
-    }
-    public function save()
-    {
-        $this->dto->save();
-	}
-    public function update()
-    {
-        $this->dto->update();
-    }
-    public function delete()
-    {
-        $this->dto->delete();
-    }
 }

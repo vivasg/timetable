@@ -155,17 +155,14 @@ class Teacher extends Model
 		]);
 	}
 
-	public function beforeValidation()
+	public function validation()
 	{
 		// Правила для id
 		$this->validate(new PresenceOf([
 			'field' => 'id',
 			'message' => 'Not id in model',
 		]));
-	}
 
-	public function validation()
-	{
 		// Правила для name_first
 		$this->validate(new PresenceOf([
 			'field' => 'name_first',
