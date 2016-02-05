@@ -38,6 +38,10 @@ class LessonDay
      */
     public function getLessonWeek()
     {
+        if(!$this->dto instanceof Dto)
+        {
+            throw new Exception('dto is null');
+        }
         return new \LessonWeek($this->dto->getLessonWeek());
     }
 
@@ -71,7 +75,7 @@ class LessonDay
      */
     public function setWeekday($weekDay)
     {
-        if($weekDay>6 && $weekDay<0)
+        if($weekDay > 6 || $weekDay < 0)
         {
             throw new InvalidArgumentException('weekDay must be biger than 0 and less than 7');
         }
@@ -139,8 +143,12 @@ class LessonDay
      * @param DTO $dto
      * LessonDay constructor.
      */
-    public function __construct($dto)
+    public function __construct(Dto $dto = null)
     {
+        if (is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 
@@ -262,12 +270,7 @@ class LessonDay
 
     public function delete()
     {
-        $status = $this->dto->delete();
-        if(!$status)
-        {
-            return $this->dto->getMessages();
-        }
-        return false;
+        return $this->dto->delete();
     }
 
     /** Return an element of the selected item
@@ -292,7 +295,7 @@ class LessonDay
             'type' => 'LessonDay',
             'id' => $this->getId(),
             'attributes' => [
-                'lesson_week' => $this->getLessonWeek() == null? '' : $this->getLessonWeek()->GetResponseData(),
+                'lesson_week' => $this->getLessonWeek() == null? '' : $this->getLessonWeek()->getResponseData(),
                 'week_day' => $this->getWeekday(),
                 'name' => $this->getName(),
                 'lesson_max_count' => $this->getLessonMaxCount(),

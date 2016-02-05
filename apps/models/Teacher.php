@@ -172,6 +172,11 @@ class Teacher
         return null;
     }
 
+    /**
+     * Updates a model instance. If the instance doesn't exist in the persistance it will throw an exception
+     * Returning false on success or MessageInterface[] otherwise.
+     * @return bool|\Phalcon\Mvc\MessageInterface[]
+     */
     public function save()
     {
         $status = $this->dto->save();
@@ -182,6 +187,12 @@ class Teacher
         return false;
     }
 
+    /**
+     * Inserts a model instance. If the instance already exists in the persistance it will throw an exception
+     * Returning false on success or MessageInterface[] otherwise.
+     * @param null $data
+     * @return bool|\Phalcon\Mvc\MessageInterface[]
+     */
     public function create($data = null)
     {
         $status = $this->dto->create();
@@ -192,6 +203,11 @@ class Teacher
         return false;
     }
 
+    /**
+     * Updates a model instance. If the instance doesn't exist in the persistance it will throw an exception
+     * Return false on success or MessageInterface[] otherwise
+     * @return bool|\Phalcon\Mvc\MessageInterface[]
+     */
     public function update()
     {
         $status = $this->dto->update();
@@ -202,14 +218,13 @@ class Teacher
         return false;
     }
 
+    /**
+     * Deletes a model instance. Returning true on success or false otherwise.
+     * @return bool
+     */
     public function delete()
     {
-        $status = $this->dto->delete();
-        if(!$status)
-        {
-            return $this->dto->getMessages();
-        }
-        return false;
+        return $this->dto->delete();
     }
     public function getResponseData()
     {

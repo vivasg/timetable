@@ -50,8 +50,12 @@ class SchoolRoom
         $this->dto->setName($name);
     }
 
-    public function __construct(Dto $dto)
+    public function __construct(Dto $dto = null)
     {
+        if (is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 

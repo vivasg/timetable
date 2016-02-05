@@ -79,7 +79,7 @@ class Lesson extends Model
      */
     public function getLessonDay()
     {
-        return $this->day;
+        return $this->day == false? null: $this->day;
     }
 
     /**

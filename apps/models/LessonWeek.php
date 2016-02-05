@@ -79,8 +79,12 @@ class LessonWeek
      * LessonWeek constructor.
      * @param \Dto\LessonWeek $dto
      */
-    public function __construct($dto)
+    public function __construct(Dto $dto = null)
     {
+        if (is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 
@@ -206,12 +210,7 @@ class LessonWeek
 
     public function delete()
     {
-        $status = $this->dto->delete();
-        if(!$status)
-        {
-            return $this->dto->getMessages();
-        }
-        return false;
+        return $this->dto->delete();
     }
 
     public function getResponseData()

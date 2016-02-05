@@ -3,9 +3,9 @@
 namespace Dto;
 
 use \Phalcon\Mvc\Model;
-use Phalcon\Validation\Validator\PresenceOf,
-    Phalcon\Validation\Validator\StringLength,
-    Phalcon\Validation\Validator\Numericality;
+use Phalcon\MVC\Model\Validator\PresenceOf,
+    Phalcon\MVC\Model\Validator\StringLength,
+    Phalcon\MVC\Model\Validator\Numericality;
 
 /**
  * Class LessonWeek
@@ -116,7 +116,7 @@ class LessonWeek extends Model
         //rules with number
         $this->validate(new PresenceOf([
             'field' => 'number',
-            'message' => 'Not name in model',
+            'message' => 'Not number in model',
         ]));
 
         $this->validate(new Numericality([

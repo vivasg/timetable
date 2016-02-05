@@ -45,8 +45,12 @@ class SchoolClass
      * SchoolClass constructor.
      * @param Dto $dto
      */
-    public function __construct(Dto $dto)
+    public function __construct(Dto $dto = null)
     {
+        if (is_null($dto))
+        {
+            $this->dto = new Dto();
+        }
         $this->dto = $dto;
     }
 

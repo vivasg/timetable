@@ -46,8 +46,12 @@ class Subject
         $this->dto->setName($name);
     }
 
-    public function __construct(Dto $dto)
+    public function __construct(Dto $dto = null)
     {
+        if (is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 
@@ -99,6 +103,23 @@ class Subject
         return null;
     }
 
+    public static function find()
+    {
+        $tmp_subjects = Dto::find();
+        if ($tmp_subjects instanceof Simple && $tmp_subjects->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_subject */
+            foreach ($tmp_subjects as $tmp_subject)
+            {
+                $return[] = new Subject($tmp_subject);
+            }
+
+            return $return;
+        }
+        return null;
+    }
     /**
      * @param $id
      * @return Subject|null

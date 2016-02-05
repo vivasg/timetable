@@ -152,7 +152,11 @@ class Lesson
      */
     public function getLessonDay()
     {
-        return new \LessonDay ($this->dto->getLessonDay());
+        if($this->dto->getLessonDay())
+        {
+            return new \LessonDay ($this->dto->getLessonDay());
+        }
+        return null;
     }
 
     /**
@@ -174,7 +178,11 @@ class Lesson
      */
     public function getLessonNumber()
     {
-        return $this->dto->getLessonNumber();
+        if($this->dto->getLessonNumber())
+        {
+            return $this->dto->getLessonNumber();
+        }
+        return null;
     }
 
     /**
@@ -200,7 +208,11 @@ class Lesson
      */
     public function getSchoolClass()
     {
-        return new \SchoolClass($this->dto->getSchoolClass());
+        if($this->dto->getSchoolClass())
+        {
+            return new \SchoolClass($this->dto->getSchoolClass());
+        }
+        return null;
     }
 
     /**
@@ -222,7 +234,11 @@ class Lesson
      */
     public function getSchoolRoom()
     {
-        return new \SchoolRoom($this->dto->getSchoolRoom());
+        if($this->dto->getSchoolRoom())
+        {
+            return new \SchoolRoom($this->dto->getSchoolRoom());
+        }
+        return null;
     }
 
     /**
@@ -244,7 +260,11 @@ class Lesson
      */
     public function getSubject()
     {
-        return new \Subject($this->dto->getSubject());
+        if($this->dto->getSubject())
+        {
+            return new \Subject($this->dto->getSubject());
+        }
+        return null;
     }
 
     /**
@@ -266,7 +286,11 @@ class Lesson
      */
     public function getTeacher()
     {
-        return new \Teacher($this->dto->getTeacher());
+        if($this->dto->getTeacher())
+        {
+            return new \Teacher($this->dto->getTeacher());
+        }
+        return null;
     }
 
     /**
@@ -288,6 +312,7 @@ class Lesson
             $dto = new Dto();
         }
         $this->dto = $dto;
+
     }
 
     /**find all Lessons
@@ -372,7 +397,7 @@ class Lesson
         return Lesson::getMany($parameters);
     }
 
-    /** Return an array of the selected items
+     /** Return an array of the selected items
      * @param $parameters
      * @return array|null
      */
@@ -442,27 +467,21 @@ class Lesson
 
     public function delete()
     {
-        $status = $this->dto->delete();
-        if(!$status)
-        {
-            return $this->dto->getMessages();
-        }
-        return false;
+        return $this->dto->delete();
     }
 
     public function GetResponseData()
     {
-        /** @var Lesson $object */
         $data[] = [
             'type' => 'Lesson',
             'id' => $this->getId(),
             'attributes' => [
-                'lesson_day' => $this->getLessonDay() == null? '' : $this->getLessonDay()->GetResponseData(), // failed! in database set null.
-                'lesson_number' => $this->getLessonNumber(),
-                'school_class' => $this->getSchoolClass()->GetResponseData(),
-                'subject' => $this->getSubject()->GetResponseData(),
-                //'school_room' => $this->getSchoolRoom()->getResponseData(),
-                //'teacher' => $this->GetTeacher()->GetResponseData(),
+                'lesson_day' => !$this->getLessonDay()? '' :$this->getLessonDay()->GetResponseData(),
+                'lesson_number' => !$this->getLessonNumber()? '' : $this->getLessonNumber(),
+                'school_class' => !$this->getSchoolClass()? '' : $this->getSchoolClass()->GetResponseData(),
+                'subject' => !$this->getSubject()? '' : $this->getSubject()->GetResponseData(),
+                'school_room' => !$this->getSchoolRoom()? '' : $this->getSchoolRoom()->getResponseData(),
+                'teacher' => !$this->getTeacher()? '' : $this->getTeacher()->GetResponseData(),
             ],
         ];
         return $data;
