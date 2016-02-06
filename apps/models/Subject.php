@@ -188,11 +188,6 @@ class Subject
 
     public function delete()
     {
-        $status = $this->dto->delete();
-        if(!$status)
-        {
-            return $this->dto->getMessages();
-        }
-        return false;
+        return $this->dto->delete();
     }
 }

@@ -49,7 +49,7 @@ class SchoolClass
     {
         if (is_null($dto))
         {
-            $this->dto = new Dto();
+            $dto = new Dto();
         }
         $this->dto = $dto;
     }
@@ -86,6 +86,23 @@ class SchoolClass
         return null;
     }
 
+    public static function find()
+    {
+        $tmp_schoolclasses = Dto::find();
+        if ($tmp_schoolclasses instanceof Simple && $tmp_schoolclasses->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_schoolclass */
+            foreach ($tmp_schoolclasses as $tmp_schoolclass)
+            {
+                $return[] = new SchoolClass($tmp_schoolclass);
+            }
+
+            return $return;
+        }
+        return null;
+    }
     /**
      * @param $id
      * @return array|null
@@ -121,9 +138,6 @@ class SchoolClass
         return $data;
     }
 
-    /**
-     * @return bool
-     */
     public function save()
     {
         $status = $this->dto->save();
@@ -156,11 +170,6 @@ class SchoolClass
 
     public function delete()
     {
-        $status = $this->dto->delete();
-        if(!$status)
-        {
-            return $this->dto->getMessages();
-        }
-        return false;
+        return $this->dto->delete();
     }
 }

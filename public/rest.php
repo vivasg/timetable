@@ -178,6 +178,7 @@ $app->delete('/teachers/{teacher_id:[0-9]+}', function($teacher_id) use($app)
                 'Server Error',
                 'Internal Server Error',
                 'Resourse not be deleted');
+            return $binder->Bind();
         }
     }
     catch(Exception $ex)
@@ -204,10 +205,7 @@ $app->get('/teachers', function() use ($app)
             $teachers = Teacher::findByName($request->get('name'));
             if (!$teachers)
             {
-                $binder->SetResponseError(404,
-                    'NOT FOUND',
-                    'teacher not found',
-                    'teacher with name \'' . $request->get('name') . '\' missing in database');
+                $binder->SetStatusCode(200);
                 return $binder->Bind();
             }
         }
@@ -223,10 +221,7 @@ $app->get('/teachers', function() use ($app)
         }
         else
         {
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'teachers not found',
-                'teachers not found in database');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -256,10 +251,7 @@ $app->get('/teachers/{teacher_id:[0-9]+}', function($teacher_id)
         }
         else
         {
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'element not found',
-                'teacher with id \''. $teacher_id . '\' not exist in database');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -290,10 +282,7 @@ $app->get('/lessons/{id:[0-9]+}', function($lessonId)
         }
         else
         {
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'element not found',
-                'lesson with id:' . $lessonId . ' does not exist');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -375,10 +364,7 @@ $app->get('/lessons', function() use ($app) {
         }
         else
         {
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'lessons not found',
-                'lessons not found in database');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -662,6 +648,7 @@ $app->delete('/lessons/{lesson_id:[0-9]+}', function($lesson_id) use ($app){
                 'Server Error',
                 'Internal Server Error',
                 'Resourse not be deleted');
+            return $binder->Bind();
         }
     }
     catch(Exception $ex)
@@ -699,7 +686,7 @@ $app->get('/lessonDays', function() use ($app){
         }
         else
         {
-            $binder->SetResponseError(404, 'NOT FOUND', 'Lesson Days not found', 'Lesson Days with name:' . $name . ' not found');
+            $binder->SetStatusCode(200);
         }
         return $binder->Bind();
     }
@@ -726,7 +713,7 @@ $app->get('/lessonDays/{lesson_day_id:[0-9]+}', function($lesson_day_id) {
         }
         else
         {
-            $binder->SetResponseError(404, 'NOT FOUND', 'Lesson Day not found', 'Lesson Day with id:' . $lesson_day_id . ' not exist');
+            $binder->SetStatusCode(200);
         }
         return $binder->Bind();
     }
@@ -998,10 +985,7 @@ $app->get('/lessonWeeks', function() use ($app)
             $lessonWeeks = LessonWeek::getMany($parameters);
             if(!$lessonWeeks)
             {
-                $binder->SetResponseError(404,
-                    'NOT FOUND',
-                    'Lesson Weeks not found',
-                    'Lesson Weeks with parameters not found');
+                $binder->SetStatusCode(200);
                 return $binder->Bind();
             }
         }
@@ -1018,10 +1002,7 @@ $app->get('/lessonWeeks', function() use ($app)
         }
         else
         {
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'Lesson Weeks not found',
-                'Lesson Weeks not found');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
 
         }
@@ -1051,8 +1032,7 @@ $app->get('/lessonWeeks/{lesson_week_id:[0-9]+}', function($lesson_week_id){
         }
         else
         {
-            $binder->SetStatusCode(404);
-            $binder->SetResponseError(404, 'NOT EXIST', 'lesson week not exist', 'lesson week with id:' . $lesson_week_id . ' does not exist');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -1122,6 +1102,7 @@ $app->post('/lessonWeeks/{lesson_week_id:[0-9]+}', function($lesson_week_id) use
     $request = $app->request->getJsonRawBody();
     try
     {
+        /** @var LessonWeek $lessonWeek */
         $lessonWeek = LessonWeek::findById($lesson_week_id);
         if ($lessonWeek)
         {
@@ -1131,7 +1112,18 @@ $app->post('/lessonWeeks/{lesson_week_id:[0-9]+}', function($lesson_week_id) use
             }
             if (isset($request->number))
             {
-                $lessonWeek->setNumber($request->number * 1);
+                if(is_numeric($request->number))
+                {
+                    $lessonWeek->setNumber(intval($request->number));
+                }
+                else
+                {
+                    $binder->SetResponseError(400,
+                        'Bad Request',
+                        'Bad parameter number   ',
+                        'number:' . $request->number . '. number must be integer');
+                    return $binder->Bind();
+                }
             }
             $status = $lessonWeek->save();
             if ($status === false)
@@ -1142,16 +1134,23 @@ $app->post('/lessonWeeks/{lesson_week_id:[0-9]+}', function($lesson_week_id) use
             }
             else
             {
+                $err = '';
+                /** @var \Phalcon\Mvc\Model\MessageInterface $stat */
+                foreach ($status as $stat) {
+                    $err = $err . $stat->getMessage();
+                }
+                //var_dump($err);
                 $binder->SetResponseError(400,
-                    'Bad request',
-                    'Lesson Week do not save',
-                    'Lesson Week do not save in database');
+                    'Bad Request',
+                    'The server cannot or will not process the request due to something that is perceived to be a client error',
+                    $err);
                 return $binder->Bind();
             }
         }
         else
         {
             $binder->SetResponseError(404, 'NOT FOUND', 'Lesson Week not found', 'Lesson Week with id:' . $lesson_week_id . ' not exist');
+            return $binder->Bind();
         }
     }
     catch(Exception $ex)
@@ -1170,6 +1169,7 @@ $app->delete('/lessonWeeks/{lesson_week_id:[0-9]+}', function($lesson_week_id) u
     /** @var LessonWeek $lessonWeek */
     try
     {
+        /** @var LessonWeek $lessonWeek */
         $lessonWeek = LessonWeek::findById($lesson_week_id);
 
         if($lessonWeek)
@@ -1205,7 +1205,6 @@ $app->delete('/lessonWeeks/{lesson_week_id:[0-9]+}', function($lesson_week_id) u
             $ex->getMessage());
         return $binder->Bind();
     }
-
 });
 
 //----------------------------API Subject------------------------------------------------
@@ -1243,11 +1242,16 @@ $app->post('/subjects/{subject_id:[0-9]+}', function ($subject_id) use ($app)
         }
         else
         {
-            $binder->SetResponseError(500,
-                'Server Error',
-                'Internal Server Error',
-                'Subject not be updated'
-            );
+            $err = '';
+            /** @var \Phalcon\Mvc\Model\MessageInterface $stat */
+            foreach ($status as $stat) {
+                $err = $err . $stat->getMessage();
+            }
+            //var_dump($err);
+            $binder->SetResponseError(400,
+                'Bad Request',
+                'The server cannot or will not process the request due to something that is perceived to be a client error',
+                $err);
             return $binder->Bind();
         }
     }
@@ -1282,12 +1286,16 @@ $app->put('/subjects', function () use ($app)
         }
         else
         {
-            $binder->SetStatusCode(500);
-            $binder->SetResponseError(500,
-                'Server Error',
-                'Internal Server Error',
-                'Subject not be created'
-            );
+            $err = '';
+            /** @var \Phalcon\Mvc\Model\MessageInterface $stat */
+            foreach ($status as $stat) {
+                $err = $err . $stat->getMessage();
+            }
+            //var_dump($err);
+            $binder->SetResponseError(400,
+                'Bad Request',
+                'The server cannot or will not process the request due to something that is perceived to be a client error',
+                $err);
             return $binder->Bind();
         }
     }
@@ -1313,8 +1321,9 @@ $app->delete('/subjects/{id:[0-9]+}', function($subject_id) use($app)
                 'NOT FOUND',
                 'Subject id not found',
                 'Subject_id:' . $subject_id . ' not found in data base');
+            return $binder->Bind();
         }
-        $status= $subject->delete();
+        $status = $subject->delete();
         if($status)
         {
             $binder->SetStatusCode(200);
@@ -1326,7 +1335,7 @@ $app->delete('/subjects/{id:[0-9]+}', function($subject_id) use($app)
             $binder->SetResponseError(500,
                 'Server Error',
                 'Internal Server Error',
-                'Subject cannot be deleted'
+                'Subject not be deleted'
             );
             return $binder->Bind();
         }
@@ -1350,12 +1359,9 @@ $app->get('/subjects', function() use ($app)
         if($request->has('name'))
         {
             $subjects = Subject::findByName($request->get('name'));
-            if(!subjects)
+            if(!$subjects)
             {
-                $binder->SetResponseError(404,
-                    'NOT FOUND',
-                    'subject not found',
-                    'subject with name '. $request->get('name') . ' missing in database');
+                $binder->SetStatusCode(200);
                 return $binder->Bind();
             }
         }
@@ -1371,10 +1377,7 @@ $app->get('/subjects', function() use ($app)
         }
         else
         {
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'subjects not found',
-                'subjects missing in database');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -1393,6 +1396,7 @@ $app->get('/subjects/{subject_id:[0-9]+}', function($subject_id)
     $binder = new ResponseBinder();
     try
     {
+        /** @var Subject $subject */
         $subject = Subject::findById($subject_id);
         if ($subject)
         {
@@ -1402,10 +1406,7 @@ $app->get('/subjects/{subject_id:[0-9]+}', function($subject_id)
         }
         else
         {
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'element not found',
-                'teacher with id \''. $subject_id . '\' missing in database');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -1418,6 +1419,7 @@ $app->get('/subjects/{subject_id:[0-9]+}', function($subject_id)
         return $binder->Bind();
     }
 });
+
 //----------------------------API SchoolRoom------------------------------------------------
 $app->post('/school_rooms/{school_room_id:[0-9]+}', function ($school_room_id) use ($app)
 {
@@ -1433,14 +1435,16 @@ $app->post('/school_rooms/{school_room_id:[0-9]+}', function ($school_room_id) u
             $binder->SetResponseError(404,
                 'NOT FOUND',
                 'School room id not found',
-                'School_room_id:' . $school_room_id . ' not found in data base' );
+                'School_room_id:' . $school_room_id . ' not found in database' );
         }
         if (isset($request->name))
         {
             $school_room->setName($request->name);
         }
+
         $status = $school_room->save();
-        if($status)
+
+        if($status === false)
         {
             $binder->SetStatusCode(201);
             $binder->SetResponseData($school_room);
@@ -1448,11 +1452,16 @@ $app->post('/school_rooms/{school_room_id:[0-9]+}', function ($school_room_id) u
         }
         else
         {
-            $binder->SetResponseError(500,
-                'Server Error',
-                'Internal Server Error',
-                'Subject cannot be deleted'
-            );
+            $err = '';
+            /** @var \Phalcon\Mvc\Model\MessageInterface $stat */
+            foreach ($status as $stat) {
+                $err = $err . $stat->getMessage();
+            }
+            //var_dump($err);
+            $binder->SetResponseError(400,
+                'Bad Request',
+                'The server cannot or will not process the request due to something that is perceived to be a client error',
+                $err);
             return $binder->Bind();
         }
     }
@@ -1465,7 +1474,7 @@ $app->post('/school_rooms/{school_room_id:[0-9]+}', function ($school_room_id) u
         return $binder->Bind();
     }
 });
-$app->put('school_rooms/', function () use ($app)
+$app->put('/school_rooms', function () use ($app)
 {
     $binder = new ResponseBinder();
     $request = $app->request->getJsonRawBody();
@@ -1478,19 +1487,24 @@ $app->put('school_rooms/', function () use ($app)
             $school_room->setName($request->name);
         }
         $status = $school_room->save();
-        if($status)
+        if($status === false)
         {
-            $binder->SetStatusCode(201, 'Created');
+            $binder->SetStatusCode(201);
             $binder->SetResponseData($school_room);
             return $binder->Bind();
         }
         else
         {
-            $binder->SetResponseError(500,
-                'Server Error',
-                'Internal Server Error',
-                'Subject cannot be deleted'
-            );
+            $err = '';
+            /** @var \Phalcon\Mvc\Model\MessageInterface $stat */
+            foreach ($status as $stat) {
+                $err = $err . $stat->getMessage();
+            }
+            //var_dump($err);
+            $binder->SetResponseError(400,
+                'Bad Request',
+                'The server cannot or will not process the request due to something that is perceived to be a client error',
+                $err);
             return $binder->Bind();
         }
     }
@@ -1503,18 +1517,20 @@ $app->put('school_rooms/', function () use ($app)
         return $binder->Bind();
     }
 });
-$app->delete('/school_rooms/{school_room_id:[0-9]:+}', function($school_room_id) use($app)
+$app->delete('/school_rooms/{school_room_id:[0-9]+}', function($school_room_id) use($app)
 {
     $binder = new ResponseBinder();
     try
     {
+        /** @var SchoolRoom $school_room */
         $school_room = SchoolRoom::findById($school_room_id);
-        if ($school_room == false)
+        if (!$school_room)
         {
             $binder->SetResponseError(404,
                 'NOT FOUND',
                 'School room not found',
                 'School room wiht id:' . $school_room_id . ' not found');
+            return $binder->Bind();
         }
         $status = $school_room->delete();
         if($status)
@@ -1528,7 +1544,7 @@ $app->delete('/school_rooms/{school_room_id:[0-9]:+}', function($school_room_id)
             $binder->SetResponseError(500,
                 'Server Error',
                 'Internal Server Error',
-                'Subject cannot be deleted'
+                'Subject not be deleted'
             );
             return $binder->Bind();
         }
@@ -1554,10 +1570,7 @@ $app->get('/school_rooms', function() use ($app)
             $school_rooms = SchoolRoom::findByName($request->get('name'));
             if(!$school_rooms)
             {
-                $binder->SetResponseError(404,
-                    'NOT FOUND',
-                    'school_rooms not found',
-                    'school_rooms with name '. $request->get('name') . ' missing in database');
+                $binder->SetStatusCode(200);
                 return $binder->Bind();
             }
         }
@@ -1573,10 +1586,7 @@ $app->get('/school_rooms', function() use ($app)
         }
         else
         {
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'school_rooms not found',
-                'school_rooms missing in database');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -1604,10 +1614,7 @@ $app->get('/school_rooms/{school_room_id}', function($school_room_id)
         }
         else
         {
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'element not found',
-                'teacher with id \''. $school_room_id . '\' missing in database');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -1642,7 +1649,9 @@ $app->post('/school_classes/{school_classes_id}', function ($school_classes_id) 
         {
             $school_class->setName($request->name);
         }
+
         $status = $school_class->save();
+
         if($status === false)
         {
             $binder->SetStatusCode(200);
@@ -1651,11 +1660,16 @@ $app->post('/school_classes/{school_classes_id}', function ($school_classes_id) 
         }
         else
         {
-            $binder->SetResponseError(500,
-                'Server Error',
-                'Internal Server Error',
-                'Subject cannot be deleted'
-            );
+            $err = '';
+            /** @var \Phalcon\Mvc\Model\MessageInterface $stat */
+            foreach ($status as $stat) {
+                $err = $err . $stat->getMessage();
+            }
+            //var_dump($err);
+            $binder->SetResponseError(400,
+                'Bad Request',
+                'The server cannot or will not process the request due to something that is perceived to be a client error',
+                $err);
             return $binder->Bind();
         }
     }
@@ -1668,7 +1682,7 @@ $app->post('/school_classes/{school_classes_id}', function ($school_classes_id) 
         return $binder->Bind();
     }
 });
-$app->put('school_classes/', function () use ($app)
+$app->put('/school_classes', function () use ($app)
 {
     /** @var stdClass $foo */
     $binder = new ResponseBinder();
@@ -1676,13 +1690,13 @@ $app->put('school_classes/', function () use ($app)
     try
     {
         /** @var SchoolClass $school_class*/
-        $school_class = new SchoolRoom();
+        $school_class = new SchoolClass();
         if (isset($request->name))
         {
             $school_class->setName($request->name);
         }
         $status = $school_class->save();
-        if($status)
+        if($status === false)
         {
             $binder->SetStatusCode(201);
             $binder->SetResponseData($school_class);
@@ -1690,11 +1704,16 @@ $app->put('school_classes/', function () use ($app)
         }
         else
         {
-            $binder->SetResponseError(500,
-                'Server Error',
-                'Internal Server Error',
-                'Subject cannot be deleted'
-            );
+            $err = '';
+            /** @var \Phalcon\Mvc\Model\MessageInterface $stat */
+            foreach ($status as $stat) {
+                $err = $err . $stat->getMessage();
+            }
+            //var_dump($err);
+            $binder->SetResponseError(400,
+                'Bad Request',
+                'The server cannot or will not process the request due to something that is perceived to be a client error',
+                $err);
             return $binder->Bind();
         }
     }
@@ -1712,6 +1731,7 @@ $app->delete('/school_classes/{id:[0-9]+}', function($school_class_id) use($app)
     $binder = new ResponseBinder();
     try
     {
+        /** @var SchoolClass $school_class */
         $school_class = SchoolClass::findById($school_class_id);
         if (!$school_class)
         {
@@ -1756,18 +1776,18 @@ $app->get('/school_classes', function() use ($app)
     {
         if($request->has('name'))
         {
+            /** @var SchoolClass $school_classes */
             $school_classes = SchoolClass::findByName($request->get('name'));
             if (!$school_classes)
             {
-                $binder->SetResponseError(404,
-                    'NOT FOUND',
-                    'school class not found',
-                    'school class missing in database');
+                $binder->SetStatusCode(200);
+                $binder->SetResponseData([]);
                 return $binder->Bind();
             }
         }
         else
         {
+            /** @var SchoolClass $school_classes */
             $school_classes = SchoolClass::find();
         }
         if($school_classes)
@@ -1779,10 +1799,7 @@ $app->get('/school_classes', function() use ($app)
         else
         {
             $binder->SetStatusCode(404);
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'school_class not found',
-                'school_class missing in database');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -1798,19 +1815,18 @@ $app->get('/school_classes', function() use ($app)
 /**Get SchoolClass by id*/
 $app->get('/school_classes/{school_class_id:[0-9]+}', function($school_class_id) {
     $binder = new ResponseBinder();
-    try {
+    try
+    {
         $school_class = SchoolClass::findById($school_class_id);
-        if ($school_class) {
+        if ($school_class)
+        {
             $binder->SetStatusCode(200);
             $binder->SetResponseData($school_class);
             return $binder->Bind();
         }
         else
         {
-            $binder->SetResponseError(404,
-                'NOT FOUND',
-                'element not found',
-                'teacher with id:' . $school_class_id . ' missing in database');
+            $binder->SetStatusCode(200);
             return $binder->Bind();
         }
     }
@@ -1832,7 +1848,7 @@ class ResponseBinder
     public $data;
     private $relationships;
     private $responseError;
-    private $serverErrors;
+    ///private $serverErrors;
     /**
      * Binder constructor.
      * @param string|null $contentType default response content type = 'application/vnd.api+json'
@@ -1912,7 +1928,6 @@ class ResponseBinder
         $data = [];
         if(is_array($dataObject))
         {
-            $count = 0;
             /** @var Lesson|Teacher|Subject|LessonWeek|LessonDay|SchoolRoom|SchoolClass $item */
             foreach($dataObject as $item)
             {

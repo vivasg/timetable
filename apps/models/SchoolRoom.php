@@ -112,12 +112,29 @@ class SchoolRoom
         }
         return null;
     }
+    public static function find()
+    {
+        $tmp_schoolrooms = Dto::find();
+        if ($tmp_schoolrooms instanceof Simple && $tmp_schoolrooms->count() > 0)
+        {
+            $return = [];
+
+            /** @var Dto $tmp_schoolroom */
+            foreach ($tmp_schoolrooms as $tmp_schoolroom)
+            {
+                $return[] = new SchoolRoom($tmp_schoolroom);
+            }
+
+            return $return;
+        }
+        return null;
+    }
 
     public function getResponseData()
     {
         /** @var SchoolRoom $object */
         $data[] = [
-            'type' => 'SchoolClass',
+            'type' => 'SchoolRoom',
             'id' => $this->getId(),
             'attributes' => [
                 'name' => $this->getName(),
@@ -158,11 +175,6 @@ class SchoolRoom
 
     public function delete()
     {
-        $status = $this->dto->delete();
-        if(!$status)
-        {
-            return $this->dto->getMessages();
-        }
-        return false;
+        return $this->dto->delete();
     }
 }
