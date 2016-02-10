@@ -1,6 +1,6 @@
 'use strict';
 
-function Techer(object) {
+function Teacher(object) {
     var thisClass = this;
     if (object) {
         _CreateClass(object.newId, object.newName, object.newMidName, object.newLastName);

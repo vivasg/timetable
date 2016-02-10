@@ -39,7 +39,7 @@ function LessonDayManager($http, $q) {
         thisClass.$http.post("'api.php?controller=school_rooms&action=item&name=" + name) //wrong address
             .then(function (responce) {
                 if (responce.status >= 200 && responce.status < 300) { //JSON.parse(responce)
-                    var instance = new LessonDayClass(responce.data);
+                    var instance = new LessonDay(responce.data);
                     thisClass._cashPool[responce.data.id] = instance;
                     return instance;
                 }
@@ -82,7 +82,7 @@ function LessonDayManager($http, $q) {
         thisClass.$http.get("'api.php?controller=school_rooms&action=item&id=" + id) //wrong address
             .then(function (responce) {
                 if (responce.status >= 200 && responce.status < 300) { //JSON.parse(responce)
-                    var instance = new LessonDayClass(responce.data);
+                    var instance = new LessonDay(responce.data);
                     thisClass._cashPool[responce.data.id] = instance;
                     return instance;
                 }
