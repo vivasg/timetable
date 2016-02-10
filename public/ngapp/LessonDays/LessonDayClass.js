@@ -1,12 +1,14 @@
 'use strict';
 
-function LessonDay(object) {
+function LessonDay() {
     var thisClass = this;
-    if (object) {
-        _CreateClass(object.id, object.lessonWeekID, object.wDay, object.name, object.lessonMaxCount);
-    }
+    var LessonDayClass = function (object) {
+        if (object) {
+            _CreateClass(object.id, object.lessonWeekID, object.wDay, object.name, object.lessonMaxCount);
+        }
+    };
 
-    LessonDay.prototype = {
+    LessonDayClass.prototype = {
         getID : function () {
             return thisClass.id;
         },
@@ -56,8 +58,5 @@ function LessonDay(object) {
         }
     };
 
-    return thisClass;
+    return LessonDayClass;
 }
-
-angular
-    .factory('LessonDay', LessonDay);

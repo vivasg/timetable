@@ -1,12 +1,14 @@
 'use strict';
 
-function SchoolRoom(object) {
+function SchoolRoom() {
     var thisClass = this;
-    if (object) {
-        _CreateClass(object.id, object.name);
-    }
+    var SchoolRoomClass = function (object) {
+        if (object) {
+            _CreateClass(object.id, object.name);
+        }
+    };
 
-    SchoolRoom.prototype = {
+    SchoolRoomClass.prototype = {
         getID : function () {
             return thisClass.id;
         },
@@ -56,8 +58,5 @@ function SchoolRoom(object) {
         }
     };
 
-    return thisClass;
+    return SchoolRoomClass;
 }
-
-angular
-    .factory('SchoolRoom', SchoolRoom);

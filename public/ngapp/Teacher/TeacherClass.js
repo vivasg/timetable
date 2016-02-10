@@ -1,12 +1,14 @@
 'use strict';
 
-function Techer(object) {
+function Teacher() {
     var thisClass = this;
-    if (object) {
-        _CreateClass(object.newId, object.newName, object.newMidName, object.newLastName);
-    }
+    var teacherClass = function (object) {
+        if (object) {
+            _CreateClass(object.newId, object.newName, object.newMidName, object.newLastName);
+        }
+    };
 
-    Teacher.prototype = {
+    teacherClass.prototype = {
         getID: function () {
             return thisClass.id;
         },
@@ -91,8 +93,6 @@ function Techer(object) {
         }
     };
 
-    return thisClass;
+    return teacherClass;
 }
 
-angular
-    .factory('SchoolClass', Techer);

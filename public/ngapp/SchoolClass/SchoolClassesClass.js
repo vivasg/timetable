@@ -1,12 +1,14 @@
 'use strict';
 
-function SchoolClass(object) {
+function SchoolClass() {
     var thisClass = this;
-    if (object) {
-        _CreateClass(object.id, object.name);
-    }
+    var SchoolClassesClass = function (object) {
+        if (object) {
+            _CreateClass(object.id, object.name);
+        }
+    };
 
-    SchoolClass.prototype = {
+    SchoolClassesClass.prototype = {
         getID : function () {
             return thisClass.id;
         },
@@ -56,8 +58,52 @@ function SchoolClass(object) {
         }
     };
 
-    return thisClass;
+    return SchoolClassesClass;
 }
 
 angular
-    .factory('SchoolClass', SchoolClass);
+    .module('app', ['$http', '$q']) // dependency?
+    .factory('SchoolClass', SchoolClass)
+    .factory('SchoolRoom', SchoolRoom)
+    .factory('Subject', Subject)
+    .factory('LessonWeek', LessonWeek)
+    .factory('LessonDay', LessonDay, ['LessonWeek'])
+    .factory('Teacher', Teacher)
+    .factory('Lesson', Lesson, ['SchoolClass', 'SchoolRoom', 'Subject', 'LessonDay', 'LessonWeek', 'Teacher'])
+
+    .factory('TeacherManager', TeacherManager, ['Teacher', '$http', '$q'])
+    .factory('SubjectManager', SubjectManager, ['Subject', '$http', '$q'])
+    .factory('SchoolRoomManager', SchoolRoomManager, ['SchoolRoom', '$http', '$q'])
+    .factory('SchoolClassesManager', SchoolClassesManager, ['SchoolClass', '$http', '$q'])
+    .factory('LessonWeekManager', LessonWeekManager, ['LessonWeek', '$http', '$q'])
+    .factory('LessonDayManager', LessonDayManager, ['LessonDay', '$http', '$q'])
+    .factory('LessonManager', LessonManager, ['Lesson', '$http', '$q']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

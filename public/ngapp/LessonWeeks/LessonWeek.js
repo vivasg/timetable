@@ -1,12 +1,14 @@
 'use strict';
 
-function LessonWeek(object) {
+function LessonWeek() {
     var thisClass = this;
-    if (object) {
-        _CreateClass(object.id, object.number, object.name);
-    }
+    var LessonWeekClass = function (object) {
+        if (object) {
+            _CreateClass(object.id, object.number, object.name);
+        }
+    };
 
-    LessonWeek.prototype = {
+    LessonWeekClass.prototype = {
         getID : function () {
             return thisClass.id;
         },
@@ -77,8 +79,5 @@ function LessonWeek(object) {
         }
     };
 
-    return thisClass;
+    return LessonWeekClass;
 }
-
-angular
-    .factory('LessonWeek', LessonWeek);
