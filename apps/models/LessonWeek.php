@@ -28,14 +28,6 @@ class LessonWeek
      */
     public function setId($id)
     {
-        if(!is_int($id))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "id"');
-        }
-        if($id < 0)
-        {
-            throw new \OutOfRangeException('parameter "id" can not be less than 0');
-        }
         $this->dto->setId($id);
         return $this;
     }
@@ -58,10 +50,6 @@ class LessonWeek
      */
     public function setName($name)
     {
-        if(!is_string($name))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "name"');
-        }
         $this->dto->setName($name);
         return $this;
     }
@@ -83,10 +71,6 @@ class LessonWeek
      */
     public function setNumber($number)
     {
-        if(!is_int($number))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "number"');
-        }
         $this->dto->setNumber($number);
         return $this;
     }
@@ -95,8 +79,12 @@ class LessonWeek
      * LessonWeek constructor.
      * @param \Dto\LessonWeek $dto
      */
-    public function __construct($dto)
+    public function __construct(Dto $dto = null)
     {
+        if (is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 
@@ -129,7 +117,7 @@ class LessonWeek
                 'id' => $id
             ],
         ];
-        return LessonWeek::getMany($parameters, 1);
+        return LessonWeek::getOne($parameters);
     }
 
     /**Select Lesson Week by Number
@@ -154,21 +142,24 @@ class LessonWeek
      */
     public static function getOne($parameters)
     {
-        /** @var Simple $tmp_lesson_week */
+        /** @var Dto $tmp_lesson_week */
         $tmp_lesson_week = Dto::findFirst($parameters);
-        if ($tmp_lesson_week instanceof Simple && $tmp_lesson_week->count() > 0)
+        if ($tmp_lesson_week instanceof Dto)
         {
-            return new LessonWeek($tmp_lesson_week->getFirst());//**???
+            return new LessonWeek($tmp_lesson_week);
         }
         return null;
+    }
+    public static function find()
+    {
+        return self::getMany();
     }
 
     /** Return an array of the selected items
      * @param $parameters
-     * @param $count
-     * @return array|null
+     * @return array|null return array of class LessonWeek if elements not found return null
      */
-    public static function getMany($parameters, $count)
+    public static function getMany($parameters)
     {
         /** @var Simple $tmp_lesson_weeks */
         $tmp_lesson_weeks = Dto::find($parameters);
@@ -180,13 +171,59 @@ class LessonWeek
             foreach ($tmp_lesson_weeks as $tmp_lesson_week)
             {
                 $return[] = new LessonWeek($tmp_lesson_week);
-
-                $count--;
-                if($count == 0)break;
             }
 
             return $return;
         }
         return null;
+    }
+
+    public function save()
+    {
+        $status = $this->dto->save();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function create($data = null)
+        {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        return $this->dto->delete();
+    }
+
+    public function getResponseData()
+    {
+        /** @var LessonWeek $object */
+        $data[] = [
+            'type' => 'LessonWeek',
+            'id'    => $this->getId(),
+            'attributes' => [
+                'number' => $this->getNumber(),
+                'name' => $this->getName(),
+            ],
+        ];
+        return $data;
     }
 }

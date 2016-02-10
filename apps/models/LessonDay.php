@@ -11,11 +11,11 @@ class LessonDay
 
     /**
      * Get id by LessonDay.
-     *
      * @return int|null
      */
     public function getId()
     {
+        if($this->dto)
         return $this->dto->getId();
     }
 
@@ -27,14 +27,6 @@ class LessonDay
      */
     public function setId($id)
     {
-        if(!is_int($id))
-        {
-            throw new \InvalidArgumentException('parameter "id" can be integer');
-        }
-        if($id < 0)
-        {
-            throw new \OutOfRangeException('parameter "id" can not be less than 0');
-        }
         $this->dto->setId($id);
         return $this;
     }
@@ -46,7 +38,11 @@ class LessonDay
      */
     public function getLessonWeek()
     {
-        return $this->dto->getLessonWeek();
+        if(!$this->dto instanceof Dto)
+        {
+            throw new Exception('dto is null');
+        }
+        return new \LessonWeek($this->dto->getLessonWeek());
     }
 
     /**
@@ -57,14 +53,6 @@ class LessonDay
      */
     public function setLessonWeek($lessonWeek)
     {
-        if(is_null($lessonWeek))
-        {
-            throw new \InvalidArgumentException('parameter "lessonWeek" is null');
-        }
-        if(get_class($lessonWeek) != 'LessonWeek')
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "lessonWeek"');
-        }
         $this->dto->setLessonWeek($lessonWeek);
         return $this;
     }
@@ -87,11 +75,22 @@ class LessonDay
      */
     public function setWeekday($weekDay)
     {
-        if(!is_int($weekDay))
+        if($weekDay > 6 || $weekDay < 0)
         {
-            throw new \InvalidArgumentException('invalid type of argument: "weekDay"');
+            throw new InvalidArgumentException('weekDay must be biger than 0 and less than 7');
         }
         $this->dto->setWeekDay($weekDay);
+        return $this;
+    }
+
+    public function getLessonWeekId()
+    {
+        return $this->dto->getLessonWeekId();
+    }
+
+    public function setLessonWeekId($lessonWeekId)
+    {
+        $this->dto->setLessonWeekId($lessonWeekId);
         return $this;
     }
 
@@ -113,10 +112,7 @@ class LessonDay
      */
     public function setName($name)
     {
-        if(!is_string($name))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "name"');
-        }
+
         $this->dto->setName($name);
         return $this;
     }
@@ -139,25 +135,26 @@ class LessonDay
      */
     public function setLessonMaxCount($lessonMaxCount)
     {
-        if(!is_int($lessonMaxCount))
-        {
-            throw new \InvalidArgumentException('invalid type of argument: "lessonMaxCount"');
-        }
         $this->dto->setLessonMaxCount($lessonMaxCount);
         return $this;
     }
 
     /**
+     * @param DTO $dto
      * LessonDay constructor.
      */
-    public function __construct($dto)
+    public function __construct(Dto $dto = null)
     {
+        if (is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 
     /**Get Lesson Day by Id
      * @param $id
-     * @return array|null
+     * @return LessonDay|null
      */
     public static function findById($id)
     {
@@ -220,19 +217,18 @@ class LessonDay
 
     /**Return an array of the selected items
      * @param $parameters
-     * @param $count
      * @return array|null
      */
     public static function getMany($parameters)
     {
-        /** @var Simple $tmp_lesson_day */
-        $tmp_lesson_day = Dto::find($parameters);
-        if ($tmp_lesson_day instanceof Simple && $tmp_lesson_day->count() > 0)
+        /** @var Simple $tmp_lesson_days */
+        $tmp_lesson_days = Dto::find($parameters);
+        if ($tmp_lesson_days instanceof Simple && $tmp_lesson_days->count() > 0)
         {
             $return = [];
 
-            /** @var Dto $tmp_lesson_weeks */
-            foreach ($tmp_lesson_day as $tmp_lesson_day)
+            /** @var Dto $tmp_lesson_day */
+            foreach ($tmp_lesson_days as $tmp_lesson_day)
             {
                 $return[] = new LessonDay($tmp_lesson_day);
             }
@@ -240,6 +236,41 @@ class LessonDay
             return $return;
         }
         return null;
+    }
+
+    public function save()
+    {
+        $status = $this->dto->save();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function create($data = null)
+    {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        return $this->dto->delete();
     }
 
     /** Return an element of the selected item
@@ -252,8 +283,24 @@ class LessonDay
         $tmp_lesson_day = Dto::findFirst($parameters);
         if ($tmp_lesson_day instanceof Dto)
         {
-            return new Lesson($tmp_lesson);
+            return new LessonDay($tmp_lesson_day);
         }
         return null;
+    }
+
+    public function GetResponseData()
+    {
+        /** @var LessonDay $object */
+        $data[] = [
+            'type' => 'LessonDay',
+            'id' => $this->getId(),
+            'attributes' => [
+                'lesson_week' => $this->getLessonWeek() == null? '' : $this->getLessonWeek()->getResponseData(),
+                'week_day' => $this->getWeekday(),
+                'name' => $this->getName(),
+                'lesson_max_count' => $this->getLessonMaxCount(),
+            ],
+        ];
+        return $data;
     }
 }

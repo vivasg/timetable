@@ -21,10 +21,6 @@ class SchoolClass
      */
     public function setId($id)
     {
-        if($id < 0)
-        {
-            throw new \OutOfRangeException('parameter "id" can not be less than 0');
-        }
         $this->dto->setId($id);
     }
 
@@ -49,8 +45,12 @@ class SchoolClass
      * SchoolClass constructor.
      * @param Dto $dto
      */
-    public function __construct(Dto $dto)
+    public function __construct(Dto $dto = null)
     {
+        if (is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 
@@ -86,21 +86,9 @@ class SchoolClass
         return null;
     }
 
-    /**
-     * @param $id
-     * @return array|null
-     */
-    public static function findById($id)
+    public static function find()
     {
-        $parameters = [
-            'conditions' => 'id=:id:',
-            'bind' => [
-                'id' => $id
-            ],
-        ];
-
-        /** @var Simple $tmp_schoolclasses */
-        $tmp_schoolclasses = Dto::find($parameters);
+        $tmp_schoolclasses = Dto::find();
         if ($tmp_schoolclasses instanceof Simple && $tmp_schoolclasses->count() > 0)
         {
             $return = [];
@@ -114,5 +102,74 @@ class SchoolClass
             return $return;
         }
         return null;
+    }
+    /**
+     * @param $id
+     * @return array|null
+     */
+    public static function findById($id)
+    {
+        $parameters = [
+            'conditions' => 'id=:id:',
+            'bind' => [
+                'id' => $id
+            ],
+        ];
+
+        /** @var Dto $tmp_schoolclass */
+        $tmp_schoolclass = Dto::findFirst($parameters);
+        if ($tmp_schoolclass instanceof Dto)
+        {
+            return new SchoolClass($tmp_schoolclass);
+        }
+        return null;
+    }
+
+    public function getResponseData()
+    {
+        /** @var SchoolClass $object */
+        $data[] = [
+            'type' => 'SchoolClass',
+            'id' => $this->getId(),
+            'attributes' => [
+                'name' => $this->getName()
+            ],
+        ];
+        return $data;
+    }
+
+    public function save()
+    {
+        $status = $this->dto->save();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function create($data = null)
+    {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        return $this->dto->delete();
     }
 }

@@ -25,10 +25,6 @@ class Subject
      */
     public function setId($id)
     {
-        if($id < 0)
-        {
-            throw new \OutOfRangeException('parameter "id" can not be less than 0');
-        }
         $this->dto->setId($id);
     }
 
@@ -50,8 +46,12 @@ class Subject
         $this->dto->setName($name);
     }
 
-    public function __construct(Dto $dto)
+    public function __construct(Dto $dto = null)
     {
+        if (is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 
@@ -103,21 +103,9 @@ class Subject
         return null;
     }
 
-    /**
-     * @param $id
-     * @return array|null
-     */
-    public static function findById($id)
+    public static function find()
     {
-        $parameters = [
-            'conditions' => 'id=:id:',
-            'bind' => [
-                'id' => $id
-            ],
-        ];
-
-        /** @var Simple $tmp_subjects */
-        $tmp_subjects = Dto::find($parameters);
+        $tmp_subjects = Dto::find();
         if ($tmp_subjects instanceof Simple && $tmp_subjects->count() > 0)
         {
             $return = [];
@@ -131,5 +119,75 @@ class Subject
             return $return;
         }
         return null;
+    }
+    /**
+     * @param $id
+     * @return Subject|null
+     */
+    public static function findById($id)
+    {
+        $parameters = [
+            'conditions' => 'id=:id:',
+            'bind' => [
+                'id' => $id
+            ],
+        ];
+
+        /** @var Dto $tmp_subjects */
+        $tmp_subject = Dto::findFirst($parameters);
+        if ($tmp_subject instanceof Dto)
+        {
+            return new Subject($tmp_subject);
+        }
+        return null;
+    }
+    public function getResponseData()
+    {
+        /** @var Subject $object */
+        $data[] = [
+            'type' => 'Subject', // спросить про заглавную букву(Subject или subject) касаеться всех запросов
+            'id' => $this->getId(),
+            'attributes' => [
+                'name' => $this->getName(),
+                'name_shortest' => $this->getShortestName(),
+                'name_short' => $this->getShortName()
+            ],
+        ];
+        return $data;
+    }
+
+    public function save()
+    {
+        $status = $this->dto->save();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function create($data = null)
+    {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        return $this->dto->delete();
     }
 }

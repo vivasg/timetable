@@ -40,10 +40,6 @@ class Teacher
      */
     public function setId($id)
     {
-        if($id < 0)
-        {
-            throw new \OutOfRangeException('parameter "id" can not be less than 0');
-        }
         $this->dto->setId($id);
     }
 
@@ -95,8 +91,12 @@ class Teacher
         $this->dto->setNameMiddle($name_middle);
     }
 
-    public function __construct(Dto $dto)
+    public function __construct(Dto $dto = null)
     {
+        if(is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 
@@ -140,6 +140,24 @@ class Teacher
         /** @var Simple $tmp_teachers */
         $tmp_teachers = Dto::find($parameters);
         if ($tmp_teachers instanceof Simple && $tmp_teachers->count() > 0)
+            {
+            $return = [];
+
+            /** @var Dto $tmp_teacher */
+            foreach ($tmp_teachers as $tmp_teacher)
+            {
+                $return[] = new Teacher($tmp_teacher);
+            }
+
+            return $return;
+        }
+        return null;
+    }
+
+    public static function find()
+    {
+        $tmp_teachers = Dto::find();
+        if ($tmp_teachers instanceof Simple && $tmp_teachers->count() > 0)
         {
             $return = [];
 
@@ -152,5 +170,77 @@ class Teacher
             return $return;
         }
         return null;
+    }
+
+    /**
+     * Updates a model instance. If the instance doesn't exist in the persistance it will throw an exception
+     * Returning false on success or MessageInterface[] otherwise.
+     * @return bool|\Phalcon\Mvc\MessageInterface[]
+     */
+    public function save()
+    {
+        $status = $this->dto->save();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    /**
+     * Inserts a model instance. If the instance already exists in the persistance it will throw an exception
+     * Returning false on success or MessageInterface[] otherwise.
+     * @param null $data
+     * @return bool|\Phalcon\Mvc\MessageInterface[]
+     */
+    public function create($data = null)
+    {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    /**
+     * Updates a model instance. If the instance doesn't exist in the persistance it will throw an exception
+     * Return false on success or MessageInterface[] otherwise
+     * @return bool|\Phalcon\Mvc\MessageInterface[]
+     */
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    /**
+     * Deletes a model instance. Returning true on success or false otherwise.
+     * @return bool
+     */
+    public function delete()
+    {
+        return $this->dto->delete();
+    }
+    public function getResponseData()
+    {
+        /** @var Teacher $object */
+        $data[] = [
+            'type' => 'Teacher',
+            'id' => $this->getId(),
+            'attributes' => [
+                'title' => 'teacher',
+                'name_first' => $this->getNameFirst(),
+                'name_middle' => $this->getNameMiddle(),
+                'name_last' => $this->getNameLast(),
+                'name_full' => $this->getNameFull(),
+                'name_short' => $this->getNameShort()
+            ],
+        ];
+        return $data;
     }
 }

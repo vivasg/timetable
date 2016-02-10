@@ -53,6 +53,10 @@ class Subject extends Model
         {
             throw new \InvalidArgumentException('invalid type of argument: "id"');
         }
+        if($value < 0)
+        {
+            throw new \OutOfRangeException('parameter "id" can not be less than 0');
+        }
         $this->id = $value;
         return $this;
     }
@@ -62,7 +66,7 @@ class Subject extends Model
      */
     public function getShortestName()
     {
-        return substr($this->name,0,8);
+        return mb_substr($this->name,0,4);
     }
 
     /**
@@ -70,7 +74,7 @@ class Subject extends Model
      */
     public function getShortName()
     {
-        return substr($this->name,0,12) . '.';
+        return mb_substr($this->name,0,5) . '.';
     }
 
     /**
@@ -102,12 +106,6 @@ class Subject extends Model
 
     public function validation()
     {
-        // Правила для id
-        $this->validate(new PresenceOf([
-            'field' => 'id',
-            'message' => 'Not id in model',
-        ]));
-
         // Правила для name
         $this->validate(new PresenceOf([
             'field' => 'name',

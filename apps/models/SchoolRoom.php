@@ -50,8 +50,12 @@ class SchoolRoom
         $this->dto->setName($name);
     }
 
-    public function __construct(Dto $dto)
+    public function __construct(Dto $dto = null)
     {
+        if (is_null($dto))
+        {
+            $dto = new Dto();
+        }
         $this->dto = $dto;
     }
 
@@ -100,8 +104,17 @@ class SchoolRoom
             ],
         ];
 
-        /** @var Simple $tmp_schoolrooms */
-        $tmp_schoolrooms = Dto::find($parameters);
+        /** @var Dto $tmp_schoolroom */
+        $tmp_schoolroom = Dto::findFirst($parameters);
+        if ($tmp_schoolroom instanceof Dto)
+        {
+            return new SchoolRoom($tmp_schoolroom);
+        }
+        return null;
+    }
+    public static function find()
+    {
+        $tmp_schoolrooms = Dto::find();
         if ($tmp_schoolrooms instanceof Simple && $tmp_schoolrooms->count() > 0)
         {
             $return = [];
@@ -115,5 +128,53 @@ class SchoolRoom
             return $return;
         }
         return null;
+    }
+
+    public function getResponseData()
+    {
+        /** @var SchoolRoom $object */
+        $data[] = [
+            'type' => 'SchoolRoom',
+            'id' => $this->getId(),
+            'attributes' => [
+                'name' => $this->getName(),
+            ],
+        ];
+        return $data;
+    }
+
+    public function save()
+    {
+        $status = $this->dto->save();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function create($data = null)
+    {
+        $status = $this->dto->create();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function update()
+    {
+        $status = $this->dto->update();
+        if(!$status)
+        {
+            return $this->dto->getMessages();
+        }
+        return false;
+    }
+
+    public function delete()
+    {
+        return $this->dto->delete();
     }
 }

@@ -5,7 +5,10 @@ namespace Dto;
 use \Phalcon\Mvc\Model,
     Phalcon\Mvc\Model\Validator\PresenceOf,
     Phalcon\Mvc\Model\Validator\StringLength;
-
+/**
+ * @package Dto
+ * @property \Dto\LessonWeek $week
+ */
 class LessonDay extends Model
 {
     /**
@@ -16,16 +19,16 @@ class LessonDay extends Model
     /**
      * @var LessonWeek
      */
-    private $lessonWeek;
+    //private $lessonWeek;
     /**
      * @var int
      */
-    private $lessonWeekId;
+    private $lesson_week_id;
 
     /**
      * @var int
      */
-    private $weekDay;
+    private $wday;
 
     /**
      * @var string
@@ -35,7 +38,7 @@ class LessonDay extends Model
     /**
      * @var int
      */
-    private $lessonMaxCount;
+    private $lesson_max_count;
 
     /**
      * @return int|null
@@ -51,6 +54,14 @@ class LessonDay extends Model
      */
     public function setId($id)
     {
+        if (!is_int($id))
+        {
+            throw new \InvalidArgumentException('parameter "id" can be integer');
+        }
+        if ($id < 0)
+        {
+            throw new \OutOfRangeException('parameter "id" can not be less than 0');
+        }
         $this->id = $id;
         return $this;
     }
@@ -60,7 +71,7 @@ class LessonDay extends Model
      */
     public function getLessonWeek()
     {
-        return $this->lessonWeek;
+        return $this->week;
     }
 
     /**
@@ -69,6 +80,14 @@ class LessonDay extends Model
      */
     public function setLessonWeek($lessonWeek)
     {
+        if (is_null($lessonWeek))
+        {
+            throw new \InvalidArgumentException('parameter "lessonWeek" is null');
+        }
+        if ($lessonWeek instanceof \LessonWeek)
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "lessonWeek"');
+        }
         $this->lessonWeek = $lessonWeek;
         return $this;
     }
@@ -78,16 +97,24 @@ class LessonDay extends Model
      */
     public function getLessonWeekId()
     {
-        return $this->lessonWeekId;
+        return $this->lesson_week_id;
     }
 
     /**
-     * @param int $lessonWeekId
+     * @param int $lesson_week_id
      * @return $this
      */
-    public function setLessonWeekId($lessonWeekId)
+    public function setLessonWeekId($lesson_week_id)
     {
-        $this->lessonWeekId = $lessonWeekId;
+        if (!is_int($lesson_week_id))
+        {
+            throw new \InvalidArgumentException('parameter lessonWeekId mus t be int');
+        }
+        if ($lesson_week_id < 0)
+        {
+            throw new \InvalidArgumentException('lessonWeekId must be biger than 0');
+        }
+        $this->lesson_week_id = $lesson_week_id;
         return $this;
     }
 
@@ -96,16 +123,20 @@ class LessonDay extends Model
      */
     public function getWeekDay()
     {
-        return $this->weekDay;
+        return $this->wday;
     }
 
     /**
-     * @param int|null $weekDay
+     * @param int|null $wday
      * @return $this
      */
-    public function setWeekDay($weekDay)
+    public function setWeekDay($wday)
     {
-        $this->weekDay = $weekDay;
+        if (!is_int($wday))
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "weekDay"');
+        }
+        $this->wday = $wday;
         return $this;
     }
 
@@ -123,6 +154,10 @@ class LessonDay extends Model
      */
     public function setName($name)
     {
+        if (!is_string($name))
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "name"');
+        }
         $this->name = $name;
         return $this;
     }
@@ -132,16 +167,20 @@ class LessonDay extends Model
      */
     public function getLessonMaxCount()
     {
-        return $this->lessonMaxCount;
+        return $this->lesson_max_count;
     }
 
     /**
-     * @param int|null $lessonMaxCount
+     * @param int|null $lesson_max_count
      * @return $this
      */
-    public function setLessonMaxCount($lessonMaxCount)
+    public function setLessonMaxCount($lesson_max_count)
     {
-        $this->lessonMaxCount = $lessonMaxCount;
+        if (!is_int($lesson_max_count))
+        {
+            throw new \InvalidArgumentException('invalid type of argument: "lessonMaxCount"');
+        }
+        $this->lesson_max_count = $lesson_max_count;
         return $this;
     }
 
@@ -156,31 +195,23 @@ class LessonDay extends Model
         $this->hasMany('id', '/Dto/Lesson', 'lesson_day_id', [
             'alias' => 'lessons'
         ]);
+        $this->belongsTo('lesson_week_id', 'Dto\LessonWeek', 'id', [
+            'alias' => 'week'
+        ]);
     }
 
     public function validation()
     {
-        // rules for id
-        $this->validate(new PresenceOf([
-            'field' => 'id',
-            'message' => 'Not id in model',
-        ]));
-
-        // rules for lessonWeek
-        $this->validate(new PresenceOf([
-            'field' => 'lessonWeek',
-            'message' => 'Not lessonWeek in model',
-        ]));
 
         // rules for lessonWeekid
         $this->validate(new PresenceOf([
-            'field' => 'lessonWeekid',
+            'field' => 'lesson_week_id',
             'message' => 'Not lessonWeekid in model',
         ]));
 
         // rules for weekDay
         $this->validate(new PresenceOf([
-            'field' => 'weekDay',
+            'field' => 'wday',
             'message' => 'Not weekDay in model',
         ]));
 
@@ -200,7 +231,7 @@ class LessonDay extends Model
 
         // rules for lessonMaxCount
         $this->validate(new PresenceOf([
-            'field' => 'lessonMaxCount',
+            'field' => 'lesson_max_count',
             'message' => 'Not lessonMaxCount in model',
         ]));
     }
