@@ -1,12 +1,14 @@
 'use strict';
 
-function Lesson(object) {
+function Lesson() {
     var thisClass = this;
-    if (object) {
-        _CreateClass(object);
-    }
+    var LessonClass = function (object) {
+        if (object) {
+            _CreateClass(object);
+        }
+    };
 
-    Lesson.prototype = {
+    LessonClass.prototype = {
         getID : function () {
             return thisClass.id;
         },
@@ -74,8 +76,5 @@ function Lesson(object) {
         }
     };
 
-    return thisClass;
+    return LessonClass;
 }
-
-angular
-    .factory('Lesson', Lesson);

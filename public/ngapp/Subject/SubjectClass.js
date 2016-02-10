@@ -1,12 +1,14 @@
 'use strict';
 
-function Subject(object) {
+function Subject() {
     var thisClass = this;
-    if (object) {
-        _CreateClass(object.id, object.name);
-    }
+    var SubjectClass = function (object) {
+        if (object) {
+            _CreateClass(object.id, object.name);
+        }
+    };
 
-    Subject.prototype = {
+    SubjectClass.prototype = {
         getID : function () {
             return thisClass.id;
         },
@@ -56,8 +58,5 @@ function Subject(object) {
         }
     };
 
-    return thisClass;
+    return SubjectClass;
 }
-
-angular
-    .factory('Subject', Subject);
