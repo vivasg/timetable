@@ -37,6 +37,11 @@ else
     if ! (php --ri phalcon &>/dev/null); then
         if [ -d "/etc/php.d" ]; then #centos, etc
             echo 'extension=phalcon.so' > /etc/php.d/phalcon.ini
+        elif [ -d "/etc/php/5.6" ]; then #ubuntu-like
+            echo 'extension=phalcon.so' > /etc/php/mods-available/phalcon.ini
+            [ -d '/etc/php/5.6/cli' ] && ln -s /etc/php/mods-available/phalcon.ini /etc/php/5.6/cli/conf.d/phalcon.ini
+            [ -d '/etc/php/5.6/apache' ] && ln -s /etc/php/mods-available/phalcon.ini /etc/php/5.6/apache2/conf.d/phalcon.ini
+            [ -d '/etc/php/5.6/fpm' ] && ln -s /etc/php/mods-available/phalcon.ini /etc/php/5.6/fpm/conf.d/phalcon.ini
         elif [ -d "/etc/php5/mods-available" ]; then #debian-like
             echo 'extension=phalcon.so' > /etc/php5/mods-available/phalcon.ini
             [ -d '/etc/php5/cli' ] && ln -s /etc/php5/mods-available/phalcon.ini /etc/php5/cli/conf.d/phalcon.ini
@@ -54,6 +59,7 @@ else
     echo 'Restarting web services'
     echo
     service php5-fpm status &>/dev/null && service php5-fpm restart
+    service php5.6-fpm status &>/dev/null && service php5.6-fpm restart
     service php-fpm status &>/dev/null && service php-fpm restart
     service nginx status &>/dev/null && service nginx restart
     service apache status &>/dev/null && service apache restart
