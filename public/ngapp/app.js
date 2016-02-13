@@ -71,7 +71,7 @@ function SideBarsController($scope){
 	$scope.classesSidebarArr = ["6 - a", "6 - б", "7 - a", "8 - a", "9 - a", "11 - a", "12 - a"];
 }
 
-function SimpleDemoController($scope, LessonClass, DayClass, schoolForm){
+function SimpleDemoController($scope, LessonClass, DayClass, schoolForm, LessonWeekManager){
 	var lMonOne = new LessonClass("1.1", "Abrams");
 	var lMonTwo = new LessonClass("1.2", "Lester");
 	var Monday = new DayClass("Monday");
@@ -138,6 +138,13 @@ function SimpleDemoController($scope, LessonClass, DayClass, schoolForm){
 
 		return item;
 	};
+
+	var lessonWeekManager = new LessonWeekManager();
+	lessonWeekManager.getAllInstances().then(function(data)
+	{
+		"use strict";
+		console.log(data);
+	});
 }
 
 angular
@@ -146,7 +153,7 @@ angular
 	.factory('DayClass', DayClass)
 	.factory('schoolForm', schoolForm)
 	.controller('SideBarsController', SideBarsController)
-	.controller('SimpleDemoController', SimpleDemoController, ['LessonClass', 'DayClass', 'schoolForm'])
+	.controller('SimpleDemoController', SimpleDemoController, ['LessonClass', 'DayClass', 'schoolForm', 'LessonWeekManager'])
 
 	.factory('SchoolClass', SchoolClass)
 	.factory('SchoolRoom', SchoolRoom)
