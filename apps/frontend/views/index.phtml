@@ -6,27 +6,17 @@
 /** @var \Phalcon\Http\Response\Cookies $this->cookies */
 /** @var \Phalcon\Assets\Manager $this->assets */
 /** @var \Phalcon\Mvc\Router\Route $route_current */
+
+$this->assets->addCss('media/css/style.css');
+
 ?><!DOCTYPE html>
-<html lang="uk" xmlns="http://www.w3.org/1999/html">
+<html ng-app="app" lang="uk" xmlns="http://www.w3.org/1999/html">
 <head>
 	<meta charset="utf-8" />
 	<base href="<?= $this->url->path($this->url->get()) ?>">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?= $this->assets->outputCss(); ?>
-	<script type="application/javascript">
-		less = {
-			env: "development",
-			async: false,
-			fileAsync: false,
-			poll: 1000,
-			functions: {},
-			dumpLineNumbers: "comments",
-			relativeUrls: false,
-			rootpath: "<?= $this->url->path($this->url->get()) ?>media/css/"
-		};
-	</script>
-	<?= $this->tag->javascriptInclude('//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js') ?>
 	<?= $this->tag->getTitle() ?>
 </head>
 <body>
