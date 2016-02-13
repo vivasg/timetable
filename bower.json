@@ -1,0 +1,24 @@
+{
+  "name": "timetable",
+  "description": "timetable",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "http://timetable",
+  "authors": [
+    "support@vivasg.com"
+  ],
+  "license": "proprietary software",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "3.3.6",
+    "angular": "1.5.*",
+    "angular-drag-and-drop-lists": "1.4.*"
+  }
+}
