@@ -70,7 +70,7 @@ function LessonWeekManager() {
         },
         /**GET. Request all instance on the server -> server sends back all instances */
         _loadAllInstances : function () {
-            self.$http.get("'api.php?controller=school_rooms&action=item&name=") //wrong address
+            self.$http.get("api/lessonWeeks") //wrong address
                 .then(function (responce) {
                     if (responce.status >= 200 && responce.status < 300) { //JSON.parse(responce)
                         self._fillPool(responce.data);
