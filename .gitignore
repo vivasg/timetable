@@ -3,9 +3,15 @@ timetable.iws
 .idea/dataSources.local.xml
 .vagrant/
 html/
+node_modules/
+bower_components/
 puphpet/files/dot/ssh/id_rsa
 puphpet/files/dot/ssh/root_id_rsa
 puphpet/files/dot/ssh/root_id_rsa.ppk
 puphpet/files/dot/ssh/id_rsa.pub
 puphpet/files/dot/ssh/root_id_rsa.pub
 puphpet/files/dot/ssh/id_rsa.ppk
+public/media/css/*.css
+public/media/fonts
+public/media/js/angular.js
+public/media/js/angular-drag-and-drop-lists.js
