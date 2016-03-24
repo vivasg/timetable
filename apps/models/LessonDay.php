@@ -291,7 +291,7 @@ class LessonDay
     public function GetResponseData()
     {
         /** @var LessonDay $object */
-        $data[] = [
+        $data = [
             'type' => 'LessonDay',
             'id' => $this->getId(),
             'attributes' => [

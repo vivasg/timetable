@@ -1,22 +1,23 @@
 <?php
 $this->assets->addJs('media/js/angular.js');
-$this->assets->addJs('media/js/angular-drag-and-drop-lists.js');
-$this->assets->addJs('ngapp/Base/Class.js');
-$this->assets->addJs('ngapp/Base/Manager.js');
-$this->assets->addJs('ngapp/Lesson/LessonClass.js');
-$this->assets->addJs('ngapp/LessonDays/LessonDayClass.js');
-$this->assets->addJs('ngapp/LessonWeeks/LessonWeek.js');
-$this->assets->addJs('ngapp/SchoolRoom/SchoolRoomClass.js');
-$this->assets->addJs('ngapp/Subject/SubjectClass.js');
-$this->assets->addJs('ngapp/Teacher/TeacherClass.js');
-$this->assets->addJs('ngapp/SchoolClass/SchoolClassesClass.js');
-$this->assets->addJs('ngapp/SchoolClass/SchoolClassesManager.js');
-$this->assets->addJs('ngapp/Teacher/TeacherManager.js');
-$this->assets->addJs('ngapp/Subject/SubjectManager.js');
-$this->assets->addJs('ngapp/SchoolRoom/SchoolRoomManager.js');
-$this->assets->addJs('ngapp/LessonDays/LessonDayManager.js');
-$this->assets->addJs('ngapp/LessonWeeks/LessonWeekManager.js');
-$this->assets->addJs('ngapp/Lesson/LessonManager.js');
+$this->assets->addJs('media/js/angular-route.js');
+//$this->assets->addJs('media/js/angular-drag-and-drop-lists.js');
+//$this->assets->addJs('ngapp/Base/Class.js');
+//$this->assets->addJs('ngapp/Base/Manager.js');
+//$this->assets->addJs('ngapp/Lesson/LessonClass.js');
+//$this->assets->addJs('ngapp/LessonDays/LessonDayClass.js');
+//$this->assets->addJs('ngapp/LessonWeeks/LessonWeek.js');
+//$this->assets->addJs('ngapp/SchoolRoom/SchoolRoomClass.js');
+//$this->assets->addJs('ngapp/Subject/SubjectClass.js');
+//$this->assets->addJs('ngapp/SchoolClass/SchoolClassesClass.js');
+//$this->assets->addJs('ngapp/SchoolClass/SchoolClassesManager.js');
+//$this->assets->addJs('ngapp/Teacher/TeacherClass.js');
+//$this->assets->addJs('ngapp/Teacher/TeacherManager.js');
+//$this->assets->addJs('ngapp/Subject/SubjectManager.js');
+//$this->assets->addJs('ngapp/SchoolRoom/SchoolRoomManager.js');
+//$this->assets->addJs('ngapp/LessonDays/LessonDayManager.js');
+//$this->assets->addJs('ngapp/LessonWeeks/LessonWeekManager.js');
+//$this->assets->addJs('ngapp/Lesson/LessonManager.js');
 //$this->assets->addJs('ngapp/Services/ManagerService.js');
 $this->assets->addJs('ngapp/app.js');
 
@@ -69,13 +70,13 @@ $this->assets->addJs('ngapp/app.js');
 			  <div ng-repeat="className in classesSidebarArr">{{className}}</div>
 		  </div>
 		  -->
+<!--	  
 <div class="row">
 	<div class="lessonWrapper">
 		<div class="form-group">
 			<div class="simpleDemo" ng-controller="SimpleDemoController">
 				<ul ng-repeat="list in models.lists"
 				>
-					<!-- dnd-dragover="dragoverCallback(event, index, external, type, list)" -->
 					<li ng-repeat="item in list"
 						dnd-list="item"
 						dnd-disable-if="item.length > 0">
@@ -85,8 +86,6 @@ $this->assets->addJs('ngapp/app.js');
 							 dnd-effect-allowed="move"
 						>
 							{{lesson.lessonName}}
-							<!-- {{list[$index].lessonName}} -->
-
 						</div>
 					</li>
 				</ul>
@@ -95,9 +94,8 @@ $this->assets->addJs('ngapp/app.js');
 	</div>
 </div>
 </div>
-
-
 </div>
+-->
 <!--
 <div class="row">
 	<div class="lessonWrapper">

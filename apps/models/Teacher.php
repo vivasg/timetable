@@ -229,7 +229,7 @@ class Teacher
     public function getResponseData()
     {
         /** @var Teacher $object */
-        $data[] = [
+        $data = [
             'type' => 'Teacher',
             'id' => $this->getId(),
             'attributes' => [

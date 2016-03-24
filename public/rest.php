@@ -1925,7 +1925,7 @@ class ResponseBinder
      */
     public function SetResponseData($dataObject)
     {
-        $data = [];
+        //$data = [];
         if(is_array($dataObject))
         {
             /** @var Lesson|Teacher|Subject|LessonWeek|LessonDay|SchoolRoom|SchoolClass $item */

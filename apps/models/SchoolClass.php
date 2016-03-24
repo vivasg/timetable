@@ -128,7 +128,7 @@ class SchoolClass
     public function getResponseData()
     {
         /** @var SchoolClass $object */
-        $data[] = [
+        $data = [
             'type' => 'SchoolClass',
             'id' => $this->getId(),
             'attributes' => [

@@ -472,7 +472,7 @@ class Lesson
 
     public function GetResponseData()
     {
-        $data[] = [
+        $data = [
             'type' => 'Lesson',
             'id' => $this->getId(),
             'attributes' => [

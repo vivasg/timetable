@@ -144,7 +144,7 @@ class Subject
     public function getResponseData()
     {
         /** @var Subject $object */
-        $data[] = [
+        $data = [
             'type' => 'Subject', // спросить про заглавную букву(Subject или subject) касаеться всех запросов
             'id' => $this->getId(),
             'attributes' => [
