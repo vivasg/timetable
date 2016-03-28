@@ -1,0 +1,16 @@
+<h1>Add Teacher</h1>
+
+<div>
+	<div class="addTeacher">
+		<label>First Name</label>
+		<input name="name_first" ng-model="teacher.name_first"/>
+	
+		<label>Middle Name</label>
+		<textarea name="name_middle" ng-model="teacher.name_middle" ></textarea>
+	
+		<label>Last name</label>
+		<textarea name="name_last" ng-model="teacher.name_last"></textarea>
+	</div>
+
+	<button ng-click="saveTeacher(teacher)">Save</button>
+</div>

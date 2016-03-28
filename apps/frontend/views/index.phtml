@@ -13,6 +13,7 @@ $this->assets->addCss('media/css/style.css');
 <html ng-app="myApp" lang="uk" xmlns="http://www.w3.org/1999/html">
 <head>
 	<meta charset="utf-8" />
+	<!--<base href="/">-->
 	<base href="<?= $this->url->path($this->url->get()) ?>">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,8 +28,10 @@ $this->assets->addCss('media/css/style.css');
 	?>
 	<h1>MAIN</h1>
 	<ul>
-		<li><a href='#/teachers'>Teachers</a></li>
-		<li><a href='#/subjects'>Subjects</a></li>
+		<li><a href='/teachers'>Teachers</a></li>
+		<li><a href='/subjects'>Subjects</a></li>
+		<li><a href='/lessonDays'>LessonDays</a></li>
+		<li><a href='/teacherAdd'>Add Teacher</a></li>
 	</ul>
 	<div ng-view></div>
 
